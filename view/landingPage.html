@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+    <title>VCS ver 0.1</title>
+    <!-- NOTE: use dot notation when specifying specific CSS classes -->
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        main {
+            padding: 1rem;
+        }
+
+        div.div-form {
+            display: block;
+            text-align: center;
+        }
+
+        .main-header {
+            margin: auto;
+            padding: 0;
+            width: 100%;
+            height: 5rem;
+            background-color: rgb(90, 1, 192);
+
+            color: rgb(255, 255, 255);
+        }
+
+        .header-div {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<html>
+    <header class = "main-header">
+        <div class = "header-div">
+            <h1>Welcome to VCS (v0.1)</h1>
+        </div>
+    </header>
+    <br>
+    <body>
+        <div class = "div-form">
+            <form action= "/executeCMD" method="POST">
+                <!-- NOTE: 'name' WITHIN INPUT TAG DESIGNATES A KEY, WITH THE VALUE BEING USER INPUT -->
+                <input size = 75 type = "text" id="input_text_field1" name="input_field_cmd" />
+                <input type = "submit" value = "EXECUTE" />
+            </form>
+        </div>
+    </body>
+</html>
