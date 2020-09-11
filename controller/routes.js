@@ -38,17 +38,9 @@ router.post('/executeCMD', (req, resp) => {
         // arg 3: 'iArray' will be populated with ignored files (optional???)
         handlers.fileKeeper(userInput[1], fArray, iArray);
 
-        // CHECKPOINT: print out to console for now, generate manifest file here (???)
-        console.log('VALID FILES TO KEEP:');
-        console.log(fArray);
-
-        console.log('FILES TO IGNORE    :');
-        console.log(iArray);
-
-        console.log('GENERATED CHECKSUMS:');
-        fArray.forEach( (file) => {
-            console.log(handlers.getArtifactID(userInput[1], file));
-        });
+        // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
+        // arg 1: 'userInput' array necessary for helper functions internal to 'makeManifestFile()'
+        handlers.makeManifestFile(userInput, fArray);
 
         // RESPOND WITH DYNAMICALLY CREATED .HTML PAGE
         // TO DO: make changes dynamic to 'landingPage.html' instead of new HTML page

@@ -18,11 +18,17 @@ that parsing the directory works correctly.
 -   example: 'create-repo C:\someRandomPath\bot'
 -   NOTE: path to source directory MUST be absolute path.
 
+## Manifest File (layout):
+
+- User command       : {command} {source directory}
+- Execution date/time: DAY Mon dd yyyy @ hh:mm:ss TIMEZONE DST
+- Archived file list : {artifact ID} @ {path relative to source folder}
+
 ## CAVEATS:
 
-- Successful command returns an .HTML page with jumbled message. Check the console for meaningful data (e.g. artifact ID and parsed files).
+- Successful command returns an .HTML page with jumbled message. No longer outputs to console, instead check source directory for manifest file.
 
-- The only valid command is currently 'create-repo'. All other commands will reload the landing page.
+- The only valid command is currently 'create-repo'. Invalid input will reload the landing page.
 - I have not tested cases where the path to the source directory includes random spaces.
 - I have not tested what happens if you EXECUTE 'create-repo' without including a source directory.
 - I have not tested what happens if you EXECUTE 'create-repo' with more than one directory (i.e. trying to include destination directory).
@@ -30,4 +36,4 @@ that parsing the directory works correctly.
 
 ## WORK-IN-PROGRESS:
 
-- Functionality to build and write a manifest file.
+- Functionality to recreate project tree into destination folder.
