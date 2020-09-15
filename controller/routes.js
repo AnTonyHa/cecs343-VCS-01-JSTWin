@@ -48,6 +48,8 @@ router.post('/executeCMD', (req, resp) => {
         // arg 2: 'fArray' will be populated with valid files
         handlers.fileKeeper(userInput[1], fArray);
 
+        handlers.commitFiles(fArray);
+
         // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
         handlers.makeManifestFile(fArray);
 

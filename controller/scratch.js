@@ -87,6 +87,19 @@ const getArtifactID = (srcDir, srcFile) => {
     return `P${a}-L${b}-C${c}${extension}`;
 }
 
+const commitFiles = (fileArray) => {
+    // GET USER INPUT FROM BROWSER/'CLI'
+    let userCMD = global.userInput;
+    // directory of the new file
+    let newDir = '.JSTWepo';
+
+    fileArray.forEach((pathToFile) => {
+        const pathToNewDestination = path.join(userCMD[1], newDir, getArtifactID(userCMD[1], pathToFile));
+
+        fs.copyFileSync(pathToFile, pathToNewDestination);
+    });
+}
+
 const makeManifestFile = (fileArray) => {
     let userCMD = global.userInput;
     // FORMAT FOR MANIFEST FILES: .manifest-{iteration}.rc
@@ -125,5 +138,6 @@ module.exports = {
     consoleEcho,
     rootDir,
     getArtifactID,
+    commitFiles,
     makeManifestFile
 };
