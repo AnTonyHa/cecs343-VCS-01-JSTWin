@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 var formidable = require('formidable');
 
+
 // GENERATES RELATIVE PATH TO A GIVEN FILE USING ITS ABSOLUTE PATH
 // arg 1: absolute path to root folder of source
 // arg 2: absolute path to file of interest
@@ -25,11 +26,6 @@ const pathIsolator = (relPath) => {
     pathName.pop();
 
     return pathName.join('/') + '/';
-}
-// GENERATES THE FILE NAME FROM ITS ABSOLUTE PATH
-const fileIsolator = (relPath) => {
-    let pathName = relPath.split('/');
-    return pathName[pathName.size-1];
 }
 
 // POPULATES TWO ARRAYS: 1) VALID FILES TO ARCHIVE, 2) IGNORED FILES
@@ -94,22 +90,16 @@ const getArtifactID = (srcDir, srcFile) => {
 // - calls manifestfile() to make manifest file respective to itself
 const commitFiles = (fileArray) => {
     let userCMD = global.userInput;
+
     // directory of the new file
     let newDir = '.JSTWepo';
 
     fileArray.forEach((pathToFile) => {
         const pathToNewDestination = path.join(userCMD[1], newDir, getArtifactID(userCMD[1], pathToFile));     
-        
-        fs.copyFile(pathToFile, pathToNewDestination, function(err){
-            if(err){
-                throw err
-            } else{
-                console.log("Successfully copied and moved a file.");
-            }
-        }); 
-        
+        fs.copyFileSync(pathToFile, pathToNewDestination);
+
     });
-    
+
 
 }
 

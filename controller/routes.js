@@ -8,8 +8,6 @@ const path = require('path');
 const handlers = require('./scratch');
 const fs = require("fs");
 global.userInput;
-
-
 // TESTING DIFFERENCE BETWEEN '.use()' AND '.get()'
 // '.use' IS MORE GENERIC, WILL WORK FOR ALL HTTP METHODS
 // '.get' FOR ONLY GET REQUESTS (SIMPLE URLs)
