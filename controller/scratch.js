@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+var formidable = require('formidable');
 
 // GENERATES RELATIVE PATH TO A GIVEN FILE USING ITS ABSOLUTE PATH
 // arg 1: absolute path to root folder of source
@@ -24,6 +25,11 @@ const pathIsolator = (relPath) => {
     pathName.pop();
 
     return pathName.join('/') + '/';
+}
+// GENERATES THE FILE NAME FROM ITS ABSOLUTE PATH
+const fileIsolator = (relPath) => {
+    let pathName = relPath.split('/');
+    return pathName[pathName.size-1];
 }
 
 // POPULATES TWO ARRAYS: 1) VALID FILES TO ARCHIVE, 2) IGNORED FILES
@@ -82,6 +88,33 @@ const getArtifactID = (srcDir, srcFile) => {
     return `P${a}-L${b}-C${c}${extension}`;
 }
 
+// WILL COMMIT THE FILE TO THE REPOSITORY
+// - creates a copy of the source file
+// - stores it in the repo with its artifact ID
+// - calls manifestfile() to make manifest file respective to itself
+const commitFiles = (fileArray) => {
+    // directory of the new file
+    let newDir = 'JSTWepo';
+
+    fileArray.forEach((pathToFile) => {
+        const pathToNewDestination = path.join(newDir, getArtifactID(pathIsolator(pathToFile), fileIsolator(pathToFile)));
+     
+        
+        fs.copyFile(pathToFile, pathToNewDestination, function(err){
+            if(err){
+                throw err
+            } else{
+                console.log("Successfully copied and moved a file.");
+            }
+        }); 
+        
+    });
+    
+
+}
+
+
+
 const makeManifestFile = (userCMD, fileArray) => {
     var iteration = 1;
     let srcDir = fs.readdirSync(userCMD[1]);
@@ -118,5 +151,6 @@ module.exports = {
     consoleEcho,
     rootDir,
     getArtifactID,
+    commitFiles,
     makeManifestFile
 };

@@ -3,9 +3,11 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 
+
 // IMPORT EXTRA FUNCTIONS FROM 'scratch.js' (LIKE C-HEADER FILES)
 const handlers = require('./scratch');
-
+const { fstat } = require('fs');
+const fs = require("fs");
 // TESTING DIFFERENCE BETWEEN '.use()' AND '.get()'
 // '.use' IS MORE GENERIC, WILL WORK FOR ALL HTTP METHODS
 // '.get' FOR ONLY GET REQUESTS (SIMPLE URLs)
@@ -38,9 +40,26 @@ router.post('/executeCMD', (req, resp) => {
         // arg 3: 'iArray' will be populated with ignored files (optional???)
         handlers.fileKeeper(userInput[1], fArray, iArray);
 
+
+        // creates Repository folder that will contain all the artifacts and manifest files.
+        fs.mkdir("./JSTWepo", function(err){
+            if(err){
+                console.log(err);
+            } else{
+                console.log("New repository folder successfully created.");
+            }
+        });
+
+        console.log(fArray);
+
+        /// 'commitFiles' MAKES COPIES OF THE ORIGINAL FILES AND STORES ITS ARTIFACT ID IN THE REPO
+        // 
+        handlers.commitFiles(fArray);
+
+
         // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
         // arg 1: 'userInput' array necessary for helper functions internal to 'makeManifestFile()'
-        handlers.makeManifestFile(userInput, fArray);
+        handlers.makeManifestFile(userInput, fArray);   
 
         // RESPOND WITH DYNAMICALLY CREATED .HTML PAGE
         // TO DO: make changes dynamic to 'landingPage.html' instead of new HTML page
@@ -49,7 +68,12 @@ router.post('/executeCMD', (req, resp) => {
     else // IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
         resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
 })
-
+/*
+router.post('executeCMD',(req,resp)=>){
+    if (req.body.input_field_cmd.includes('commit-file'))
+        commitFiles()
+}
+*/
 // BASIC HANDLER FOR DEFAULT PAGE
 router.get('/', (req, resp) => {
     resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
