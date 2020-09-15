@@ -92,18 +92,16 @@ const makeManifestFile = (fileArray) => {
     // FORMAT FOR MANIFEST FILES: .manifest-{iteration}.rc
     var iteration = 1;
     // NODE SERVER SEARCHES FOR '.git/.man' DIRECTORY AND COLLECTS ALL FILES INTO 'manDir' ARRAY
-    let manDir = fs.readdirSync(path.join(userCMD[1], '.git', '.man'));
+    let manDir = fs.readdirSync(path.join(userCMD[1], '.JSTWepo', '.man'));
 
     let timestamp = new Date();
     let manifestHeader = `"${userCMD}"\n${timestamp.toDateString()} @ ${timestamp.toTimeString()}\n\n`;
 
-    // FOR EACH FILE OBJECT IN 'manDir' ARRAY THAT IS ACTUALLY A MANIFEST FILE, INCREMENT 'iteration'
-    manDir.forEach((file) => {
-        if (file.toString().includes('.manifest') && path.extname(file) == '.rc')
-            iteration++;
-    })
+    // SINCE 'manDir' WILL _ONLY_ CONSIST OF MANIFEST FILES, INCREMENT 'iteration' BY
+    // COUNT OF MANIFEST FILES
+    iteration += manDir.length;
 
-    let manifestFile = `${userCMD[1]}\\.git\\.man\\.manifest-${iteration}.rc`;
+    let manifestFile = `${userCMD[1]}\\.JSTWepo\\.man\\.manifest-${iteration}.rc`;
     fs.writeFileSync(manifestFile, manifestHeader);
 
     fileArray.forEach((file) => {

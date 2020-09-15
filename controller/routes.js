@@ -35,12 +35,12 @@ router.post('/executeCMD', (req, resp) => {
         // SPLIT USER INPUT INTO: {command}-{source path}
         userInput = req.body.input_field_cmd.split(' ');
 
-        // IF '.git' FOLDER DOESN'T EXIST, '.man' ALSO SHOULD NOT EXIST, THEREFORE
+        // IF '.JSTWepo' FOLDER DOESN'T EXIST, '.man' ALSO SHOULD NOT EXIST, THEREFORE
         // CREATE BOTH
-        if (!fs.existsSync(path.join(userInput[1], '.git')))
+        if (!fs.existsSync(path.join(userInput[1], '.JSTWepo')))
         {
-            fs.mkdirSync(path.join(userInput[1], '.git'));
-            fs.mkdirSync(path.join(userInput[1], '.git', '.man'));
+            fs.mkdirSync(path.join(userInput[1], '.JSTWepo'));
+            fs.mkdirSync(path.join(userInput[1], '.JSTWepo', '.man'));
         }
 
         // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
