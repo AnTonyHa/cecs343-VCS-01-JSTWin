@@ -31,7 +31,6 @@ const fileKeeper = (srcDir, fileArray, ignore) => {
   let contents = fs.readdirSync(srcDir);
 
   contents.forEach((object) => {
-    // let newPath = srcDir + '\\' + object;
     let newPath = path.join(srcDir, object);
 
     if (fs.statSync(newPath).isFile() && object.toString().charAt(0) != '.')
@@ -83,6 +82,29 @@ const getArtifactID = (srcDir, srcFile) => {
     return `P${a}-L${b}-C${c}${extension}`;
 }
 
+const makeManifestFile = (userCMD, fileArray) => {
+    var iteration = 1;
+    let srcDir = fs.readdirSync(userCMD[1]);
+
+    let timestamp = new Date();
+    let manifestHeader = `"${userCMD}"\nEXECUTED : ${timestamp.toDateString()} @ ${timestamp.toTimeString()}\n\n`;
+
+    srcDir.forEach((file) => {
+        if (file.toString().includes('.manifest') && path.extname(file) == '.rc')
+            iteration++;
+    })
+
+    let manifestFile = `${userCMD[1]}\\.manifest-${iteration}.rc`;
+    fs.writeFileSync(manifestFile, manifestHeader);
+
+    fileArray.forEach((file) => {
+        let relPath = absolute2Relative(userCMD[1], file);
+        let artID = getArtifactID(userCMD[1], file);
+
+        fs.appendFileSync(manifestFile, `${artID} @ ${relPath}\n`);
+    });
+}
+
 const consoleEcho = (userCMD) => {
     console.log('User input > ' + userCMD);
 }
@@ -95,5 +117,6 @@ module.exports = {
     getChecksumFromString, 
     consoleEcho,
     rootDir,
-    getArtifactID
+    getArtifactID,
+    makeManifestFile
 };
