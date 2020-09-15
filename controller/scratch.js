@@ -93,12 +93,12 @@ const getArtifactID = (srcDir, srcFile) => {
 // - stores it in the repo with its artifact ID
 // - calls manifestfile() to make manifest file respective to itself
 const commitFiles = (fileArray) => {
+    let userCMD = global.userInput;
     // directory of the new file
-    let newDir = 'JSTWepo';
+    let newDir = '.JSTWepo';
 
     fileArray.forEach((pathToFile) => {
-        const pathToNewDestination = path.join(newDir, getArtifactID(pathIsolator(pathToFile), fileIsolator(pathToFile)));
-     
+        const pathToNewDestination = path.join(userCMD[1], newDir, getArtifactID(userCMD[1], pathToFile));     
         
         fs.copyFile(pathToFile, pathToNewDestination, function(err){
             if(err){

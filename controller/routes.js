@@ -6,8 +6,10 @@ const path = require('path');
 
 // IMPORT EXTRA FUNCTIONS FROM 'scratch.js' (LIKE C-HEADER FILES)
 const handlers = require('./scratch');
-const { fstat } = require('fs');
 const fs = require("fs");
+global.userInput;
+
+
 // TESTING DIFFERENCE BETWEEN '.use()' AND '.get()'
 // '.use' IS MORE GENERIC, WILL WORK FOR ALL HTTP METHODS
 // '.get' FOR ONLY GET REQUESTS (SIMPLE URLs)
@@ -33,7 +35,7 @@ router.post('/executeCMD', (req, resp) => {
         let fArray = [];
 
         // SPLIT USER INPUT INTO: {command}-{source path}-{target repo}
-        let userInput = req.body.input_field_cmd.split(' ');
+        userInput = req.body.input_field_cmd.split(' ');
 
         // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
         // arg 2: 'fArray' will be populated with valid files
@@ -42,13 +44,10 @@ router.post('/executeCMD', (req, resp) => {
 
 
         // creates Repository folder that will contain all the artifacts and manifest files.
-        fs.mkdir("./JSTWepo", function(err){
-            if(err){
-                console.log(err);
-            } else{
-                console.log("New repository folder successfully created.");
-            }
-        });
+        if (!fs.existsSync(path.join(userInput[1], '.JSTWepo'))) {
+            fs.mkdirSync(path.join(userInput[1], '.JSTWepo'));
+            fs.mkdirSync(path.join(userInput[1], '.JSTWepo', '.man'));
+        }
 
         console.log(fArray);
 
