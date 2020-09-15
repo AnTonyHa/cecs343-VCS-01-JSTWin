@@ -10,12 +10,12 @@ const router = require('./controller/routes');
 const app = express();
 // idk why this works in here and NOT in 'routes.js' where it SHOULD be (???)
 app.use(bodyParser.urlencoded({ extended: false }));
-// required to serve static files to users (for example, .CSS files)
+// required to serve static files to web client (for example, .CSS files)
 app.use(express.static(path.join(__dirname, 'view')));
 
 // USE 'router' TO DIRECT CLIENT REQUESTS TO PRE-DEFINED PAGES
 // NOTE: 'router' is valid middleware, no need to pass further arguments
-app.use(router);
+app.use(router.routes);
 
 // SET 'app' TO LISTEN ON PORT 3000 FOR REQUESTS
 app.listen(3000);
