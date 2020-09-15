@@ -55,4 +55,16 @@ router.get('/', (req, resp) => {
     resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
 })
 
+router.get('/landingPage', (req, res) => {
+    res.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'))
+})
+
+router.get('/authorsPage', (req, res) => {
+    res.sendFile(path.join(handlers.rootDir, 'view', 'authorsPage.html'))
+})
+
+router.get('/helpPage', (req, res) => {
+    res.sendFile(path.join(handlers.rootDir, 'view', 'helpPage.html'))
+})
+
 module.exports = router;

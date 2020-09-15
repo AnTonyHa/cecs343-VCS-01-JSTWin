@@ -1,27 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!---<link href="sTyLeZ.css" rel="stylesheet" type="text/css">--->
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        .main-header {
+            display: flex;
+            margin: auto;
+            padding: 0;
+            width: 100%;
+            height: 5rem;
+            background-color: rgb(90, 1, 192);
+
+            color: rgb(255, 255, 255);
+            justify-content: center;
+        }
+
+        .sub-header {
+            display: flex;
+            margin: auto;
+            padding: 0;
+            width: 100%;
+            height: 3rem;
+            background-color: rgb(90, 1, 192);
+
+            color: rgb(255, 255, 255);
+            justify-content: space-evenly;
+        }
+
+        .div-form {
+            display: block;
+            text-align: center;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            font-size: smaller;
+        }
+
+        a:hover,
+        a:active,
+        a.active {
+            color: #ffeb3b;
+        }
+
+        .table {
+            display: table;
+            margin: auto;
+        }
+
+        .contact-list {
+            list-style: none;
+        }
+
+        li {
+            display: inline;
+            margin: 2.5rem;
+            font-size: larger;
+            color: rgb(0, 139, 139);
+        }
+
+    </style>
     <meta charset="UTF-8">
     <title>VCS ver 0.1</title>
-    <link rel="stylesheet" href="sTyLeZ.css">
 </head>
 <html>
-    <header class = "main-header">
-        <h1>Welcome to VCS (v0.1)</h1>
-    </header>
-    <header class = "sub-header">
-        <div><a href="../view/authorsPage.html">Authors</a></div>
-        <div><a href="../view/landingPage.html">Main</a></div>
-        <div><a href="../view/helpPage.html">Help</a></div>
-    </header>
-    <br>
-    <body>
-        <div class = "div-form">
-            <form action= "/executeCMD" method="POST">
-                <!-- NOTE: 'name' WITHIN INPUT TAG DESIGNATES A KEY, WITH THE VALUE BEING USER INPUT -->
-                <input size = 75 type = "text" id="input_text_field1" name="input_field_cmd" />
-                <input type = "submit" value = "EXECUTE" />
-            </form>
-        </div>
-    </body>
+<header class="main-header">
+    <h1>Welcome to VCS (v0.1)</h1>
+</header>
+<header class="sub-header">
+    <form action="/authorsPage" method="GET"><input type="submit" value="Authors" /></form>
+    <form action="/landingPage" method="GET"><input type="submit" value="Main" /></form>
+    <form action="/helpPage" method="GET"><input type="submit" value="Help" /></form>
+</header><br>
+
+<body>
+    <canvas id="gamescreen">Your browser does not support HTML5</canvas>
+    <script src="controller/console.js"></script>
+
+    <div class="div-form">
+        <form action="/executeCMD" method="POST">
+            <!-- NOTE: 'name' WITHIN INPUT TAG DESIGNATES A KEY, WITH THE VALUE -->
+            <!-- BEING USER INPUT --><input size=75 type="text" id="input_text_field1" name="input_field_cmd" /><input type="submit" value="EXECUTE" />
+        </form>
+    </div>
+</body>
+
 </html>
