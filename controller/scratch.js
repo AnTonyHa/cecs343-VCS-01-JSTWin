@@ -26,20 +26,25 @@ const pathIsolator = (relPath) => {
     return pathName.join('/') + '/';
 }
 
-// POPULATES TWO ARRAYS: 1) VALID FILES TO ARCHIVE, 2) IGNORED FILES
-const fileKeeper = (srcDir, fileArray, ignore) => {
-  let contents = fs.readdirSync(srcDir);
+// POPULATES 'fileArray' WITH VALID, ARCHIVABLE FILES
+const fileKeeper = (srcDir, fileArray) => {
+    // NODE SERVER READS THROUGH ALL OBJECTS OF SOURCE FOLDER INTO 'contents' ARRAY
+    let contents = fs.readdirSync(srcDir);
 
-  contents.forEach((object) => {
-    let newPath = path.join(srcDir, object);
+    // FOR EACH OBJECT IN SOURCE FOLDER:
+    // DECIDE IF OBJECT IS FILE OR FOLDER
+    //   (1) IF FOLDER, RECURSIVELY CALL 'fileKeeper' TO GO ONE LEVEL DEEPER
+    //   (2) IF FILE, PUSH OBJECT INTO 'fileArray' (ABSOLUTE PATH)
+    contents.forEach((object) => {
+        // NODEJS DOES NOT SAVE PATH TO 'contents' ARRAY, SO WE NEED TO 
+        // APPEND THE PATH MANUALLY EACH TIME
+        let newPath = path.join(srcDir, object);
 
-    if (fs.statSync(newPath).isFile() && object.toString().charAt(0) != '.')
-      fileArray.push(newPath);
-    else if (fs.statSync(newPath).isDirectory())
-      fileKeeper(newPath, fileArray, ignore)
-    else
-      ignore.push(newPath);
-  });
+        if (fs.statSync(newPath).isFile() && object.toString().charAt(0) != '.')
+            fileArray.push(newPath);
+        else if (fs.statSync(newPath).isDirectory())
+            fileKeeper(newPath, fileArray)
+    });
 }
 
 // GENERATES CHECKSUM FROM A GIVEN STRING PER PROJECT REQUIREMENT
@@ -82,19 +87,21 @@ const getArtifactID = (srcDir, srcFile) => {
     return `P${a}-L${b}-C${c}${extension}`;
 }
 
-const makeManifestFile = (userCMD, fileArray) => {
+const makeManifestFile = (fileArray) => {
+    let userCMD = global.userInput;
+    // FORMAT FOR MANIFEST FILES: .manifest-{iteration}.rc
     var iteration = 1;
-    let srcDir = fs.readdirSync(userCMD[1]);
+    // NODE SERVER SEARCHES FOR '.git/.man' DIRECTORY AND COLLECTS ALL FILES INTO 'manDir' ARRAY
+    let manDir = fs.readdirSync(path.join(userCMD[1], '.JSTWepo', '.man'));
 
     let timestamp = new Date();
-    let manifestHeader = `"${userCMD}"\nEXECUTED : ${timestamp.toDateString()} @ ${timestamp.toTimeString()}\n\n`;
+    let manifestHeader = `"${userCMD}"\n${timestamp.toDateString()} @ ${timestamp.toTimeString()}\n\n`;
 
-    srcDir.forEach((file) => {
-        if (file.toString().includes('.manifest') && path.extname(file) == '.rc')
-            iteration++;
-    })
+    // SINCE 'manDir' WILL _ONLY_ CONSIST OF MANIFEST FILES, INCREMENT 'iteration' BY
+    // COUNT OF MANIFEST FILES
+    iteration += manDir.length;
 
-    let manifestFile = `${userCMD[1]}\\.manifest-${iteration}.rc`;
+    let manifestFile = `${userCMD[1]}\\.JSTWepo\\.man\\.manifest-${iteration}.rc`;
     fs.writeFileSync(manifestFile, manifestHeader);
 
     fileArray.forEach((file) => {
