@@ -1,5 +1,6 @@
 // BUILT IN MODULES OFFERED BY NODEJS
 const express = require('express');
+const { fstat } = require('fs');
 const router = express.Router();
 const path = require('path');
 
@@ -33,6 +34,8 @@ router.post('/executeCMD', (req, resp) => {
         // SPLIT USER INPUT INTO: {command}-{source path}-{target repo}
         let userInput = req.body.input_field_cmd.split(' ');
 
+        console.log('userInput = ' + userInput[1]);
+
         // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
         // arg 2: 'fArray' will be populated with valid files
         // arg 3: 'iArray' will be populated with ignored files (optional???)
@@ -46,8 +49,17 @@ router.post('/executeCMD', (req, resp) => {
         // TO DO: make changes dynamic to 'landingPage.html' instead of new HTML page
         resp.send('<html><h4>Successfully parsed! => [' + fArray + '] <= </h4></html>');
     }
-    else // IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
+    else if (req.body.input_field_cmd.includes('log')) {
+        if (handlers.foundManDirectory()) {
+            console.log('Found .man directory');
+        }
+        else {
+            console.log('This folder has no repository');
+        }
+    }
+    else {// IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
         resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
+    }
 })
 
 // BASIC HANDLER FOR DEFAULT PAGE

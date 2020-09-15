@@ -111,6 +111,10 @@ const consoleEcho = (userCMD) => {
 
 const rootDir = path.dirname(process.mainModule.filename);
 
+const foundManDirectory = () => {
+    return false;
+}
+
 // BUNDLE ALL MISC FUNCTIONS INTO ARRAY AND EXPORT
 module.exports = {
     fileKeeper,
@@ -118,5 +122,6 @@ module.exports = {
     consoleEcho,
     rootDir,
     getArtifactID,
-    makeManifestFile
+    makeManifestFile,
+    foundManDirectory
 };
