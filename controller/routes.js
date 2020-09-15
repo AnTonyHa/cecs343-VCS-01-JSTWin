@@ -6,8 +6,8 @@ const fs = require('fs');
 
 // IMPORT EXTRA FUNCTIONS FROM 'scratch.js' (LIKE C-HEADER FILES)
 const handlers = require('./scratch');
-// EXPORT USER INPUT FROM WEB-BROWSER/'CLI' AS GLOBAL VARIABLE
-const userInput = [];
+// STORE USER INPUT FROM WEB-BROWSER/'CLI' AS GLOBAL VARIABLE
+global.userInput;
 
 // TESTING DIFFERENCE BETWEEN '.use()' AND '.get()'
 // '.use' IS MORE GENERIC, WILL WORK FOR ALL HTTP METHODS
@@ -33,9 +33,7 @@ router.post('/executeCMD', (req, resp) => {
         let fArray = [];
 
         // SPLIT USER INPUT INTO: {command}-{source path}
-        req.body.input_field_cmd.split(' ').forEach( (part) => {
-            userInput.push(part);
-        });
+        userInput = req.body.input_field_cmd.split(' ');
 
         // IF '.git' FOLDER DOESN'T EXIST, '.man' ALSO SHOULD NOT EXIST, THEREFORE
         // CREATE BOTH
@@ -66,5 +64,4 @@ router.get('/', (req, resp) => {
     resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
 })
 
-exports.routes = router;
-exports.userCMD = userInput;
+module.exports = router;

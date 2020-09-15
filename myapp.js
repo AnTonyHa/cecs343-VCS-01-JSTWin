@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'view')));
 
 // USE 'router' TO DIRECT CLIENT REQUESTS TO PRE-DEFINED PAGES
 // NOTE: 'router' is valid middleware, no need to pass further arguments
-app.use(router.routes);
+app.use(router);
 
 // SET 'app' TO LISTEN ON PORT 3000 FOR REQUESTS
 app.listen(3000);

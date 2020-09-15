@@ -1,9 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 
-// NEED THIS IMPORT FOR THE STRING COMMAND SENT BY USER
-const router = require('./routes');
-
 // GENERATES RELATIVE PATH TO A GIVEN FILE USING ITS ABSOLUTE PATH
 // arg 1: absolute path to root folder of source
 // arg 2: absolute path to file of interest
@@ -91,13 +88,14 @@ const getArtifactID = (srcDir, srcFile) => {
 }
 
 const makeManifestFile = (fileArray) => {
+    let userCMD = global.userInput;
     // FORMAT FOR MANIFEST FILES: .manifest-{iteration}.rc
     var iteration = 1;
     // NODE SERVER SEARCHES FOR '.git/.man' DIRECTORY AND COLLECTS ALL FILES INTO 'manDir' ARRAY
-    let manDir = fs.readdirSync(path.join(router.userCMD[1], '.git', '.man'));
+    let manDir = fs.readdirSync(path.join(userCMD[1], '.git', '.man'));
 
     let timestamp = new Date();
-    let manifestHeader = `"${router.userCMD}"\n${timestamp.toDateString()} @ ${timestamp.toTimeString()}\n\n`;
+    let manifestHeader = `"${userCMD}"\n${timestamp.toDateString()} @ ${timestamp.toTimeString()}\n\n`;
 
     // FOR EACH FILE OBJECT IN 'manDir' ARRAY THAT IS ACTUALLY A MANIFEST FILE, INCREMENT 'iteration'
     manDir.forEach((file) => {
@@ -105,12 +103,12 @@ const makeManifestFile = (fileArray) => {
             iteration++;
     })
 
-    let manifestFile = `${router.userCMD[1]}\\.git\\.man\\.manifest-${iteration}.rc`;
+    let manifestFile = `${userCMD[1]}\\.git\\.man\\.manifest-${iteration}.rc`;
     fs.writeFileSync(manifestFile, manifestHeader);
 
     fileArray.forEach((file) => {
-        let relPath = absolute2Relative(router.userCMD[1], file);
-        let artID = getArtifactID(router.userCMD[1], file);
+        let relPath = absolute2Relative(userCMD[1], file);
+        let artID = getArtifactID(userCMD[1], file);
 
         fs.appendFileSync(manifestFile, `${artID} @ ${relPath}\n`);
     });
