@@ -113,8 +113,9 @@ const rootDir = path.dirname(process.mainModule.filename);
 
 const log = () => {
     try {
-        if (fs.existsSync(rootDir + '/.JSTWepo')) {
-            console.log("JSTWepo detected!");
+        if (fs.existsSync(rootDir)) {
+            const repoPath = fs.readFileSync(path.join(rootDir, '/.manifest-1.rc'));
+            console.log(repoPath.toString());
         } else {
             console.log('Error! No JSTWepo, use create-repo command.');
         }
