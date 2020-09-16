@@ -111,11 +111,12 @@ const consoleEcho = (userCMD) => {
 
 const rootDir = path.dirname(process.mainModule.filename);
 
-const log = () => {
+const log = (absPath) => {
     try {
-        if (fs.existsSync(rootDir)) {
-            const repoPath = fs.readFileSync(path.join(rootDir, '/.manifest-1.rc'));
-            console.log(repoPath.toString());
+        if (fs.existsSync(absPath + '/.JSTWepo')) {
+            // The repoPath is currently hard-coded to output manifest 1 into the console
+            const repoPath = fs.readFileSync(path.join(absPath, '/.JSTWepo/.man-1.rc'));
+            console.log(repoPath);
         } else {
             console.log('Error! No JSTWepo, use create-repo command.');
         }

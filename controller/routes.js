@@ -51,7 +51,8 @@ router.post('/executeCMD', (req, resp) => {
         resp.send('<html><h4>Successfully parsed! => [' + fArray + '] <= </h4></html>');
     }
     else if (req.body.input_field_cmd.includes('log')) {
-        handlers.log(); 
+        let userInput = req.body.input_field_cmd.split(' ');
+        handlers.log(userInput[1]); 
         resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
     }
     else {// IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
