@@ -42,7 +42,7 @@ const fileKeeper = (srcDir, fileArray) => {
 
         if (fs.statSync(newPath).isFile() && object.toString().charAt(0) != '.')
             fileArray.push(newPath);
-        else if (fs.statSync(newPath).isDirectory())
+        else if (fs.statSync(newPath).isDirectory() && object.charAt(0) != '.')
             fileKeeper(newPath, fileArray)
     });
 }
