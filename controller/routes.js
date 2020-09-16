@@ -1,6 +1,7 @@
 // BUILT IN MODULES OFFERED BY NODEJS
 const express = require('express');
-const { fstat } = require('fs');
+// const { fstat } = require('fs');
+const fs = require('fs');
 const router = express.Router();
 const path = require('path');
 
@@ -50,11 +51,12 @@ router.post('/executeCMD', (req, resp) => {
         resp.send('<html><h4>Successfully parsed! => [' + fArray + '] <= </h4></html>');
     }
     else if (req.body.input_field_cmd.includes('log')) {
-        if (handlers.foundManDirectory()) {
-            console.log('Found .man directory');
-        }
-        else {
-            console.log('This folder has no repository');
+        try {
+            if (fs.existsSync(handlers.rootDir + '/.JSTWepo')) {
+                console.log('Found JSTWepo');
+            }
+        } catch (err) {
+            console.error(err);
         }
     }
     else {// IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
