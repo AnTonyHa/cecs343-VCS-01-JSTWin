@@ -4,9 +4,12 @@ const express = require('express');
 const fs = require('fs');
 const router = express.Router();
 const path = require('path');
+const fs = require('fs');
 
 // IMPORT EXTRA FUNCTIONS FROM 'scratch.js' (LIKE C-HEADER FILES)
 const handlers = require('./scratch');
+// STORE USER INPUT FROM WEB-BROWSER/'CLI' AS GLOBAL VARIABLE
+global.userInput;
 
 // TESTING DIFFERENCE BETWEEN '.use()' AND '.get()'
 // '.use' IS MORE GENERIC, WILL WORK FOR ALL HTTP METHODS
@@ -29,22 +32,30 @@ router.use((req, resp, next) => {
 router.post('/executeCMD', (req, resp) => {
     // 'body-parser' SEARCHES THROUGH PAGE FOR CORRESPONDING ELEMENT NAME
     if (req.body.input_field_cmd.includes('create-repo')) {
-        let iArray = [];
         let fArray = [];
 
-        // SPLIT USER INPUT INTO: {command}-{source path}-{target repo}
-        let userInput = req.body.input_field_cmd.split(' ');
+        // SPLIT USER INPUT INTO: {command}-{source path}
+        userInput = req.body.input_field_cmd.split(' ');
+
+        // IF '.JSTWepo' FOLDER DOESN'T EXIST, '.man' ALSO SHOULD NOT EXIST, THEREFORE
+        // CREATE BOTH
+        if (!fs.existsSync(path.join(userInput[1], '.JSTWepo')))
+        {
+            fs.mkdirSync(path.join(userInput[1], '.JSTWepo'));
+            fs.mkdirSync(path.join(userInput[1], '.JSTWepo', '.man'));
+        }
 
         console.log('userInput = ' + userInput[1]);
 
         // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
+        // arg 1: String representing absolute path to source folder
         // arg 2: 'fArray' will be populated with valid files
-        // arg 3: 'iArray' will be populated with ignored files (optional???)
-        handlers.fileKeeper(userInput[1], fArray, iArray);
+        handlers.fileKeeper(userInput[1], fArray);
+
+        handlers.commitFiles(fArray);
 
         // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
-        // arg 1: 'userInput' array necessary for helper functions internal to 'makeManifestFile()'
-        handlers.makeManifestFile(userInput, fArray);
+        handlers.makeManifestFile(fArray);
 
         // RESPOND WITH DYNAMICALLY CREATED .HTML PAGE
         // TO DO: make changes dynamic to 'landingPage.html' instead of new HTML page
@@ -63,6 +74,18 @@ router.post('/executeCMD', (req, resp) => {
 // BASIC HANDLER FOR DEFAULT PAGE
 router.get('/', (req, resp) => {
     resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
+})
+
+router.get('/landingPage', (req, res) => {
+    res.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'))
+})
+
+router.get('/authorsPage', (req, res) => {
+    res.sendFile(path.join(handlers.rootDir, 'view', 'authorsPage.html'))
+})
+
+router.get('/helpPage', (req, res) => {
+    res.sendFile(path.join(handlers.rootDir, 'view', 'helpPage.html'))
 })
 
 module.exports = router;
