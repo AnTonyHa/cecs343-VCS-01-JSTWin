@@ -51,13 +51,8 @@ router.post('/executeCMD', (req, resp) => {
         resp.send('<html><h4>Successfully parsed! => [' + fArray + '] <= </h4></html>');
     }
     else if (req.body.input_field_cmd.includes('log')) {
-        try {
-            if (fs.existsSync(handlers.rootDir + '/.JSTWepo')) {
-                console.log('Found JSTWepo');
-            }
-        } catch (err) {
-            console.error(err);
-        }
+        handlers.log(); 
+        resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
     }
     else {// IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
         resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));

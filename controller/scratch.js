@@ -111,6 +111,18 @@ const consoleEcho = (userCMD) => {
 
 const rootDir = path.dirname(process.mainModule.filename);
 
+const log = () => {
+    try {
+        if (fs.existsSync(rootDir + '/.JSTWepo')) {
+            console.log("JSTWepo detected!");
+        } else {
+            console.log('Error! No JSTWepo, use create-repo command.');
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 // BUNDLE ALL MISC FUNCTIONS INTO ARRAY AND EXPORT
 module.exports = {
     fileKeeper,
@@ -119,4 +131,5 @@ module.exports = {
     rootDir,
     getArtifactID,
     makeManifestFile,
+    log
 };
