@@ -1,5 +1,7 @@
 // BUILT IN MODULES OFFERED BY NODEJS
 const express = require('express');
+// const { fstat } = require('fs');
+const fs = require('fs');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
@@ -43,6 +45,8 @@ router.post('/executeCMD', (req, resp) => {
             fs.mkdirSync(path.join(userInput[1], '.JSTWepo', '.man'));
         }
 
+        console.log('userInput = ' + userInput[1]);
+
         // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
         // arg 1: String representing absolute path to source folder
         // arg 2: 'fArray' will be populated with valid files
@@ -57,8 +61,14 @@ router.post('/executeCMD', (req, resp) => {
         // TO DO: make changes dynamic to 'landingPage.html' instead of new HTML page
         resp.send('<html><h4>Successfully parsed! => [' + fArray + '] <= </h4></html>');
     }
-    else // IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
+    else if (req.body.input_field_cmd.includes('log')) {
+        let userInput = req.body.input_field_cmd.split(' ');
+        handlers.log(userInput[1]); 
         resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
+    }
+    else {// IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
+        resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
+    }
 })
 
 // BASIC HANDLER FOR DEFAULT PAGE

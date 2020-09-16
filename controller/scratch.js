@@ -131,6 +131,20 @@ const consoleEcho = (userCMD) => {
 
 const rootDir = path.dirname(process.mainModule.filename);
 
+const log = (absPath) => {
+    try {
+        if (fs.existsSync(absPath + '/.JSTWepo')) {
+            // The repoPath is currently hard-coded to output manifest 1 into the console
+            const repoPath = fs.readFileSync(path.join(absPath, '/.JSTWepo/.man-1.rc'));
+            console.log(repoPath);
+        } else {
+            console.log('Error! No JSTWepo, use create-repo command.');
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 // BUNDLE ALL MISC FUNCTIONS INTO ARRAY AND EXPORT
 module.exports = {
     fileKeeper,
@@ -139,5 +153,7 @@ module.exports = {
     rootDir,
     getArtifactID,
     commitFiles,
-    makeManifestFile
+    makeManifestFile,
+    log,
+    commitFiles
 };
