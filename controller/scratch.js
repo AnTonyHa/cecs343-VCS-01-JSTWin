@@ -134,9 +134,17 @@ const rootDir = path.dirname(process.mainModule.filename);
 const log = (absPath) => {
     try {
         if (fs.existsSync(absPath + '/.JSTWepo')) {
-            // The repoPath is currently hard-coded to output manifest 1 into the console
-            const repoPath = fs.readFileSync(path.join(absPath, '/.JSTWepo/.man-1.rc'));
-            console.log(repoPath);
+            let manArray = [];
+            let manFileNum = 1;
+            let repoPath = path.join(absPath, '/.JSTWepo/.man/.man-', manFileNum, '.rc');
+            while (fs.existsSync(repoPath)) {
+                manArray.push(repoPath);
+                manFileNum++;
+                repoPath = path.join(absPath, '/.JSTWepo/.man/.man-', manFileNum, '.rc');
+            }         
+            while (manArray != undefined) {
+                console.log(fs.readFileSync(manArray.pop()));
+            }
         } else {
             console.log('Error! No JSTWepo, use create-repo command.');
         }
