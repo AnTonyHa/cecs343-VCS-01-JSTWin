@@ -133,19 +133,22 @@ const rootDir = path.dirname(process.mainModule.filename);
 
 const log = (absPath) => {
     try {
-        console.log('Type of Absoulute path: ' + typeof(absPath));
-        console.log('PATH: ' + path.join(absPath, '/.JSTWepo'));
-        if (fs.existsSync(path.join(absPath, '/.JSTWepo'))) {
+        let repoPath = path.join(absPath, '.JSTWepo');
+        // Fail-safe: Check if .JSTWepo existed
+        if (fs.existsSync(repoPath)) {
             let manArray = [];
             let manFileNum = 1;
-            let repoPath = path.join(absPath, '/.JSTWepo/.man/.man-', manFileNum, '.rc');
-            while (fs.existsSync(repoPath)) {
-                manArray.push(repoPath);
+            let manFile = '.man-' + manFileNum + '.rc';
+            let manPath = path.join(repoPath, '.man', manFile);
+            while (fs.existsSync(manPath)) {
+                manArray.push(manPath);
                 manFileNum++;
-                repoPath = path.join(absPath, '/.JSTWepo/.man/.man-', manFileNum, '.rc');
+                manFile = '.man-' + manFileNum + '.rc';
+                manPath = path.join(repoPath, '.man', manFile);
             }         
-            while (manArray != undefined) {
-                console.log(fs.readFileSync(manArray.pop()));
+            // Output Manifest contents from most current to oldest
+            while (manArray.length != 0) {
+                console.log(fs.readFileSync(manArray.pop(), 'utf-8'));
             }
         } else {
             console.log('Error! No JSTWepo, use create-repo command.');
