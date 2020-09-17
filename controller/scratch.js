@@ -5,7 +5,7 @@ const fs = require('fs');
 // arg 1: absolute path to root folder of source
 // arg 2: absolute path to file of interest
 const absolute2Relative = (srcPath, fileName) => {
-    let pathArray = srcPath.split('\\');
+    let pathArray = srcPath.split(path.sep);
     let rootWord = pathArray[pathArray.length - 1];
 
     // EDGE CASE: IF ANY SUBFOLDERS SHARE THE SAME NAME AS ROOT-FOLDER.
