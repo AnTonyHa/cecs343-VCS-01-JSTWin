@@ -114,8 +114,7 @@ const makeManifestFile = (fileArray) => {
     // COUNT OF MANIFEST FILES
     iteration += manDir.length;
 
-    let manifestFile = `${userCMD[1]}\\.JSTWepo\\.man\\.manifest-${iteration}.rc`;
-    fs.writeFileSync(manifestFile, manifestHeader);
+    let manifestFile = path.join(userCMD[1], '.JSTWepo', '.man', `.man-${iteration}.rc`);
 
     fileArray.forEach((file) => {
         let relPath = absolute2Relative(userCMD[1], file);
