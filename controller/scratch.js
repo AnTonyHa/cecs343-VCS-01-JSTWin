@@ -133,7 +133,9 @@ const rootDir = path.dirname(process.mainModule.filename);
 
 const log = (absPath) => {
     try {
-        if (fs.existsSync(absPath + '/.JSTWepo')) {
+        console.log('Type of Absoulute path: ' + typeof(absPath));
+        console.log('PATH: ' + path.join(absPath, '/.JSTWepo'));
+        if (fs.existsSync(path.join(absPath, '/.JSTWepo'))) {
             let manArray = [];
             let manFileNum = 1;
             let repoPath = path.join(absPath, '/.JSTWepo/.man/.man-', manFileNum, '.rc');
