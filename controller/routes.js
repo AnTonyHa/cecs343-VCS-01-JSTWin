@@ -44,8 +44,6 @@ router.post('/executeCMD', (req, resp) => {
             fs.mkdirSync(path.join(userInput[1], '.JSTWepo', '.man'));
         }
 
-        console.log('userInput = ' + userInput[1]);
-
         // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
         // arg 1: String representing absolute path to source folder
         // arg 2: 'fArray' will be populated with valid files
