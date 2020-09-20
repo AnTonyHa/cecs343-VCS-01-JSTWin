@@ -40,6 +40,8 @@ log <repositoryPath>
 	- The log command is used to visualize the previous commits (including the create command) and the
 	  date/time when they were committed (in preparation for project roll-back capabilities).
 		- Output is displayed in browser
+	- repositoryPath
+		- An absolute path to the location of the newly created repository
 
 ### Caveats ###
 - JSTWepo is in its beta-release, it is not yet a finished product and as result it has minimal function
