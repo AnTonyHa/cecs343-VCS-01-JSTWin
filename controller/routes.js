@@ -30,7 +30,7 @@ router.use((req, resp, next) => {
 // HANDLER FOR 'execute' BUTTON ON LANDING PAGE
 router.post('/executeCMD', (req, resp) => {
     // 'body-parser' SEARCHES THROUGH PAGE FOR CORRESPONDING ELEMENT NAME
-    if (req.body.input_field_cmd.includes('create-repo')) {
+    if (req.body.input_field_cmd.includes('create')) {
         let fArray = [];
 
         // SPLIT USER INPUT INTO: {command}-{source path}
@@ -60,7 +60,7 @@ router.post('/executeCMD', (req, resp) => {
     }
     else if (req.body.input_field_cmd.includes('log')) {
         let userInput = req.body.input_field_cmd.split(' ');
-        handlers.log(userInput[1]); 
+        handlers.log(userInput[1]);
         resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
     }
     else {// IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
