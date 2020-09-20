@@ -25,7 +25,8 @@ CECS 343, Siska Fall 2020
 
 ### Commands ###
 
-create <projectPath> <repositoryPath>
+create 
+Signature: create <projectPath> <repositoryPath>
 	- The create command is used to initialize a repository with the current contents of the project
 		- '.' files are ignored in repository creation, e.g. ".foo.txt", ".bar.html"
 	- The repository will be initialized at the file path, "repositoryPath" under the repo folder ".JSTWepo"
@@ -36,7 +37,8 @@ create <projectPath> <repositoryPath>
 	- repositoryPath
 		- An absolute path to the location of the newly created repository
 
-log <repositoryPath>
+log 
+Signature: log<repositoryPath>
 	- The log command is used to visualize the previous commits (including the create command) and the
 	  date/time when they were committed (in preparation for project roll-back capabilities).
 		- Output is displayed in browser
