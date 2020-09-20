@@ -37,3 +37,8 @@ that parsing the directory works correctly.
 ## WORK-IN-PROGRESS:
 
 - Functionality to recreate project tree into destination folder.
+
+## Bugs Found:
+
+- Incorrect ArtID of "fred.txt". Generated ArtID: P4086-L11-<b>C2758</b>.txt, Expected ArtID: P4086-L11-<b>C3201</b>.txt
+  - Note: The program was tested on MacOS this could be the problem since Windows' file path is different

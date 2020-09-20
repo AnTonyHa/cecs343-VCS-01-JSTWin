@@ -1,8 +1,9 @@
 // BUILT IN MODULES OFFERED BY NODEJS
 const express = require('express');
+// const { fstat } = require('fs');
+const fs = require('fs');
 const router = express.Router();
 const path = require('path');
-const fs = require('fs');
 
 // IMPORT EXTRA FUNCTIONS FROM 'scratch.js' (LIKE C-HEADER FILES)
 const handlers = require('./scratch');
@@ -29,7 +30,7 @@ router.use((req, resp, next) => {
 // HANDLER FOR 'execute' BUTTON ON LANDING PAGE
 router.post('/executeCMD', (req, resp) => {
     // 'body-parser' SEARCHES THROUGH PAGE FOR CORRESPONDING ELEMENT NAME
-    if (req.body.input_field_cmd.includes('create-repo')) {
+    if (req.body.input_field_cmd.includes('create')) {
         let fArray = [];
 
         // SPLIT USER INPUT INTO: {command}-{source path}
@@ -57,13 +58,31 @@ router.post('/executeCMD', (req, resp) => {
         // TO DO: make changes dynamic to 'landingPage.html' instead of new HTML page
         resp.send('<html><h4>Successfully parsed! => [' + fArray + '] <= </h4></html>');
     }
-    else // IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
+    else if (req.body.input_field_cmd.includes('log')) {
+        let userInput = req.body.input_field_cmd.split(' ');
+        handlers.log(userInput[1]);
         resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
+    }
+    else {// IF USER INPUTS INVALID COMMAND, RELOAD 'landingPage.html'
+        resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
+    }
 })
 
 // BASIC HANDLER FOR DEFAULT PAGE
 router.get('/', (req, resp) => {
     resp.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'));
+})
+
+router.get('/landingPage', (req, res) => {
+    res.sendFile(path.join(handlers.rootDir, 'view', 'landingPage.html'))
+})
+
+router.get('/authorsPage', (req, res) => {
+    res.sendFile(path.join(handlers.rootDir, 'view', 'authorsPage.html'))
+})
+
+router.get('/helpPage', (req, res) => {
+    res.sendFile(path.join(handlers.rootDir, 'view', 'helpPage.html'))
 })
 
 module.exports = router;
