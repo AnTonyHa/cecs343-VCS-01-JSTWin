@@ -27,9 +27,9 @@ const pathIsolator = (relPath) => {
 }
 
 // POPULATES 'fileArray' WITH VALID, ARCHIVABLE FILES
-const fileKeeper = (srcDir, fileArray) => {
+const fileKeeper = (parentDir, fileArray) => {
     // NODE SERVER READS THROUGH ALL OBJECTS OF SOURCE FOLDER INTO 'contents' ARRAY
-    let contents = fs.readdirSync(srcDir);
+    let contents = fs.readdirSync(parentDir);
 
     // FOR EACH OBJECT IN SOURCE FOLDER:
     // DECIDE IF OBJECT IS FILE OR FOLDER
@@ -38,7 +38,7 @@ const fileKeeper = (srcDir, fileArray) => {
     contents.forEach((object) => {
         // NODEJS DOES NOT SAVE PATH TO 'contents' ARRAY, SO WE NEED TO 
         // APPEND THE PATH MANUALLY EACH TIME
-        let newPath = path.join(srcDir, object);
+        let newPath = path.join(parentDir, object);
 
         if (fs.statSync(newPath).isFile() && object.toString().charAt(0) != '.')
             fileArray.push(newPath);
@@ -88,13 +88,13 @@ const getArtifactID = (srcDir, srcFile) => {
 }
 
 const commitFiles = (fileArray) => {
-    // GET USER INPUT FROM BROWSER/'CLI'
-    let userCMD = global.userInput;
+    // GET PATH TO SOURCE ROOT FROM BROWSER/'CLI USER INPUT'
+    let srcDir = global.userInput[1];
     // directory of the new file
     let newDir = '.JSTWepo';
 
     fileArray.forEach((pathToFile) => {
-        const pathToNewDestination = path.join(userCMD[1], newDir, getArtifactID(userCMD[1], pathToFile));
+        const pathToNewDestination = path.join(srcDir, newDir, getArtifactID(srcDir, pathToFile));
 
         fs.copyFileSync(pathToFile, pathToNewDestination);
     });
@@ -114,7 +114,8 @@ const makeManifestFile = (fileArray) => {
     // COUNT OF MANIFEST FILES
     iteration += manDir.length;
 
-    let manifestFile = path.join(userCMD[1], '.JSTWepo', '.man', `.man-${iteration}.rc`);
+    let manifestFile = path.join (userCMD[1], '.JSTWepo', '.man', `.man-${iteration}.rc`);
+    fs.writeFileSync(manifestFile, manifestHeader);
 
     fileArray.forEach((file) => {
         let relPath = absolute2Relative(userCMD[1], file);
@@ -130,7 +131,10 @@ const consoleEcho = (userCMD) => {
 
 const rootDir = path.dirname(process.mainModule.filename);
 
-const log = (absPath) => {
+const log = () => {
+    let logResults = [];
+    let absPath = global.userInput[1];
+
     try {
         let repoPath = path.join(absPath, '.JSTWepo');
         // Fail-safe: Check if .JSTWepo existed
@@ -147,8 +151,12 @@ const log = (absPath) => {
             }         
             // Output Manifest contents from most current to oldest
             while (manArray.length != 0) {
-                console.log(fs.readFileSync(manArray.pop(), 'utf-8'));
+                let bigString = fs.readFileSync(manArray.pop(), 'utf-8');
+                console.log(bigString);
+                logResults.push(bigString);
             }
+
+            return logResults;
         } else {
             console.log('Error! No JSTWepo, use create-repo command.');
         }
