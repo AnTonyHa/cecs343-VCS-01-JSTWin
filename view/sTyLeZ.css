@@ -28,6 +28,17 @@ body {
     justify-content: space-evenly;
 }
 
+.proxy-console {
+    padding: 2rem;
+    border: 5px outset rgb(90, 1, 192);
+    background-color: rgb(50, 61, 65);
+    color: white;
+}
+
+.okFiles-list {
+    list-style: none;
+}
+
 .div-form {
     display: block;
     text-align: center;
@@ -54,7 +65,7 @@ a.active {
     list-style: none;
 }
 
-li {
+.cl-item {
     display: inline;
     margin: 2.5rem;
     font-size: larger;
