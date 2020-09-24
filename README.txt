@@ -20,7 +20,7 @@ CECS 343, Siska Fall 2020
 - You are now free to enter applicable commands and parameters into the text box to build your project repo
 
 ### Usage ###
-- JSTWepo handles commands in the following syntax => <commandName> <parameter> <parameter> ...
+- JSTWepo handles commands in the following syntax => commandName <parameter> <parameter> ...
 	- A command followed by a space-separated parameter list
 
 ### Commands ###
@@ -38,12 +38,12 @@ Signature: create <projectPath> <repositoryPath>
 		- An absolute path to the location of the newly created repository
 
 log 
-Signature: log<repositoryPath>
-	- The log command is used to visualize the previous commits (including the create command) and the
+Signature: log <repositoryPath>
+	- The log command is used to visualize previous commits (including the create command) and the
 	  date/time when they were committed (in preparation for project roll-back capabilities).
 		- Output is displayed in browser
 	- repositoryPath
-		- An absolute path to the location of the newly created repository
+		- An absolute path to the location of a repository
 
 ### Caveats ###
 - JSTWepo is in its beta-release, it is not yet a finished product and as result it has minimal function
@@ -56,6 +56,7 @@ Signature: log<repositoryPath>
 	  command log with no parameters
 - Currently does not allow backspace in the landingPage text field, to reset the text field, you must reload
   the landingPage
+- absolute2Relative doesn't handle the case where fileName is not contained within srcPath
 
 ### JSTWepo Project Contents ###
 cecs343-VCS-01-JSTWin\
@@ -71,17 +72,18 @@ cecs343-VCS-01-JSTWin\
 cecs343-VCS-01-JSTWin\controller
 	routes.js
 		# "Routing" of web pages and input handling
-	scratch.js
+	handler.js
 		# Implementation file for JSTWepo functions
+	scratch.js
+		# Utility functions for JSTWepo functions
 
 cecs343-VCS-01-JSTWin\view
 	authorsPage.html
 		# For displaying a webpage of JSTWepo author information
 	commandPage.html
-		# For displaying a webpage of JSTWepo command information
-	landingPage.html
-		# For displaying a webpage to access JSTWepo's I/O
+		# For displaying a webpage of JSTWepo command information	
 	responsePage.html
+		# For displaying a webpage to access JSTWepo's I/O
 	sTyLeZ.css
 		# CSS formatting for the above HTML documents
 
@@ -94,3 +96,7 @@ cecs343-VCS-01-JSTWin\view
 - Browser CLI will be implemented to allow for better I/O
 - Graphical user interface similar to GitHub to improve accessibility
 - Improving the current user interface to be more clean and modern
+
+### Bugs ###
+- Cannot handle specification of repo location (creates repo in project root by default)
+- Log function doesn't allow specification of which repo to log

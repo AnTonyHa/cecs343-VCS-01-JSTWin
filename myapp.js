@@ -8,11 +8,15 @@ const router = require('./controller/routes');
 
 // INSTANTIATE 'app'
 const app = express();
+
+// SETTING TEMPLATING ENGINE TO EJS
+app.set('view engine', 'ejs');
+app.set('views', 'view');
+
 // idk why this works in here and NOT in 'routes.js' where it SHOULD be (???)
 app.use(bodyParser.urlencoded({ extended: false }));
 // required to serve static files to web client (for example, .CSS files)
 app.use(express.static(path.join(__dirname, 'view')));
-app.use("/controller", express.static("./controller/"));
 
 // USE 'router' TO DIRECT CLIENT REQUESTS TO PRE-DEFINED PAGES
 // NOTE: 'router' is valid middleware, no need to pass further arguments

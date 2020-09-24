@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>VCS ver 0.1</title>
+    <link rel="stylesheet" href="sTyLeZ.css">
+</head>
+
+<html>
+
+    <header class="main-header">
+        <h1>Welcome to VCS (v0.1)</h1>
+    </header>
+    <header class="sub-header">
+        <div><a href="authorsPage.html">Authors</a></div>
+        <div><a href="/">Main</a></div>
+        <div><a href="commandPage.html">Help</a></div>
+    </header>
+    <br>
+
+    <body>
+        <div class="div-form">
+            <form action="/executeCMD" method="POST">
+                <!-- NOTE: 'name' WITHIN INPUT TAG DESIGNATES A KEY, WITH THE VALUE BEING USER INPUT -->
+                <input size=75 type="text" id="input_text_field1" name="input_field_cmd" />
+                <input type="submit" value="EXECUTE" />
+            </form>
+        </div>
+        <br>
+        <br>
+        <% if (dispType === 'blank') { %>
+            <br>
+        <% } else { %>
+            <div class="proxy-console">
+                <% if (dispType === 'syn-error') { %>
+                    <h4> INVALID: '<%= userCMD[0] %>' not recognized. </h4>
+                    <p> Please use following SYNTAX: {command}-{source path} </p>
+                    <% }
+                    else if (dispType === 'cr-console') { %>
+                        <h4> '<%= userCMD[0] %>' successfully EXECUTED! </h4>
+
+                        <p> Files committed to repo: </p>
+                        <ul class="okFiles-list">
+                            <% okFiles.forEach ( (file) => { %>
+                                <li> <%= file %> </li>
+                            <% }); %>
+                        </ul>
+                    <% }
+                    else if (dispType === 'lg-console') { %>
+                        <h4> LOG FILES FOR REPO </h4>
+
+                        <ul class="okFiles-list">
+                        <% log.forEach ( (manifest) => { %>
+                            <li> <%= manifest %> </li>
+                            <br>
+                        <% }) %>
+                        </ul>
+
+                    <% } %>
+            </div>
+        <%} %>
+    </body>
+
+</html>
