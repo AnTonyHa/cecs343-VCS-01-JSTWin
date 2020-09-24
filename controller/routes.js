@@ -5,6 +5,7 @@ const router = express.Router();
 // IMPORT EXTRA FUNCTIONS FROM 'scratch.js' (LIKE C-HEADER FILES)
 const repo = require('./scratch');
 const handlers = require('./handlers');
+
 // STORE USER INPUT FROM WEB-BROWSER/'CLI' AS GLOBAL VARIABLE
 global.userInput;
 
@@ -12,18 +13,6 @@ global.userInput;
 // '.use' IS MORE GENERIC, WILL WORK FOR ALL HTTP METHODS
 // '.get' FOR ONLY GET REQUESTS (SIMPLE URLs)
 // '.post' FOR ONLY POST REQUESTS (SAFER FOR FORMS)
-
-// GENERIC HANDLER, WILL _ALWAYS_ EXECUTE
-router.use((req, resp, next) => {
-
-    // DIFFERENT CONSOLE LOG BASED ON URL STRING OF 'req'
-    if (req.url === '/executeCMD')
-        repo.consoleEcho(req.body.input_field_cmd);
-    else
-        repo.consoleEcho('...DEFAULT STRING');
-
-    next(); // passes control to next function (if any)
-})
 
 // HANDLER FOR 'execute' BUTTON ON LANDING PAGE
 router.post('/executeCMD', (req, resp) => {
@@ -38,10 +27,16 @@ router.post('/executeCMD', (req, resp) => {
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
         case 'log':
-            let results = repo.log();
-            console.log(results);
+            let results = handlers.log();
+            //console.log(results);
             resp.render('responsePage', {dispType: 'lg-console', log: results})
             break;
+        //case 'add':
+            //break;
+        //case 'commit':
+            //break;
+        //case 'revert':
+            //break;
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
     }
