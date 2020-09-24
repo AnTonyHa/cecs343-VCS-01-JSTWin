@@ -38,7 +38,7 @@ router.post('/executeCMD', (req, resp) => {
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
         case 'log':
-            let results = repo.log();
+            let results = handlers.log();
             console.log(results);
             resp.render('responsePage', {dispType: 'lg-console', log: results})
             break;
