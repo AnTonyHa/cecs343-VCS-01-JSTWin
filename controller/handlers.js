@@ -49,10 +49,9 @@ const log = () => {
                 console.log(bigString);
                 logResults.push(bigString);
             }
-
             return logResults;
         } else {
-            console.log('Error! No JSTWepo, use create-repo command.');
+            console.log('Error! No JSTWepo, use create command.');
         }
     } catch (err) {
         console.error(err);
