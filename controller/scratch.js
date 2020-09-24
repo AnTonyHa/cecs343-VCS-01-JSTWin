@@ -88,6 +88,9 @@ const getArtifactID = (srcDir, srcFile) => {
 }
 
 const commitFiles = (fileArray) => {
+    // GET PATH TO SOURCE ROOT FROM BROWSER/'CLI USER INPUT'
+    let srcDir = global.userInput[1];
+    
     // directory of the new file
     let newDir = '.JSTWepo';
 
