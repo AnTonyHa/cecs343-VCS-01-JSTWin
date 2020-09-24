@@ -39,9 +39,8 @@ router.post('/executeCMD', (req, resp) => {
             break;
         case 'log':
             let results = handlers.log();
-            // this command should be removed once log is working properly
             console.log(results);
-            // resp.render('responsePage', {dispType: 'lg-console', log: results})
+            resp.render('responsePage', {dispType: 'lg-console', log: results})
             break;
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
