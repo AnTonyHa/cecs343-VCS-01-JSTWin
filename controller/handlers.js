@@ -49,13 +49,24 @@ const log = () => {
             }         
             // Output Manifest contents from most current to oldest
             while (manArray.length != 0) {
-                // bigString store contents inside manifest file
-                let bigString = fs.readFileSync(manArray.pop(), 'utf-8');
-                // This outputs to the terminal for bug fixing purpose
-                console.log(bigString);
-                logResults.push(bigString);
+                /* This part is left for the purpose of making a commit where log needs to access the file
+                 * to find the commit and output it */
+                // bigString store contents inside the manifest file into a single string
+                // let bigString = fs.readFileSync(manArray.pop(), 'utf-8');
+                //////////////////////////////////////////////////////////////////////////////////////////
+                let mPath = manArray.pop();
+                // TODO push file created date
+                let manDateTime = fs.statSync(mPath).birthtime.toDateString() + ", " + 
+                    fs.statSync(mPath).birthtime.toTimeString();
+                console.log(manDateTime);
+                logResults.push(manDateTime);
+                // push file name
+                logResults.push(path.basename(mPath, ".rc"));
+                // push a new line
+                logResults.push("\n");
             }
-            // What is contained inside logResult?
+            // logResults now contains all the info of manifests in a form of 
+            // [dataTime(N), man-N, \n, dateTime(N-1), man-N(-1), \n, ..., dataTime(1), man-1, \n]
             return logResults;
         } else {
             console.log('Error! No JSTWepo, use create-repo command.');
