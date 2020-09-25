@@ -58,12 +58,11 @@ const log = () => {
                 // TODO push file created date
                 let manDateTime = fs.statSync(mPath).birthtime.toDateString() + ", " + 
                     fs.statSync(mPath).birthtime.toTimeString();
-                console.log(manDateTime);
                 logResults.push(manDateTime);
                 // push file name
                 logResults.push(path.basename(mPath, ".rc"));
                 // push a new line
-                logResults.push("\n");
+                logResults.push("-------------------------------------------------------");
             }
             // logResults now contains all the info of manifests in a form of 
             // [dataTime(N), man-N, \n, dateTime(N-1), man-N(-1), \n, ..., dataTime(1), man-1, \n]
