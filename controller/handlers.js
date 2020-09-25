@@ -40,6 +40,7 @@ const log = () => {
             let manFileNum = 1;
             let manFile = '.man-' + manFileNum + '.rc';
             let manPath = path.join(repoPath, '.man', manFile);
+            // Push manifest path into manArray. Is it possible to store only the relative path?
             while (fs.existsSync(manPath)) {
                 manArray.push(manPath);
                 manFileNum++;
@@ -48,7 +49,9 @@ const log = () => {
             }         
             // Output Manifest contents from most current to oldest
             while (manArray.length != 0) {
+                // bigString store contents inside manifest file
                 let bigString = fs.readFileSync(manArray.pop(), 'utf-8');
+                // This outputs to the terminal for bug fixing purpose
                 console.log(bigString);
                 logResults.push(bigString);
             }
