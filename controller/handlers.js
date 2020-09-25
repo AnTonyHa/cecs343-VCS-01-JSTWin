@@ -25,10 +25,13 @@ const create_repo = (fArray) => {
     repo.makeManifestFile(fArray);
 }
 
+/**
+ * This function outputs the date and the manifest files from the newest to oldest
+ * @returns an array of file paths
+ */
 const log = () => {
     let logResults = [];
     let absPath = global.userInput[1];
-
     try {
         let repoPath = path.join(absPath, '.JSTWepo');
         // Fail-safe: Check if .JSTWepo existed
@@ -49,7 +52,7 @@ const log = () => {
                 console.log(bigString);
                 logResults.push(bigString);
             }
-
+            // What is contained inside logResult?
             return logResults;
         } else {
             console.log('Error! No JSTWepo, use create-repo command.');
