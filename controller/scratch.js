@@ -88,14 +88,14 @@ const getArtifactID = (srcDir, srcFile) => {
 }
 
 const commitFiles = (fileArray) => {
-    // GET PATH TO SOURCE ROOT FROM BROWSER/'CLI USER INPUT'
+    // GET PATH TO SOURCE | DESTINATION FROM BROWSER/'CLI USER INPUT'
     let srcDir = global.userInput[1];
-    
+    let dstDir = global.userInput[2];
     // directory of the new file
     let newDir = '.JSTWepo';
 
     fileArray.forEach((pathToFile) => {
-        const pathToNewDestination = path.join(srcDir, newDir, getArtifactID(srcDir, pathToFile));
+        const pathToNewDestination = path.join(dstDir, newDir, getArtifactID(srcDir, pathToFile));
 
         fs.copyFileSync(pathToFile, pathToNewDestination);
     });
@@ -106,7 +106,7 @@ const makeManifestFile = (fileArray) => {
     // FORMAT FOR MANIFEST FILES: .manifest-{iteration}.rc
     var iteration = 1;
     // NODE SERVER SEARCHES FOR '.git/.man' DIRECTORY AND COLLECTS ALL FILES INTO 'manDir' ARRAY
-    let manDir = fs.readdirSync(path.join(userCMD[1], '.JSTWepo', '.man'));
+    let manDir = fs.readdirSync(path.join(userCMD[2], '.JSTWepo', '.man'));
 
     let timestamp = new Date();
     let manifestHeader = `"${userCMD}"\n${timestamp.toDateString()} @ ${timestamp.toTimeString()}\n\n`;
@@ -115,7 +115,7 @@ const makeManifestFile = (fileArray) => {
     // COUNT OF MANIFEST FILES
     iteration += manDir.length;
 
-    let manifestFile = path.join (userCMD[1], '.JSTWepo', '.man', `.man-${iteration}.rc`);
+    let manifestFile = path.join (userCMD[2], '.JSTWepo', '.man', `.man-${iteration}.rc`);
     fs.writeFileSync(manifestFile, manifestHeader);
 
     fileArray.forEach((file) => {
@@ -132,7 +132,6 @@ const consoleEcho = (userCMD) => {
 
 const rootDir = path.dirname(process.mainModule.filename);
 
-
 // BUNDLE ALL MISC FUNCTIONS INTO ARRAY AND EXPORT
 module.exports = {
     fileKeeper,
@@ -141,5 +140,5 @@ module.exports = {
     rootDir,
     getArtifactID,
     commitFiles,
-    makeManifestFile,
+    makeManifestFile
 };
