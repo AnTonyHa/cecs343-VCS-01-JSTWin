@@ -91,12 +91,12 @@ const commitFiles = (fileArray) => {
     // GET PATH TO SOURCE | DESTINATION FROM BROWSER/'CLI USER INPUT'
     let srcDir = global.userInput[1];
     let dstDir = global.userInput[2];
+    
     // directory of the new file
     let newDir = '.JSTWepo';
 
     fileArray.forEach((pathToFile) => {
         const pathToNewDestination = path.join(dstDir, newDir, getArtifactID(srcDir, pathToFile));
-
         fs.copyFileSync(pathToFile, pathToNewDestination);
     });
 }
