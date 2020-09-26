@@ -39,6 +39,7 @@ router.post('/executeCMD', (req, resp) => {
             //break;
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
+
     }
 })
 
