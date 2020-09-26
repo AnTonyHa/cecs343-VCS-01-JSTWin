@@ -1,3 +1,13 @@
+/**
+ * Team members: 
+ * Jacob Azevedo Jr. - jacobazevedojr@gmail.com
+ * Stephanie Lim - hynglim@gmail.com
+ * Tony Ha - tony.ha@student.csulb.edu
+ * William Duong - wxduong@gmail.com
+ * 
+ * Program Description: NodeJS application to hose JSTWepo at localhost:3000
+ */
+
 // IMPORT 'express' PACKAGE
 const express = require('express');
 const bodyParser = require('body-parser');

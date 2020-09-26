@@ -1,3 +1,13 @@
+/**
+ * Team members: 
+ * Jacob Azevedo Jr. - jacobazevedojr@gmail.com
+ * Stephanie Lim - hynglim@gmail.com
+ * Tony Ha - tony.ha@student.csulb.edu
+ * William Duong - wxduong@gmail.com
+ * 
+ * Program Description: Routing of web pages and input handling.
+ */
+
 // BUILT IN MODULES OFFERED BY NODEJS
 const express = require('express');
 const router = express.Router();
