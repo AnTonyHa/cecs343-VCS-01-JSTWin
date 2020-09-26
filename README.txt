@@ -79,10 +79,15 @@ cecs343-VCS-01-JSTWin\view
 	authorsPage.html
 		# For displaying a webpage of JSTWepo author information
 	commandPage.html
+<<<<<<< HEAD
 		# For displaying a webpage of JSTWepo command information
 	purple sunset.gif
 		# Graphic for website background	
 	responsePage.ejs
+=======
+		# For displaying a webpage of JSTWepo command information	
+	responsePage.html
+>>>>>>> parent of 80f3f5a... Update README.txt
 		# For displaying a webpage to access JSTWepo's I/O
 	sTyLeZ.css
 		# CSS formatting for the above HTML documents
