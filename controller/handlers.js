@@ -6,6 +6,10 @@ const create_repo = (fArray) => {
     srcDir = global.userInput[1];
     dstDir = global.userInput[2];
 
+    // IF FOLDER FOR MANIFEST COPIES DOESN'T PREVIOUSLY EXIST, CREATE HERE
+    if (!fs.existsSync(path.join(srcDir, '.man')))
+        fs.mkdirSync(path.join(srcDir, '.man'));
+
     // IF '.JSTWepo' FOLDER DOESN'T EXIST, '.man' ALSO SHOULD NOT EXIST, THEREFORE
     // CREATE BOTH
     if (!fs.existsSync(path.join(dstDir, '.JSTWepo'))) {

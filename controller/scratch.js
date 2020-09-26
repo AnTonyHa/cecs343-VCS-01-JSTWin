@@ -124,6 +124,16 @@ const makeManifestFile = (fileArray) => {
 
         fs.appendFileSync(manifestFile, `${artID} @ ${relPath}\n`);
     });
+
+    // A COPY OF NEW MANIFEST FILE IS GENERATED IN SOURCE FOLDER
+    // should this be specific to 'create' command only (???)
+    manDir = fs.readdirSync(path.join(global.userInput[1], '.man'));
+    iteration = manDir.length + 1;
+    let copiedMan = path.join(global.userInput[1], '.man', `.man-${iteration}.rc`);
+    fs.copyFile(manifestFile, copiedMan, (err) => {
+        if (err)
+            throw err;
+    })
 }
 
 const consoleEcho = (userCMD) => {
