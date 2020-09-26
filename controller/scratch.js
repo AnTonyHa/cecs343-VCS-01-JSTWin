@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 
-
 // GENERATES RELATIVE PATH TO A GIVEN FILE USING ITS ABSOLUTE PATH
 // arg 1: absolute path to root folder of source
 // arg 2: absolute path to file of interest
@@ -88,19 +87,16 @@ const getArtifactID = (srcDir, srcFile) => {
     return `P${a}-L${b}-C${c}${extension}`;
 }
 
-
 const commitFiles = (fileArray) => {
     // GET PATH TO SOURCE | DESTINATION FROM BROWSER/'CLI USER INPUT'
     let srcDir = global.userInput[1];
     let dstDir = global.userInput[2];
-
+    
     // directory of the new file
     let newDir = '.JSTWepo';
 
     fileArray.forEach((pathToFile) => {
-
         const pathToNewDestination = path.join(dstDir, newDir, getArtifactID(srcDir, pathToFile));
-
         fs.copyFileSync(pathToFile, pathToNewDestination);
     });
 }
