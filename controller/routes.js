@@ -2,9 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-
 // IMPORT EXTRA FUNCTIONS FROM 'scratch.js' (LIKE C-HEADER FILES)
-
 const repo = require('./scratch');
 const handlers = require('./handlers');
 
@@ -44,12 +42,7 @@ router.post('/executeCMD', (req, resp) => {
 
     }
 })
-/*
-router.post('executeCMD',(req,resp)=>){
-    if (req.body.input_field_cmd.includes('commit-file'))
-        commitFiles()
-}
-*/
+
 // BASIC HANDLER FOR DEFAULT PAGE
 router.get('/', (req, resp) => {
     resp.render('responsePage', {dispType: 'blank'});
