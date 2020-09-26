@@ -2,8 +2,6 @@ body {
     padding: 0;
     margin: 0;
     font-family: 'Antic';
-    background: url('purple sunset.gif');
-    
 }
 
 .main-header {
@@ -50,9 +48,8 @@ body {
     width: 800px;
     margin: 0 auto;
     padding: 0 20px 20px 20px;
-    color: white;
-    border: 5px solid white;
-    
+    color: rgb(90, 1, 192);
+    border: 5px solid rgb(90, 1, 192);
 }
 
 h1 {
@@ -91,8 +88,8 @@ a.active {
 .authors{
     width: 850px;
     margin: 0 auto;
-    color: white;
-    border: 5px solid white;
+    color: rgb(90, 1, 192);
+    
 }
 
 .contact-list {
@@ -103,6 +100,6 @@ a.active {
     display: inline;
     margin: 2.5rem;
     font-size: larger;
-    color:white;
+    color:rgb(90, 1, 192);
     
 }
