@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-var formidable = require('formidable');
 
 
 // GENERATES RELATIVE PATH TO A GIVEN FILE USING ITS ABSOLUTE PATH
