@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="sTyLeZ.css">
+    <title>Document</title>
+</head>
+<header class="main-header">
+    <h1>Welcome to VCS (v0.1)</h1>
+</header>
+<header class="sub-header">
+    <div><a href="authorsPage.html">Authors</a></div>
+    <div><a href="/">Main</a></div>
+    <div><a href="commandPage.html">Commands</a></div>
+</header>
+<br>
+<br>
+<br>
+
+<body>
+    <header class="commands">
+        <h1>Commands</h1>
+        <div id="create">
+            <h2>create</h2>
+            <p>Signature: <strong>create</strong> &lt;projectPath&gt; &lt;repositoryPath&gt;</p>
+            <ul>
+                <li>
+                    The create command is used to initialize a repository with the current contents of the project
+                </li>
+                <ul>
+                    <li>'.' files are ignored in repository creation, e.g. ".foo.txt", ".bar.html"</li>
+                </ul>
+                <li>
+                    The repository will be initialized at the file path, "repositoryPath" under the repo folder ".JSTWepo"
+                </li>
+                <ul>
+                    <li>Contained within the repository will be all relevant files (saved under their ArtifactID) and a .man/ folder, containing the newest manifest file (a "snapshot" of the current project)</li>
+                </ul>
+            </ul>
+            <h4>Arguments</h4>
+            <ul>
+                <li>
+                    projectPath
+                </li>
+                <ul>
+                    <li>An absolute path to the project root directory that you wish to create a repository from</li>
+                </ul>
+                <li>
+                    repositoryPath
+                </li>
+                <ul>
+                    <li>An absolute path to the location of the newly created repository</li>
+                </ul>
+            </ul>
+        </div>
+        <div id="log">
+            <h2>log</h2>
+            <p>Signature: <strong>log</strong> &lt;repositoryPath&gt;</p>
+            <ul>
+                <li>
+                    The log command is used to visualize previous commits (including the create command) and the date/time when they were committed (in preparation for project roll-back capabilities).
+                </li>
+                <ul>
+                    <li>
+                        Output is displayed in browser
+                    </li>
+                </ul>
+            </ul>
+            <h4>Arguments</h4>
+            <ul>
+                <li>
+                    repositoryPath
+                </li>
+                <ul>
+                    <li>An absolute path to the location of a repository</li>
+                </ul>
+            </ul>
+        </div>
+    </header>
+</body>
+
+</html>

@@ -7,7 +7,7 @@ var formidable = require('formidable');
 // arg 1: absolute path to root folder of source
 // arg 2: absolute path to file of interest
 const absolute2Relative = (srcPath, fileName) => {
-    let pathArray = srcPath.split('\\');
+    let pathArray = srcPath.split(path.sep);
     let rootWord = pathArray[pathArray.length - 1];
 
     // EDGE CASE: IF ANY SUBFOLDERS SHARE THE SAME NAME AS ROOT-FOLDER.
@@ -28,20 +28,25 @@ const pathIsolator = (relPath) => {
     return pathName.join('/') + '/';
 }
 
-// POPULATES TWO ARRAYS: 1) VALID FILES TO ARCHIVE, 2) IGNORED FILES
-const fileKeeper = (srcDir, fileArray, ignore) => {
-  let contents = fs.readdirSync(srcDir);
+// POPULATES 'fileArray' WITH VALID, ARCHIVABLE FILES
+const fileKeeper = (parentDir, fileArray) => {
+    // NODE SERVER READS THROUGH ALL OBJECTS OF SOURCE FOLDER INTO 'contents' ARRAY
+    let contents = fs.readdirSync(parentDir);
 
-  contents.forEach((object) => {
-    let newPath = path.join(srcDir, object);
+    // FOR EACH OBJECT IN SOURCE FOLDER:
+    // DECIDE IF OBJECT IS FILE OR FOLDER
+    //   (1) IF FOLDER, RECURSIVELY CALL 'fileKeeper' TO GO ONE LEVEL DEEPER
+    //   (2) IF FILE, PUSH OBJECT INTO 'fileArray' (ABSOLUTE PATH)
+    contents.forEach((object) => {
+        // NODEJS DOES NOT SAVE PATH TO 'contents' ARRAY, SO WE NEED TO 
+        // APPEND THE PATH MANUALLY EACH TIME
+        let newPath = path.join(parentDir, object);
 
-    if (fs.statSync(newPath).isFile() && object.toString().charAt(0) != '.')
-      fileArray.push(newPath);
-    else if (fs.statSync(newPath).isDirectory())
-      fileKeeper(newPath, fileArray, ignore)
-    else
-      ignore.push(newPath);
-  });
+        if (fs.statSync(newPath).isFile() && object.toString().charAt(0) != '.')
+            fileArray.push(newPath);
+        else if (fs.statSync(newPath).isDirectory() && object.charAt(0) != '.')
+            fileKeeper(newPath, fileArray)
+    });
 }
 
 // GENERATES CHECKSUM FROM A GIVEN STRING PER PROJECT REQUIREMENT
@@ -84,40 +89,38 @@ const getArtifactID = (srcDir, srcFile) => {
     return `P${a}-L${b}-C${c}${extension}`;
 }
 
-// WILL COMMIT THE FILE TO THE REPOSITORY
-// - creates a copy of the source file
-// - stores it in the repo with its artifact ID
-// - calls manifestfile() to make manifest file respective to itself
+
 const commitFiles = (fileArray) => {
-    let userCMD = global.userInput;
+    // GET PATH TO SOURCE | DESTINATION FROM BROWSER/'CLI USER INPUT'
+    let srcDir = global.userInput[1];
+    let dstDir = global.userInput[2];
 
     // directory of the new file
     let newDir = '.JSTWepo';
 
     fileArray.forEach((pathToFile) => {
-        const pathToNewDestination = path.join(userCMD[1], newDir, getArtifactID(userCMD[1], pathToFile));     
+
+        const pathToNewDestination = path.join(dstDir, newDir, getArtifactID(srcDir, pathToFile));
+
         fs.copyFileSync(pathToFile, pathToNewDestination);
-
     });
-
-
 }
 
-
-
-const makeManifestFile = (userCMD, fileArray) => {
+const makeManifestFile = (fileArray) => {
+    let userCMD = global.userInput;
+    // FORMAT FOR MANIFEST FILES: .manifest-{iteration}.rc
     var iteration = 1;
-    let srcDir = fs.readdirSync(userCMD[1]);
+    // NODE SERVER SEARCHES FOR '.git/.man' DIRECTORY AND COLLECTS ALL FILES INTO 'manDir' ARRAY
+    let manDir = fs.readdirSync(path.join(userCMD[2], '.JSTWepo', '.man'));
 
     let timestamp = new Date();
-    let manifestHeader = `"${userCMD}"\nEXECUTED : ${timestamp.toDateString()} @ ${timestamp.toTimeString()}\n\n`;
+    let manifestHeader = `"${userCMD}"\n${timestamp.toDateString()} @ ${timestamp.toTimeString()}\n\n`;
 
-    srcDir.forEach((file) => {
-        if (file.toString().includes('.manifest') && path.extname(file) == '.rc')
-            iteration++;
-    })
+    // SINCE 'manDir' WILL _ONLY_ CONSIST OF MANIFEST FILES, INCREMENT 'iteration' BY
+    // COUNT OF MANIFEST FILES
+    iteration += manDir.length;
 
-    let manifestFile = `${userCMD[1]}\\.manifest-${iteration}.rc`;
+    let manifestFile = path.join (userCMD[2], '.JSTWepo', '.man', `.man-${iteration}.rc`);
     fs.writeFileSync(manifestFile, manifestHeader);
 
     fileArray.forEach((file) => {

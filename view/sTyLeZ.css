@@ -28,10 +28,43 @@ body {
     justify-content: space-evenly;
 }
 
+.proxy-console {
+    padding: 2rem;
+    border: 5px outset rgb(90, 1, 192);
+    background-color: rgb(50, 61, 65);
+    color: white;
+}
+
+.okFiles-list {
+    list-style: none;
+}
+
 .div-form {
     display: block;
     text-align: center;
 }
+
+.commands {
+    width: 800px;
+    margin: 0 auto;
+    padding: 0 20px 20px 20px;
+    border: 5px solid rgb(90, 1, 192);
+}
+
+h1 {
+    text-align: center
+}
+h2 {
+    text-align: center
+}
+h3 {
+    text-align: center
+}
+
+p {
+    text-align: center
+}
+
 
 a {
     text-decoration: none;
@@ -54,7 +87,7 @@ a.active {
     list-style: none;
 }
 
-li {
+.cl-item {
     display: inline;
     margin: 2.5rem;
     font-size: larger;
