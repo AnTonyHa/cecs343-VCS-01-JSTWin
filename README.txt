@@ -1,6 +1,12 @@
 JSTWin's Version Control System (JSTWepo) - Project 1
 CECS 343, Siska Fall 2020
 
+### Team Members ###
+- Jacob Azevedo Jr.
+- Stephanie Lim
+- Tony Ha
+- William Duong
+
 ### Description ###
 - JSTWin's JSTWepo is our take on a version control system (VCS). It utilizes HTML, CSS, JavaScript, NodeJS 
   and the NodeJS framework, Express to allow for basic repository creation.

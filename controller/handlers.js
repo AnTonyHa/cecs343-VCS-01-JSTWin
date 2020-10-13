@@ -1,3 +1,13 @@
+/**
+ * Team members: 
+ * Jacob Azevedo Jr. - jacobazevedojr@gmail.com
+ * Stephanie Lim - hynglim@gmail.com
+ * Tony Ha - tony.ha@student.csulb.edu
+ * William Duong - wxduong@gmail.com
+ * 
+ * Program Description: Implementation files for JSTWepo functions. 
+ */
+
 const path = require('path');
 const fs = require('fs');
 const repo = require('./scratch');

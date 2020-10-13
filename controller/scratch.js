@@ -1,3 +1,13 @@
+/**
+ * Team members: 
+ * Jacob Azevedo Jr. - jacobazevedojr@gmail.com
+ * Stephanie Lim - hynglim@gmail.com
+ * Tony Ha - tony.ha@student.csulb.edu
+ * William Duong - wxduong@gmail.com
+ * 
+ * Program Description: Helper functions for JSTWepo's handlers. 
+ */
+
 const path = require('path');
 const fs = require('fs');
 
