@@ -47,7 +47,7 @@ body {
 }
 
 .commands {
-    width: 800px;
+    width: 850px;
     margin: 0 auto;
     padding: 0 20px 20px 20px;
     background-color: rgba(0, 0, 0, 0.7);
@@ -93,6 +93,7 @@ a.active {
     width: 850px;
     margin: 0 auto;
     color: white;
+    padding: 0 20px 20px 20px;
     background-color: rgba(0, 0, 0, 0.7);
     border: 5px solid white;
 }
