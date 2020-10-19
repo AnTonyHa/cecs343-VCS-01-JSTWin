@@ -1,7 +1,30 @@
 const path = require('path');
 const fs = require('fs');
 const repo = require('./scratch');
+const { response } = require('express');
+// returns whether the repo can update the repo or not with the given repo path
+const boolUpdate = () => {
+    dstDir = global.userInput[2];
+    if (!fs.existsSync(path.join(dstDir, '.JSTWepo'))) {
+        return false;
+    }
+    return true;
+}
+// updates the repository with a new snapshot
+const update = (fArray) => {
+    srcDir = global.userInput[1];
+    dstDir = global.userInput[2];
+    // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
+    // arg 1: 'fArray' will be populated with valid files
+    repo.fileKeeper(srcDir, fArray);
 
+    // 'commitFiles()' COPIES VALID SOURCE FILES TO DESTINATION
+    // arg 1: 'fArray' contains absolute paths to files in 'srcDir'
+    repo.commitFiles(fArray);
+
+    // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
+    repo.makeManifestFile(fArray);
+}
 const create_repo = (fArray) => {
     srcDir = global.userInput[1];
     dstDir = global.userInput[2];
@@ -81,5 +104,7 @@ const log = () => {
 
 module.exports = {
     create_repo,
-    log
+    log,
+    update,
+    boolUpdate
 }

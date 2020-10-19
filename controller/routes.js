@@ -29,14 +29,19 @@ router.post('/executeCMD', (req, resp) => {
             break;
         case 'log':
             let results = handlers.log();
-            resp.render('responsePage', {dispType: 'lg-console', log: results})
+            resp.render('responsePage', {dispType: 'lg-console', log: results});
             break;
-        //case 'add':
-            //break;
-        //case 'commit':
-            //break;
-        //case 'revert':
-            //break;
+        case 'update':
+            let update = handlers.boolUpdate();
+            if(update){
+                handlers.update(fArray);
+                resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
+                break;
+            }
+            else{
+                resp.render('responsePage', {dispType: 'path-error'});
+                break;
+            }
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
 

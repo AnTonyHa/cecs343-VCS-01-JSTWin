@@ -36,9 +36,12 @@
         <h4> INVALID: '<%= userCMD[0] %>' not recognized. </h4>
         <p> Please use following SYNTAX: {command}-{source path} </p>
         <% }
+                    else if(dispType === 'path-error'){ %>
+            <h4> INVALID: Repo path does not exist yet.</h4>
+            <p> Please create repo first.</p>
+        <%}
                     else if (dispType === 'cr-console') { %>
         <h4> '<%= userCMD[0] %>' successfully EXECUTED! </h4>
-
         <p> Files committed to repo: </p>
         <ul class="okFiles-list">
             <% okFiles.forEach ( (file) => { %>
