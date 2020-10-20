@@ -27,10 +27,12 @@ const absolute2Relative = (srcPath, fileName) => {
 
     return relPath;
 }
+
 // GENERATES _ONLY_ ROUTE TO A GIVEN FILE (I.E. FILE NAME EXCLUDED)
 const pathIsolator = (relPath) => {
     let pathName = relPath.split('/');
     pathName.pop();
+    
     return pathName.join('/') + '/';
 }
 
@@ -46,12 +48,17 @@ const fileKeeper = (parentDir, fileArray) => {
     contents.forEach((object) => {
         // NODEJS DOES NOT SAVE PATH TO 'contents' ARRAY, SO WE NEED TO 
         // APPEND THE PATH MANUALLY EACH TIME
-        let newPath = path.join(parentDir, object);
+        let value = path.join(parentDir, object);
 
-        if (fs.statSync(newPath).isFile() && object.toString().charAt(0) != '.')
-            fileArray.push(newPath);
-        else if (fs.statSync(newPath).isDirectory() && object.charAt(0) != '.')
-            fileKeeper(newPath, fileArray)
+        // IF FILE IS ARCHIVABLE, GENERATE ARTIFACT ID HERE AND USE AS KEY, ALONG
+        // WITH ABSOLUTE PATH AS VALUE BEFORE INSERTING INTO HASHMAP
+        if (fs.statSync(value).isFile() && object.toString().charAt(0) != '.')
+        {
+            let key = getArtifactID(global.userInput[1], value);
+            fileArray.set(key, value);
+        }        
+        else if (fs.statSync(value).isDirectory() && object.charAt(0) != '.')
+            fileKeeper(value, fileArray)
     });
 }
 
@@ -73,8 +80,6 @@ const getChecksumFromString = (sumString) => {
 
     return (checkSum % 10000);
 }
-
-
 
 const getArtifactID = (srcDir, srcFile) => {
     // 1. GET CHECKSUM USING CONTENTS OF FILE
@@ -105,8 +110,8 @@ const commitFiles = (fileArray) => {
     // directory of the new file
     let newDir = '.JSTWepo';
 
-    fileArray.forEach((pathToFile) => {
-        const pathToNewDestination = path.join(dstDir, newDir, getArtifactID(srcDir, pathToFile)); 
+    fileArray.forEach( (pathToFile, artID) => {
+        const pathToNewDestination = path.join(dstDir, newDir, artID);
         fs.copyFileSync(pathToFile, pathToNewDestination);
     });
 }
@@ -128,9 +133,8 @@ const makeManifestFile = (fileArray) => {
     let manifestFile = path.join (userCMD[2], '.JSTWepo', '.man', `.man-${iteration}.rc`);
     fs.writeFileSync(manifestFile, manifestHeader);
 
-    fileArray.forEach((file) => {
-        let relPath = absolute2Relative(userCMD[1], file);
-        let artID = getArtifactID(userCMD[1], file);
+    fileArray.forEach( (pathToFile, artID) => {
+        let relPath = absolute2Relative(userCMD[1], pathToFile);
 
         fs.appendFileSync(manifestFile, `${artID} @ ${relPath}\n`);
     });
@@ -144,6 +148,24 @@ const makeManifestFile = (fileArray) => {
         if (err)
             throw err;
     })
+}
+
+const crossReference = (fileArray) => {
+    // PATH TO ALL FILES WITHIN REPO
+    let repoPath = path.join(global.userInput[2], '.JSTWepo');
+    // READ ALL FILES/FOLDERS INTO 'contents' ARRAY
+    // NOTE: all files within repo folder are kept in artifactID form
+    let contents = fs.readdirSync(repoPath);
+
+    // 'keptArray' WILL BE RETURNED TO 'commitFiles' FUNCTION, CONTENTS WILL
+    // ONLY HOLD NEW FILES WITHIN SOURCE THAT ARE _NOT_ ALREADY IN REPO
+    let keptArray = new Map();
+    fileArray.forEach( (pathToFile, artID) => {
+        if (!contents.includes(artID))
+            keptArray.set(artID, pathToFile);
+    })
+
+    return keptArray;
 }
 
 const consoleEcho = (userCMD) => {
@@ -160,5 +182,6 @@ module.exports = {
     rootDir,
     getArtifactID,
     commitFiles,
-    makeManifestFile
+    makeManifestFile,
+    crossReference
 };

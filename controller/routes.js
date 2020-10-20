@@ -28,7 +28,7 @@ global.userInput;
 router.post('/executeCMD', (req, resp) => {
     // 'body-parser' SEARCHES THROUGH PAGE FOR CORRESPONDING ELEMENT NAME
     userInput = req.body.input_field_cmd.split(' ');
-    let fArray = [];
+    let fArray = new Map();
 
     switch (userInput[0])
     {

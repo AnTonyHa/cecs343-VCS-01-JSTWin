@@ -54,8 +54,8 @@
         <h4> '<%= userCMD[0] %>' successfully EXECUTED! </h4>
         <p> Files committed to repo: </p>
         <ul class="okFiles-list">
-            <% okFiles.forEach ( (file) => { %>
-            <li> <%= file %> </li>
+            <% okFiles.forEach ( (pathToFile, artID) => { %>
+            <li> <%= pathToFile %> </li>
             <% }); %>
         </ul>
         <% }

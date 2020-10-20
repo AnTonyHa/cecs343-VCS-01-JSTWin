@@ -9,9 +9,9 @@
  */
 
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 const repo = require('./scratch');
-const { response } = require('express');
+
 // returns whether the repo can update the repo or not with the given repo path
 const boolUpdate = () => {
     dstDir = global.userInput[2];
@@ -23,39 +23,40 @@ const boolUpdate = () => {
 // updates the repository with a new snapshot
 const update = (fArray) => {
     srcDir = global.userInput[1];
-    dstDir = global.userInput[2];
+
     // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
     // arg 1: 'fArray' will be populated with valid files
     repo.fileKeeper(srcDir, fArray);
 
-    // 'commitFiles()' COPIES VALID SOURCE FILES TO DESTINATION
-    // arg 1: 'fArray' contains absolute paths to files in 'srcDir'
-    repo.commitFiles(fArray);
+    // check for only NEW files in source that are NOT already in repo
+    let keptArray = repo.crossReference(fArray);
 
-    // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
+    // if no new files, skip copy process
+    if (keptArray.size != 0)
+        repo.commitFiles(keptArray);
+
+    // new manifest file always generated, even if no new files added to repo
     repo.makeManifestFile(fArray);
 }
+
 const create_repo = (fArray) => {
     srcDir = global.userInput[1];
     dstDir = global.userInput[2];
 
     // IF FOLDER FOR MANIFEST COPIES DOESN'T PREVIOUSLY EXIST, CREATE HERE
-    if (!fs.existsSync(path.join(srcDir, '.man')))
-        fs.mkdirSync(path.join(srcDir, '.man'));
+    fs.ensureDirSync(path.join(srcDir, '.man'));
 
     // IF '.JSTWepo' FOLDER DOESN'T EXIST, '.man' ALSO SHOULD NOT EXIST, THEREFORE
     // CREATE BOTH
-    if (!fs.existsSync(path.join(dstDir, '.JSTWepo'))) {
-        fs.mkdirSync(path.join(dstDir, '.JSTWepo'));
-        fs.mkdirSync(path.join(dstDir, '.JSTWepo', '.man'));
-    }
+    fs.ensureDirSync(path.join(dstDir, '.JSTWepo', '.man'));
 
     // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
-    // arg 1: 'fArray' will be populated with valid files
+    // arg 1: 'srcDir': path to root of project tree to be archived
+    // arg 2: 'fArray': hash-map with key = artifactID and value = abs. path to saved file
     repo.fileKeeper(srcDir, fArray);
 
     // 'commitFiles()' COPIES VALID SOURCE FILES TO DESTINATION
-    // arg 1: 'fArray' contains absolute paths to files in 'srcDir'
+    // arg 1: 'fArray': hash-map with key = artifactID and value = abs. path to saved file
     repo.commitFiles(fArray);
 
     // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
@@ -115,6 +116,6 @@ const log = () => {
 module.exports = {
     create_repo,
     log,
-    update,
-    boolUpdate
+    boolUpdate,
+    update
 }
