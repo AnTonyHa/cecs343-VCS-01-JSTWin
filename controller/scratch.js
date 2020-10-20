@@ -27,12 +27,10 @@ const absolute2Relative = (srcPath, fileName) => {
 
     return relPath;
 }
-
 // GENERATES _ONLY_ ROUTE TO A GIVEN FILE (I.E. FILE NAME EXCLUDED)
 const pathIsolator = (relPath) => {
     let pathName = relPath.split('/');
     pathName.pop();
-
     return pathName.join('/') + '/';
 }
 
@@ -76,6 +74,8 @@ const getChecksumFromString = (sumString) => {
     return (checkSum % 10000);
 }
 
+
+
 const getArtifactID = (srcDir, srcFile) => {
     // 1. GET CHECKSUM USING CONTENTS OF FILE
     let a = ( () => {
@@ -99,14 +99,14 @@ const getArtifactID = (srcDir, srcFile) => {
 
 const commitFiles = (fileArray) => {
     // GET PATH TO SOURCE | DESTINATION FROM BROWSER/'CLI USER INPUT'
-    let srcDir = global.userInput[1];
-    let dstDir = global.userInput[2];
+    let srcDir = global.userInput[1]; // destination of the desired repository to be copied
+    let dstDir = global.userInput[2]; // destination of the respository to be copied in
     
     // directory of the new file
     let newDir = '.JSTWepo';
 
     fileArray.forEach((pathToFile) => {
-        const pathToNewDestination = path.join(dstDir, newDir, getArtifactID(srcDir, pathToFile));
+        const pathToNewDestination = path.join(dstDir, newDir, getArtifactID(srcDir, pathToFile)); 
         fs.copyFileSync(pathToFile, pathToNewDestination);
     });
 }

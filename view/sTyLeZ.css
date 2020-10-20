@@ -110,14 +110,13 @@ a.active {
 
 .contact-list {
     list-style: none;
+    padding: 5px;
 }
 
 .cl-item {
-    display: inline;
+    display: inline-block;
     margin: 2.5rem;
     font-size: larger;
-
-
     color: white;
 
 }
