@@ -9,30 +9,85 @@
  */
 
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 const repo = require('./scratch');
+const readline = require('readline');
+
+// returns whether the repo can update the repo or not with the given repo path
+const boolUpdate = () => {
+    dstDir = global.userInput[2];
+    if (!fs.existsSync(path.join(dstDir, '.JSTWepo'))) {
+        return false;
+    }
+    return true;
+}
+// updates the repository with a new snapshot
+const update = (fArray) => {
+    srcDir = global.userInput[1];
+
+    // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
+    // arg 1: 'fArray' will be populated with valid files
+    repo.fileKeeper(srcDir, fArray);
+
+    // check for only NEW files in source that are NOT already in repo
+    let keptArray = repo.crossReference(fArray);
+
+    // if no new files, skip copy process
+    if (keptArray.size != 0)
+        repo.commitFiles(keptArray);
+
+    // new manifest file always generated, even if no new files added to repo
+    repo.makeManifestFile(fArray);
+}
+
+const check_out = () => {
+    let pathToMan = path.join(global.userInput[1], '.JSTWepo', '.man', global.userInput[3]);
+    // CREATE INTERFACE TO READ FILE LINE BY LINE USING 'readStream' CLASS
+    let readAPI = readline.createInterface({
+        input: fs.createReadStream(pathToMan)
+    });
+
+    let fileMap = new Map();
+    var lineCount = 1;
+
+    // 'readAPI' EMITS 'line' SIGNAL EVERY TIME A NEW LINE CHARACTER PRESENT, I.E.
+    // HAPPENS ONCE THE INTERFACE FINISHES CONSUMING ONE LINE. ON 'emit' SIGNAL, 
+    // RESPONSE = SPLIT LINE INTO ART-ID AND PATH TO FILE, THEN ADD TO 'fileMap'
+    readAPI.on('line', line => {
+        // SKIP HEADER INFO OF '.man' FILE
+        if (lineCount > 3 && line.length != 0) {
+            let contents = line.split('@');
+
+            // ADD NEW ENTRY TO 'fileMap' WHERE:
+            // 'key'   = artifact-ID (first half of line read)
+            // 'value' = relative path of file (second half of line read)
+            fileMap.set(contents[0].trim(), contents[1].trim());
+        }
+
+        lineCount++;
+    }).on('close', () => { // 'close' signal emitted once 'readAPI' reaches end of file
+        repo.recreator(fileMap);
+    })
+}
 
 const create_repo = (fArray) => {
     srcDir = global.userInput[1];
     dstDir = global.userInput[2];
 
     // IF FOLDER FOR MANIFEST COPIES DOESN'T PREVIOUSLY EXIST, CREATE HERE
-    if (!fs.existsSync(path.join(srcDir, '.man')))
-        fs.mkdirSync(path.join(srcDir, '.man'));
+    fs.ensureDirSync(path.join(srcDir, '.man'));
 
     // IF '.JSTWepo' FOLDER DOESN'T EXIST, '.man' ALSO SHOULD NOT EXIST, THEREFORE
     // CREATE BOTH
-    if (!fs.existsSync(path.join(dstDir, '.JSTWepo'))) {
-        fs.mkdirSync(path.join(dstDir, '.JSTWepo'));
-        fs.mkdirSync(path.join(dstDir, '.JSTWepo', '.man'));
-    }
+    fs.ensureDirSync(path.join(dstDir, '.JSTWepo', '.man'));
 
     // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
-    // arg 1: 'fArray' will be populated with valid files
+    // arg 1: 'srcDir': path to root of project tree to be archived
+    // arg 2: 'fArray': hash-map with key = artifactID and value = abs. path to saved file
     repo.fileKeeper(srcDir, fArray);
 
     // 'commitFiles()' COPIES VALID SOURCE FILES TO DESTINATION
-    // arg 1: 'fArray' contains absolute paths to files in 'srcDir'
+    // arg 1: 'fArray': hash-map with key = artifactID and value = abs. path to saved file
     repo.commitFiles(fArray);
 
     // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
@@ -91,5 +146,8 @@ const log = () => {
 
 module.exports = {
     create_repo,
-    log
+    log,
+    boolUpdate,
+    update,
+    check_out
 }

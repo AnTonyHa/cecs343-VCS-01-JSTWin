@@ -28,25 +28,32 @@ global.userInput;
 router.post('/executeCMD', (req, resp) => {
     // 'body-parser' SEARCHES THROUGH PAGE FOR CORRESPONDING ELEMENT NAME
     userInput = req.body.input_field_cmd.split(' ');
-    let fArray = [];
+    let fArray = new Map();
 
     switch (userInput[0])
     {
         case 'create':
-            // What happen if .JSTWepo already initialized?
             handlers.create_repo(fArray);
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
+        case 'check_out':
+            handlers.check_out();
+            break;
         case 'log':
             let results = handlers.log();
-            resp.render('responsePage', {dispType: 'lg-console', log: results})
+            resp.render('responsePage', {dispType: 'lg-console', log: results});
             break;
-        //case 'add':
-            //break;
-        //case 'commit':
-            //break;
-        //case 'revert':
-            //break;
+        case 'update':
+            let update = handlers.boolUpdate();
+            if(update){
+                handlers.update(fArray);
+                resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
+                break;
+            }
+            else{
+                resp.render('responsePage', {dispType: 'path-error'});
+                break;
+            }
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
 
