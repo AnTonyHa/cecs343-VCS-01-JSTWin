@@ -33,9 +33,11 @@ router.post('/executeCMD', (req, resp) => {
     switch (userInput[0])
     {
         case 'create':
-            // What happen if .JSTWepo already initialized?
             handlers.create_repo(fArray);
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
+            break;
+        case 'check_out':
+            handlers.check_out();
             break;
         case 'log':
             let results = handlers.log();

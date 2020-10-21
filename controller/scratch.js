@@ -9,7 +9,7 @@
  */
 
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 
 // GENERATES RELATIVE PATH TO A GIVEN FILE USING ITS ABSOLUTE PATH
 // arg 1: absolute path to root folder of source
@@ -104,7 +104,6 @@ const getArtifactID = (srcDir, srcFile) => {
 
 const commitFiles = (fileArray) => {
     // GET PATH TO SOURCE | DESTINATION FROM BROWSER/'CLI USER INPUT'
-    let srcDir = global.userInput[1]; // destination of the desired repository to be copied
     let dstDir = global.userInput[2]; // destination of the respository to be copied in
     
     // directory of the new file
@@ -150,6 +149,16 @@ const makeManifestFile = (fileArray) => {
     })
 }
 
+/**
+ * This function examines contents of the current source directory against an 
+ * array of files in the repo. If any artifact-IDs exist in the hashmap 'fileArray'
+ * that doesn't exist in the array 'contents', this is a new file that should be 
+ * copied over to the repo and will be added to 'keptArray' to be returned.
+ * 
+ * @argument Map: hashmap representing all files from current source directory
+ * @returns Map: hashmap representing only updated/new files necessary to be copied
+ *          from source directory to repo
+ */
 const crossReference = (fileArray) => {
     // PATH TO ALL FILES WITHIN REPO
     let repoPath = path.join(global.userInput[2], '.JSTWepo');
@@ -168,6 +177,45 @@ const crossReference = (fileArray) => {
     return keptArray;
 }
 
+/**
+ * This function iteratively copies over all relevant files of a
+ * snapshot (as defined by a given '.man' file) -- which are kept as key:value
+ * pairs in the hashmap parameter 'fileMap'. For each mapping, 'artID' represents
+ * the source file from the repo and 'relPath' becomes the destination path
+ * to the new project tree.
+ * 
+ * @argument Map: hashmap representing relevant files listed in a given '.man' file
+ * @returns none
+ */
+const recreator = (fileMap) => {
+    // GET PATH TO SOURCE | DESTINATION FROM BROWSER/'CLI USER INPUT'
+    let repoPath = path.join(global.userInput[1], '.JSTWepo');
+    let destination = global.userInput[2];
+
+    // FOR EVERY KEY:VALUE PAIR IN 'fileMap' COPY FROM REPO TO DESTINATION
+    fileMap.forEach((relPath, artID) => {
+        let sourceFile = path.join(repoPath, artID);
+        let destinFile = path.join(destination, unrooterator(relPath));
+
+        fs.copySync(sourceFile, destinFile);
+    })
+}
+
+/**
+ * This helper function strips off the root folder from the given parameter. This
+ * is necessary because '.man' files store relative path with respect to the 
+ * root folder of the original project tree
+ * 
+ * ex. 'dot/a/thisIsOK.csv' ==> 'a/thisIsOk.csv'
+ * 
+ * @returns String: relative path to file ready to be appended to new root directory
+ */
+const unrooterator = (relName) => {
+    let array = relName.split('/'); // split into array
+    array.shift(); // strip off first element of array
+    return array.join('/'); // re-join and return
+}
+
 const consoleEcho = (userCMD) => {
     console.log('User input > ' + userCMD);
 }
@@ -183,5 +231,7 @@ module.exports = {
     getArtifactID,
     commitFiles,
     makeManifestFile,
-    crossReference
+    crossReference,
+    recreator,
+    unrooterator
 };

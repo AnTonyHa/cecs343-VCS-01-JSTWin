@@ -11,6 +11,7 @@
 const path = require('path');
 const fs = require('fs-extra');
 const repo = require('./scratch');
+const readline = require('readline');
 
 // returns whether the repo can update the repo or not with the given repo path
 const boolUpdate = () => {
@@ -37,6 +38,36 @@ const update = (fArray) => {
 
     // new manifest file always generated, even if no new files added to repo
     repo.makeManifestFile(fArray);
+}
+
+const check_out = () => {
+    let pathToMan = path.join(global.userInput[1], '.JSTWepo', '.man', global.userInput[3]);
+    // CREATE INTERFACE TO READ FILE LINE BY LINE USING 'readStream' CLASS
+    let readAPI = readline.createInterface({
+        input: fs.createReadStream(pathToMan)
+    });
+
+    let fileMap = new Map();
+    var lineCount = 1;
+
+    // 'readAPI' EMITS 'line' SIGNAL EVERY TIME A NEW LINE CHARACTER PRESENT, I.E.
+    // HAPPENS ONCE THE INTERFACE FINISHES CONSUMING ONE LINE. ON 'emit' SIGNAL, 
+    // RESPONSE = SPLIT LINE INTO ART-ID AND PATH TO FILE, THEN ADD TO 'fileMap'
+    readAPI.on('line', line => {
+        // SKIP HEADER INFO OF '.man' FILE
+        if (lineCount > 3 && line.length != 0) {
+            let contents = line.split('@');
+
+            // ADD NEW ENTRY TO 'fileMap' WHERE:
+            // 'key'   = artifact-ID (first half of line read)
+            // 'value' = relative path of file (second half of line read)
+            fileMap.set(contents[0].trim(), contents[1].trim());
+        }
+
+        lineCount++;
+    }).on('close', () => { // 'close' signal emitted once 'readAPI' reaches end of file
+        repo.recreator(fileMap);
+    })
 }
 
 const create_repo = (fArray) => {
@@ -117,5 +148,6 @@ module.exports = {
     create_repo,
     log,
     boolUpdate,
-    update
+    update,
+    check_out
 }
