@@ -67,6 +67,8 @@ const check_out = () => {
         lineCount++;
     }).on('close', () => { // 'close' signal emitted once 'readAPI' reaches end of file
         repo.recreator(fileMap);
+
+        repo.makeManifestFile(fileMap);
     })
 }
 
