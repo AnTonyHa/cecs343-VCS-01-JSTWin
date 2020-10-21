@@ -54,6 +54,8 @@ router.post('/executeCMD', (req, resp) => {
                 resp.render('responsePage', {dispType: 'path-error'});
                 break;
             }
+        case 'label':
+            // Call label function in handlers
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
 

@@ -144,6 +144,13 @@ const log = () => {
     }
 }
 
+const label = () => {
+    // Assume user will always create a unique label
+    // Create a .labels txt file if the file does not exist in JSTWepo
+    // Check if manifest file exist
+    // append a line of label: manifest into the text file
+}
+
 module.exports = {
     create_repo,
     log,
