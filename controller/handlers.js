@@ -153,10 +153,12 @@ const log = () => {
 const label = (strLabel, repoPath, manifestName) => {
     // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
     // Assume user knows exactly the JSTWepo's folder path
-    // Create a .labels txt file if the file does not exist in JSTWepo. Note: I think .labels should be created when JSTWepo first created.
-    fs.ensureFileSync(path.join(repoPath, '.labels'));
-    // Check if manifest file exist
-    // append a line of label: manifest into .labels
+    let manifestPath = path.join(repoPath, '.man', manifestName);
+    if (fs.existsSync(manifestPath)) {
+        fs.appendFileSync(path.join(repoPath, '.labels'), strLabel + ': ' + manifestPath + '\n');
+    } else {
+        console.log('The Manifest file does not exist. No label created!');
+    }
 }
 
 module.exports = {

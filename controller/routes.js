@@ -58,7 +58,7 @@ router.post('/executeCMD', (req, resp) => {
             // User scenario: After several tedious typing of the file path to use this VCS program. User decides it is much better if he/she
             // have shortened reference to any particular snapshot that reside in the repo.
             // Call label function in handlers
-            handlers.label(userInput[0], userInput[1], userInput[2]);
+            handlers.label(userInput[1], userInput[2], userInput[3]);
             // TODO implement ejs for the web page
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
             break;
