@@ -59,6 +59,8 @@ router.post('/executeCMD', (req, resp) => {
             // have shortened reference to any particular snapshot that reside in the repo.
             // Call label function in handlers
             handlers.label(userInput[0], userInput[1], userInput[2]);
+            // TODO implement ejs for the web page
+            break;
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
 
