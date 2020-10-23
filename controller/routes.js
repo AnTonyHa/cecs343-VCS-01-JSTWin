@@ -55,7 +55,10 @@ router.post('/executeCMD', (req, resp) => {
                 break;
             }
         case 'label':
+            // User scenario: After several tedious typing of the file path to use this VCS program. User decides it is much better if he/she
+            // have shortened reference to any particular snapshot that reside in the repo.
             // Call label function in handlers
+            handlers.label(userInput[0], userInput[1], userInput[2]);
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
 

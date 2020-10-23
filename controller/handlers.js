@@ -151,10 +151,12 @@ const log = () => {
  * @param {String} manifestName The manifest file to be mapped
  */
 const label = (strLabel, repoPath, manifestName) => {
-    // Assume user will always create a unique label
-    // Create a .labels txt file if the file does not exist in JSTWepo
+    // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
+    // Assume user knows exactly the JSTWepo's folder path
+    // Create a .labels txt file if the file does not exist in JSTWepo. Note: I think .labels should be created when JSTWepo first created.
+    fs.ensureFileSync(path.join(repoPath, '.labels'));
     // Check if manifest file exist
-    // append a line of label: manifest into the text file
+    // append a line of label: manifest into .labels
 }
 
 module.exports = {
@@ -162,5 +164,6 @@ module.exports = {
     log,
     boolUpdate,
     update,
-    check_out
+    check_out,
+    label
 }
