@@ -137,7 +137,7 @@ const log = () => {
             // [dataTime(N), man-N, \n, dateTime(N-1), man-N(-1), \n, ..., dataTime(1), man-1, \n]
             return logResults;
         } else {
-            console.log('Error! No JSTWepo, use create-repo command.');
+            console.log('Error! No JSTWepo, use create command.');
         }
     } catch (err) {
         console.error(err);
