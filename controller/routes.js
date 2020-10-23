@@ -60,6 +60,7 @@ router.post('/executeCMD', (req, resp) => {
             // Call label function in handlers
             handlers.label(userInput[0], userInput[1], userInput[2]);
             // TODO implement ejs for the web page
+            resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
             break;
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
