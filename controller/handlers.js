@@ -144,7 +144,13 @@ const log = () => {
     }
 }
 
-const label = () => {
+/**
+ * Create a label associates with an existed manifest file.
+ * @param {String} strLabel The label to be map to a manifest file 
+ * @param {String} repoPath JSTWepo's path
+ * @param {String} manifestName The manifest file to be mapped
+ */
+const label = (strLabel, repoPath, manifestName) => {
     // Assume user will always create a unique label
     // Create a .labels txt file if the file does not exist in JSTWepo
     // Check if manifest file exist
