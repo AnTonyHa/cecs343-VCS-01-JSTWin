@@ -150,7 +150,7 @@ const log = () => {
  * @param {String} repoPath JSTWepo's path
  * @param {String} manifestName The manifest file to be mapped
  */
-const label = (strLabel, repoPath, manifestName) => {
+const createLabel = (strLabel, repoPath, manifestName) => {
     // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
     // Assume user knows exactly the JSTWepo's folder path
     let manifestPath = path.join(repoPath, '.man', manifestName);
@@ -167,5 +167,5 @@ module.exports = {
     boolUpdate,
     update,
     check_out,
-    label
+    createLabel
 }
