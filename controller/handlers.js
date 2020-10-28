@@ -161,11 +161,31 @@ const createLabel = (strLabel, repoPath, manifestName) => {
     }
 }
 
+/**
+ * Search for manifest file's path associated with passed in label if existed.
+ * @param {String} label the key of the map of labels
+ * @returns manifest file's path 
+ */
+const searchLabel = (label) => {
+    result = label;
+    return result;
+}
+
+/**
+ * Process .labels file and generate a map from it.
+ * @returns map of label-manifest as key-value pairs.
+ */
+const generateLabelsMap = () => {
+    result = new Map();
+    return result;
+}
+
 module.exports = {
     create_repo,
     log,
     boolUpdate,
     update,
     check_out,
-    createLabel
+    createLabel,
+    searchLabel
 }
