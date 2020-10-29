@@ -32,6 +32,14 @@ router.post('/executeCMD', (req, resp) => {
     // JstLabels is the labels tracker, commands that could utilize labels could use the built-in JS Map functions
     let jstLabels = new Map();
 
+    // Print out map for debugging purpose
+    // const printMap = (myMap) => {
+    //     for (let [k, v] of myMap) {
+    //         console.log(key + ' = ' + value);
+    //     }
+    //     console.log();
+    // }
+
     switch (userInput[0])
     {
         case 'create':
@@ -59,15 +67,20 @@ router.post('/executeCMD', (req, resp) => {
         case 'label':
             // User scenario: After several tedious typing of the file path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.
-            printMap(jstLabels);
+            for (let [k, v] of jstLabels) {
+                console.log(k + ' = ' + v);
+            }
+            console.log();
             handlers.createLabel(jstLabels);
-            printMap(jstLabels);
+            for (let [k, v] of jstLabels) {
+                console.log(k + ' = ' + v);
+            }
+            console.log();
             // TODO implement ejs for the web page
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
             break;
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
-
     }
 })
 
@@ -75,13 +88,5 @@ router.post('/executeCMD', (req, resp) => {
 router.get('/', (req, resp) => {
     resp.render('responsePage', {dispType: 'blank'});
 })
-
-// Print out map for debugging purpose
-const printMap = (myMap) => {
-    for (let [k, v] of myMap) {
-        console.log(key + ' = ' + value);
-    }
-    console.log();
-}
 
 module.exports = router;

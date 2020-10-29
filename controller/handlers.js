@@ -164,7 +164,7 @@ const createLabel = (labelsMap) => {
         }
         labelsMap.set(label, manifest);
         // TODO: fix the value into file name. NOT file path
-        fs.appendFileSync(path.join(repoPath, '.labels'), strLabel + ': ' + manifestPath + '\n');
+        // fs.appendFileSync(path.join(repoPath, '.labels'), strLabel + ': ' + manifestPath + '\n');
     } else {
         console.log('The Manifest file does not exist. No label created!');
     }
