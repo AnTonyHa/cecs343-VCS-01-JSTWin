@@ -12,6 +12,8 @@ const path = require('path');
 const fs = require('fs-extra');
 const repo = require('./scratch');
 const readline = require('readline');
+const { maroon } = require('color-name');
+const { realpath } = require('fs');
 
 // returns whether the repo can update the repo or not with the given repo path
 const boolUpdate = () => {
@@ -176,27 +178,35 @@ const createLabel = (labelsMap) => {
  * @param {int} usrRepoPath the repository's path specified by the user
  */
 // const generateLabelsMap = (jstMap, usrRepoPath) => {
-const processLabelsMap = (usrRepoPath, callback) => {
-    var jstMap = new Map();
-    // .label path is repository path + .labels
-    let labelsPath = path.join(usrRepoPath, '.labels');
-    // This work like Scanner or ReadStreamBuffer in Java
-    const inFile = readline.createInterface({
-        input: fs.createReadStream(labelsPath)
-    });
-    // The interface will do the file processing until it reaches EOF
-    inFile.on('line', labelManifest => {
-        let line = labelManifest.split(':');
-        jstMap.set(line[0].trim(), line[1].trim());
-    }).on('close', () => {
-        callback(jstMap);
-    });
-}
+// const processLabelsMap = (usrRepoPath, callback) => {
+//     var jstMap = [];
+//     // .label path is repository path + .labels
+//     let labelsPath = path.join(usrRepoPath, '.labels');
+//     // This work like Scanner or ReadStreamBuffer in Java
+//     const inFile = readline.createInterface({
+//         input: fs.createReadStream(labelsPath)
+//     });
+//     // The interface will do the file processing until it reaches EOF
+//     inFile.on('line', labelManifest => {
+//         // let line = labelManifest.split(':');
+//         // jstMap.set(line[0].trim(), line[1].trim());
+//         jstMap.push(labelManifest);
+//     }).on('close', () => {
+//         callback(jstMap);
+//     });
+// }
 
-const callbackLabelsMap = (jstMap) => { return jstMap; }
+// const callbackLabelsMap = (jstMap) => { return jstMap; }
 
 const generateLabelsMap = (usrRepoPath) => {
-    var result = processLabelsMap(usrRepoPath, callbackLabelsMap(result));
+    result = new Map();
+    let labelsPath = path.join(usrRepoPath, '.labels');
+    let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
+    // Why does it split an extra empty line?
+    for (i = 0; i < readLabels.length - 1; i++) {
+        let labelManifest = readLabels[i].split(':');
+        result.set(labelManifest[0].trim(), labelManifest[1].trim());
+    }
     return result;
 }
 
