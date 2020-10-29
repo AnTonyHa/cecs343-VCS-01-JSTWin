@@ -102,6 +102,7 @@ const log = () => {
     let logResults = [];
     let absPath = global.userInput[1];
     try {
+        console.log('Absolute path: ' + absPath);
         let repoPath = path.join(absPath, '.JSTWepo');
         // Fail-safe: Check if .JSTWepo existed
         if (fs.existsSync(repoPath)) {
@@ -146,15 +147,23 @@ const log = () => {
 
 /**
  * Create a label associates with an existed manifest file.
- * @param {String} strLabel The label to be map to a manifest file 
- * @param {String} repoPath JSTWepo's path
- * @param {String} manifestName The manifest file to be mapped
+ * @param {String} labelsMap Map of labels
  */
-const createLabel = (strLabel, repoPath, manifestName) => {
+const createLabel = (labelsMap) => {
     // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
     // Assume user knows exactly the JSTWepo's folder path
-    let manifestPath = path.join(repoPath, '.man', manifestName);
+    // user input arguments: 1 = label, 2 = JSTWepo's path, 3 = manifest file name
+    let manifestPath = path.join(userInput[2], '.man', userInput[3]);
     if (fs.existsSync(manifestPath)) {
+        let label = userInput[1];
+        let manifest = '';
+        if (labelsMap.has(userInput[3])) {
+            manifest = labelsMap.get(userInput[3]);
+        } else {
+            manifest = userInput[3];
+        }
+        labelsMap.set(label, manifest);
+        // TODO: fix the value into file name. NOT file path
         fs.appendFileSync(path.join(repoPath, '.labels'), strLabel + ': ' + manifestPath + '\n');
     } else {
         console.log('The Manifest file does not exist. No label created!');
