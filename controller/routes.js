@@ -42,6 +42,7 @@ router.post('/executeCMD', (req, resp) => {
             handlers.check_out();
             break;
         case 'list':
+            // TODO Modify log function to show associated labels
             let results = handlers.log();
             resp.render('responsePage', {dispType: 'lg-console', log: results});
             break;
@@ -59,15 +60,9 @@ router.post('/executeCMD', (req, resp) => {
         case 'label':
             // User scenario: After several tedious typing of the file path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.
-            for (let [k, v] of jstLabels) {
-                console.log(k + ' = ' + v);
-            }
-            console.log();
+            // user input arguments: 1 = label, 2 = JSTWepo's path, 3 = manifest file name
+            handlers.generateLabelsMap(jstLabels, userInput[2]);
             handlers.createLabel(jstLabels);
-            for (let [k, v] of jstLabels) {
-                console.log(k + ' = ' + v);
-            }
-            console.log();
             // TODO implement ejs for the web page
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
             break;

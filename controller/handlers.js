@@ -67,7 +67,7 @@ const check_out = () => {
         lineCount++;
     }).on('close', () => { // 'close' signal emitted once 'readAPI' reaches end of file
         repo.recreator(fileMap);
-    })
+    });
 }
 
 const create_repo = (fArray) => {
@@ -164,29 +164,35 @@ const createLabel = (labelsMap) => {
         }
         labelsMap.set(label, manifest);
         // TODO: fix the value into file name. NOT file path
-        // fs.appendFileSync(path.join(repoPath, '.labels'), strLabel + ': ' + manifestPath + '\n');
+        // fs.appendFileSync(path.join(repoPath, '.labels'), strLabel + ':' + manifestPath + '\n');
     } else {
         console.log('The Manifest file does not exist. No label created!');
     }
 }
 
 /**
- * Search for manifest file's path associated with passed in label if existed.
- * @param {String} label the key of the map of labels
- * @returns manifest file's path 
- */
-// const searchLabel = (label) => {
-//     result = label;
-//     return result;
-// }
-
-/**
  * Process .labels file and set label-manifest pairs into a map.
  * @param {Map} jstMap map of label-manifest as key-value pairs.
+ * @param {int} usrRepoPath the repository's path
  */
-const generateLabelsMap = (jstMap) => {
-    result = new Map();
-    return result;
+const generateLabelsMap = (jstMap, usrRepoPath) => {
+    // .label path is repository path + .labels
+    let labelsPath = path.join(usrRepoPath, '.labels');
+    // This work like Scanner or ReadStreamBuffer in Java
+    const inFile = readline.createInterface({
+        input: fs.createReadStream(labelsPath)
+    });
+    // The interface will do the file processing until it reaches EOF
+    inFile.on('line', labelManifest => {
+        let line = labelManifest.split(':');
+        jstMap.set(line[0].trim(), line[1].trim());
+    }).on('close', () => {});
+
+    // Console output for debugging:
+    for (let [key, value] of jstMap) {
+        console.log(key + ' : ' + value);
+    }
+    console.log();
 }
 
 module.exports = {
@@ -196,6 +202,5 @@ module.exports = {
     update,
     check_out,
     createLabel,
-    // searchLabel
     generateLabelsMap
 }
