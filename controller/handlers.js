@@ -154,49 +154,25 @@ const log = () => {
 const createLabel = (labelsMap) => {
     // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
     // Assume user knows exactly the JSTWepo's folder path
-    // user input arguments: 1 = label, 2 = JSTWepo's path, 3 = manifest file name
-    let manifestPath = path.join(userInput[2], '.man', userInput[3]);
+    // user input arguments: 1 = JSTWepo's path, 2 = manifest file name, 3 = label
+    let manifestPath = path.join(userInput[1], '.man', userInput[2]);
     if (fs.existsSync(manifestPath)) {
-        let label = userInput[1];
+        let label = userInput[3];
         let manifest = '';
-        if (labelsMap.has(userInput[3])) {
-            manifest = labelsMap.get(userInput[3]);
+        // Check if the second argument is a created label
+        if (labelsMap.has(userInput[2])) {
+            manifest = labelsMap.get(userInput[2]);
         } else {
-            manifest = userInput[3];
+            manifest = userInput[2];
         }
         labelsMap.set(label, manifest);
-        // TODO: fix the value into file name. NOT file path
-        // fs.appendFileSync(path.join(repoPath, '.labels'), strLabel + ':' + manifestPath + '\n');
+        // This do 2 things: 1. If .labels is not exist then make a .labels and write the line
+        // 2. If .labels existed then append new line
+        fs.appendFileSync(path.join(repoPath, '.labels'), label + ':' + manifest + '\n');
     } else {
         console.log('The Manifest file does not exist. No label created!');
     }
 }
-
-/**
- * Process .labels file and set label-manifest pairs into a map.
- * @param {Map} jstMap map of label-manifest as key-value pairs.
- * @param {int} usrRepoPath the repository's path specified by the user
- */
-// const generateLabelsMap = (jstMap, usrRepoPath) => {
-// const processLabelsMap = (usrRepoPath, callback) => {
-//     var jstMap = [];
-//     // .label path is repository path + .labels
-//     let labelsPath = path.join(usrRepoPath, '.labels');
-//     // This work like Scanner or ReadStreamBuffer in Java
-//     const inFile = readline.createInterface({
-//         input: fs.createReadStream(labelsPath)
-//     });
-//     // The interface will do the file processing until it reaches EOF
-//     inFile.on('line', labelManifest => {
-//         // let line = labelManifest.split(':');
-//         // jstMap.set(line[0].trim(), line[1].trim());
-//         jstMap.push(labelManifest);
-//     }).on('close', () => {
-//         callback(jstMap);
-//     });
-// }
-
-// const callbackLabelsMap = (jstMap) => { return jstMap; }
 
 const generateLabelsMap = (usrRepoPath) => {
     result = new Map();

@@ -58,16 +58,16 @@ router.post('/executeCMD', (req, resp) => {
                 break;
             }
         case 'label':
-            // User scenario: After several tedious typing of the file path to use this VCS program. User decides it is much better if he/she
+            // User scenario: After several tedious typing of the manifest path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.
-            // user input arguments: 1 = label, 2 = JSTWepo's path, 3 = manifest file name
-            jstLabels = handlers.generateLabelsMap(userInput[2]);
+            // user input arguments: 1 = JSTWepo's path, 2 = manifest file name, 3 = label
+            jstLabels = handlers.generateLabelsMap(userInput[1]);
             console.log('JSTLabels size: ' + jstLabels.size);
             for (let [key, value] of jstLabels) {
                 console.log(key + ' : ' + value);
             }
             console.log();
-            // handlers.createLabel(jstLabels);
+            handlers.createLabel(jstLabels);
             // TODO implement ejs for the web page
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
             break;
