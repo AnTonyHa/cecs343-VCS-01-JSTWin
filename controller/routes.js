@@ -29,7 +29,7 @@ router.post('/executeCMD', (req, resp) => {
     // 'body-parser' SEARCHES THROUGH PAGE FOR CORRESPONDING ELEMENT NAME
     userInput = req.body.input_field_cmd.split(' ');
     let fArray = new Map();
-    // JstLabels is the labels tracker
+    // JstLabels is the labels tracker, commands that could utilize labels could use the built-in JS Map functions
     let jstLabels = new Map();
 
     switch (userInput[0])
