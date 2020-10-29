@@ -32,14 +32,6 @@ router.post('/executeCMD', (req, resp) => {
     // JstLabels is the labels tracker, commands that could utilize labels could use the built-in JS Map functions
     let jstLabels = new Map();
 
-    // Print out map for debugging purpose
-    // const printMap = (myMap) => {
-    //     for (let [k, v] of myMap) {
-    //         console.log(key + ' = ' + value);
-    //     }
-    //     console.log();
-    // }
-
     switch (userInput[0])
     {
         case 'create':
