@@ -41,7 +41,7 @@ router.post('/executeCMD', (req, resp) => {
         case 'check_out':
             handlers.check_out();
             break;
-        case 'log':
+        case 'list':
             let results = handlers.log();
             resp.render('responsePage', {dispType: 'lg-console', log: results});
             break;

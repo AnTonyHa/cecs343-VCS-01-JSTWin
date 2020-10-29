@@ -175,16 +175,16 @@ const createLabel = (labelsMap) => {
  * @param {String} label the key of the map of labels
  * @returns manifest file's path 
  */
-const searchLabel = (label) => {
-    result = label;
-    return result;
-}
+// const searchLabel = (label) => {
+//     result = label;
+//     return result;
+// }
 
 /**
- * Process .labels file and generate a map from it.
- * @returns map of label-manifest as key-value pairs.
+ * Process .labels file and set label-manifest pairs into a map.
+ * @param {Map} jstMap map of label-manifest as key-value pairs.
  */
-const generateLabelsMap = () => {
+const generateLabelsMap = (jstMap) => {
     result = new Map();
     return result;
 }
@@ -196,5 +196,6 @@ module.exports = {
     update,
     check_out,
     createLabel,
-    searchLabel
+    // searchLabel
+    generateLabelsMap
 }
