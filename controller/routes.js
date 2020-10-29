@@ -30,7 +30,7 @@ router.post('/executeCMD', (req, resp) => {
     userInput = req.body.input_field_cmd.split(' ');
     let fArray = new Map();
     // JstLabels is the labels tracker, commands that could utilize labels could use the built-in JS Map functions
-    let jstLabels = new Map();
+    // let jstLabels = new Map();
 
     switch (userInput[0])
     {
@@ -61,8 +61,15 @@ router.post('/executeCMD', (req, resp) => {
             // User scenario: After several tedious typing of the file path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.
             // user input arguments: 1 = label, 2 = JSTWepo's path, 3 = manifest file name
-            handlers.generateLabelsMap(jstLabels, userInput[2]);
-            handlers.createLabel(jstLabels);
+            // handlers.generateLabelsMap(jstLabels, userInput[2]);
+            jstLabels = handlers.generateLabelsMap(userInput[2]);
+            // Console output for debugging:
+            console.log('JSTLabels: ' + jstLabels.size);
+            for (let [key, value] of jstLabels) {
+                console.log(key + ' : ' + value);
+            }
+            console.log();
+            // handlers.createLabel(jstLabels);
             // TODO implement ejs for the web page
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
             break;

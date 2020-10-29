@@ -173,9 +173,11 @@ const createLabel = (labelsMap) => {
 /**
  * Process .labels file and set label-manifest pairs into a map.
  * @param {Map} jstMap map of label-manifest as key-value pairs.
- * @param {int} usrRepoPath the repository's path
+ * @param {int} usrRepoPath the repository's path specified by the user
  */
-const generateLabelsMap = (jstMap, usrRepoPath) => {
+// const generateLabelsMap = (jstMap, usrRepoPath) => {
+const processLabelsMap = (usrRepoPath, callback) => {
+    var jstMap = new Map();
     // .label path is repository path + .labels
     let labelsPath = path.join(usrRepoPath, '.labels');
     // This work like Scanner or ReadStreamBuffer in Java
@@ -186,13 +188,16 @@ const generateLabelsMap = (jstMap, usrRepoPath) => {
     inFile.on('line', labelManifest => {
         let line = labelManifest.split(':');
         jstMap.set(line[0].trim(), line[1].trim());
-    }).on('close', () => {});
+    }).on('close', () => {
+        callback(jstMap);
+    });
+}
 
-    // Console output for debugging:
-    for (let [key, value] of jstMap) {
-        console.log(key + ' : ' + value);
-    }
-    console.log();
+const callbackLabelsMap = (jstMap) => { return jstMap; }
+
+const generateLabelsMap = (usrRepoPath) => {
+    var result = processLabelsMap(usrRepoPath, callbackLabelsMap(result));
+    return result;
 }
 
 module.exports = {
