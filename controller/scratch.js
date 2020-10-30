@@ -137,6 +137,15 @@ const makeManifestFile = (fileArray) => {
 
         fs.appendFileSync(manifestFile, `${artID} @ ${relPath}\n`);
     });
+    
+    // Appends 'man-x man-x' to the end of the .labels.txt file if it exists, otherwise
+    // the file is create and initialized with 'man-x man-x'
+    let labelFilePath = path.join(global.userInput[1], '.JSTWepo', '.labels.txt');
+     fs.appendFile(labelFilePath,`.man-${iteration} .man-${iteration}\n`, (err) => {
+         if (err) {
+                throw err;
+         }
+     })
 
     // A COPY OF NEW MANIFEST FILE IS GENERATED IN SOURCE FOLDER
     // should this be specific to 'create' command only (???)

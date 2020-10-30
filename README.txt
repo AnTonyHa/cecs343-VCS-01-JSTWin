@@ -13,9 +13,10 @@ CECS 343, Siska Fall 2020
 
 - JSTWepo is capable of:
 	- Creating a project repository and storing it in any location locally
-	- Outputting a log of previous commit dates/times and their corresponding manifest files
-	  (in preparation for roll-back functionality)
-
+	- Outputting a log of previous commit dates/times and their corresponding manifest files/ labels
+	- Recreating a project snapshot in a seperate directory based on a specifed manifest file/ label
+	- Updating an existing repository with a current version of a project
+	- Labeling snapshots with a desired name and functioning as a manifest file alias
 
 ### Quick Start ###
 - Install NodeJS if you haven't already
@@ -38,6 +39,7 @@ Signature: create <projectPath> <repositoryPath>
 	- The repository will be initialized at the file path, "repositoryPath" under the repo folder ".JSTWepo"
 		- Contained within the repository will be all relevant files (saved under their ArtifactID)
 		  and a .man/ folder, containing the newest manifest file (a "snapshot" of the current project)
+	Arguments:
 	- projectPath
 		- An absolute path to the project root directory that you wish to create a repository from
 	- repositoryPath
@@ -48,8 +50,47 @@ Signature: log <repositoryPath>
 	- The log command is used to visualize previous commits (including the create command) and the
 	  date/time when they were committed (in preparation for project roll-back capabilities).
 		- Output is displayed in browser
+	Arguments:
+	- projectPath
+		- An absolute path to the project root directory that you wish to create a repository from
 	- repositoryPath
 		- An absolute path to the location of a repository
+
+update 
+Signature: update <projectPath> <repositoryPath>
+	- The create command is used to update a repository with the current contents of the project
+	- The repository will not be updated if the repositoryPath does not contain a ".JSTWepo" folder.
+	Arguments:
+	- projectPath
+		- An absolute path to the project root directory that you wish to create a repository from
+	- repositoryPath
+		- An absolute path to the location of a repository
+
+label
+Signature:  label <repositoryPath> <manifestFileName> <label> 
+	- The label command allows a user to rename a snapshot of a project with another name to allow for easy
+	  reference, and ease of use with the check-out command
+		- A label may be up to 20 characters with spaces included
+		- There is no limit to the number of labels that can be mapped to a manifest file
+	Arguments:
+	- repositoryPath
+		- An absolute path to the location of a repository
+	- manifestFileName
+		- The name of the manifest file (an existing label can be used as an alias)
+	- label
+		- A keyword alias for a manifest file
+
+check-out
+Signature: check-out <repositoryPath> <rebuildPath> <label>
+	- The check-out command is used to recreate a snapshot of a project in a specified location 
+	  (the specified location is assumed to be an empty directory)
+	Arguments:
+	- repositoryPath
+		- An absolute path to the location of a repository
+	- rebuildPath
+		- An absolute path to the location where the project snapshot is to be rebuilt
+	- label
+		- A keyword alias for a manifest file (explict manifest file name's also accepted)
 
 ### Caveats ###
 - JSTWepo is in its beta-release, it is not yet a finished product and as result it has minimal function
@@ -60,8 +101,6 @@ Signature: log <repositoryPath>
 - Each time you would like to work with a repository for the log command, you need to pass the repositoryPath
 	- Ideally, we would like it to work like a CLI, if you are in the repo location, only pass the
 	  command log with no parameters
-- Currently does not allow backspace in the landingPage text field, to reset the text field, you must reload
-  the landingPage
 - absolute2Relative doesn't handle the case where fileName is not contained within srcPath
 
 ### JSTWepo Project Contents ###
@@ -72,6 +111,7 @@ cecs343-VCS-01-JSTWin\
 	myapp.js
 		# NodeJS application to host JSTWepo at localhost:3000
 	package-lock.json
+		# Specifies package criteria for project
 	README.txt
 		# The current file, explains project
 
@@ -96,15 +136,6 @@ cecs343-VCS-01-JSTWin\view
 		# CSS formatting for the above HTML documents
 
 ### Potential Future Releases ###
-- More commands including commands that many be familiar to git users:
-	- revert
-	- add
-	- reset
-	- commit
-- Browser CLI will be implemented to allow for better I/O
+- React application refactor, allowing for easier development and visualization of changes
+  in real-time
 - Graphical user interface similar to GitHub to improve accessibility
-- Improving the current user interface to be more clean and modern
-
-### Bugs ###
-- Cannot handle specification of repo location (creates repo in project root by default)
-- Log function doesn't allow specification of which repo to log

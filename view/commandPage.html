@@ -19,7 +19,7 @@
 </head>
 
 <header class="main-header">
-    <h1>Welcome to VCS (v0.1)</h1>
+    <h1>Welcome to JSTWepo (v2.0)</h1>
 </header>
 <header class="sub-header">
     <div><a href="authorsPage.html">Authors</a></div>
@@ -114,6 +114,74 @@
                 </li>
                 <ul>
                     <li>An absolute path to the location of a repository</li>
+                </ul>
+            </ul>
+        </div>
+        <div id="label">
+            <h2>label</h2>
+            <p>Signature: <strong>label</strong> &lt;repositoryPath&gt; &lt;manifestFileName&gt; &lt;label&gt; </p>
+            <ul>
+                <li>
+                    The label command allows a user to rename a snapshot of a project with another name to allow for easy reference, and ease of use with the check-out command
+                </li>
+                <ul>
+                    <li>
+                        A label may be up to 20 characters with spaces included
+                    </li>
+                    <li>
+                        There is no limit to the number of labels that can be mapped to a manifest file
+                    </li>
+                </ul>
+            </ul>
+            <h4>Arguments</h4>
+            <ul>
+                <li>
+                    repositoryPath
+                </li>
+                <ul>
+                    <li>An absolute path to the location of a repository</li>
+                </ul>
+                <li>
+                    manifestFileName
+                </li>
+                <ul>
+                    <li>The name of the manifest file (an existing label can be used as an alias)</li>
+                </ul>
+                <li>
+                    label
+                </li>
+                <ul>
+                    <li>A keyword alias for a manifest file</li>
+                </ul>
+            </ul>
+        </div>
+        <div id="check-out">
+            <h2>check-out</h2>
+            <p>Signature: <strong>check-out</strong> &lt;repositoryPath&gt; &lt;rebuildPath&gt; &lt;label&gt;</p>
+            <ul>
+                <li>
+                    The check-out command is used to recreate a snapshot of a project in a specified location (the specified location is assumed to be an empty directory)
+                </li>
+            </ul>
+            <h4>Arguments</h4>
+            <ul>
+                <li>
+                    repositoryPath
+                </li>
+                <ul>
+                    <li>An absolute path to the location of a repository</li>
+                </ul>
+                <li>
+                    rebuildPath
+                </li>
+                <ul>
+                    <li>An absolute path to the location where the project snapshot is to be rebuilt</li>
+                </ul>
+                <li>
+                    label
+                </li>
+                <ul>
+                    <li>A keyword alias for a manifest file (explict manifest file name's also accepted)</li>
                 </ul>
             </ul>
         </div>
