@@ -152,11 +152,11 @@ const log = () => {
  * @param {String} labelsMap Map of labels
  */
 const createLabel = (labelsMap) => {
-    // user input arguments: 1 = JSTWepo's path, 2 = manifest file name, 3 = label0, 
-    // *optional: 4 = label1, 5 = label2, ..., n = labelN
+    // user input arguments: 1 = JSTWepo's path, 2 = manifest file name or "existed label", 3 = "new label"
     // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
     // Assume user knows exactly the JSTWepo's folder path
     let label = '';
+    // TODO Step 1: Check if user's input of index 2 is a manifest or a label
     for (let i = 3; i < userInput.length; i++) {
         label += userInput[i] + ' ';
     }
