@@ -152,10 +152,14 @@ const log = () => {
  * @param {String} labelsMap Map of labels
  */
 const createLabel = (labelsMap) => {
-    // user input arguments: 1 = JSTWepo's path, 2 = manifest file name, 3 = label
+    // user input arguments: 1 = JSTWepo's path, 2 = manifest file name, 3 = label0, 
+    // *optional: 4 = label1, 5 = label2, ..., n = labelN
     // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
     // Assume user knows exactly the JSTWepo's folder path
-    let label = userInput[3];
+    let label = '';
+    for (let i = 3; i < userInput.length; i++) {
+        label += userInput[i] + ' ';
+    }
     let manifest = '';
     // Check if the second argument is a created label
     if (labelsMap.has(userInput[2])) {
@@ -168,7 +172,7 @@ const createLabel = (labelsMap) => {
         labelsMap.set(label, manifest);
         // This do 2 things: 1. If .labels is not exist then make a .labels and write the line
         // 2. If .labels existed then append new line
-        fs.appendFileSync(path.join(userInput[1], '.labels'), label + ':' + manifest + '\n');
+        fs.appendFileSync(path.join(userInput[1], '.labels'), label.trim() + ':' + manifest.trim() + '\n');
     } else {
         console.log('The Manifest file does not exist. No label created!');
     }
