@@ -231,6 +231,25 @@ const consoleEcho = (userCMD) => {
 
 const rootDir = path.dirname(process.mainModule.filename);
 
+/**
+ * Concatenate splitted user input for string start & end with double quote.
+ * @param {int} srcIndex
+ * @returns constructed string or empty if string doesn't start with double quote
+ */
+const constructInputLabel = (srcIndex) => {
+    let strResult = '';
+    if (global.userInput[srcIndex].startsWith('"')) {
+        let label = global.userInput[srcIndex];
+        let inputIndex = srcIndex;
+        while (!global.userInput[inputIndex].endsWith('"')) {
+            label += ' ' + global.userInput[++inputIndex];
+        } 
+        label = label.split('"');
+        strResult = label[1];
+    }
+    return strResult;
+}
+
 // BUNDLE ALL MISC FUNCTIONS INTO ARRAY AND EXPORT
 module.exports = {
     fileKeeper,
@@ -242,5 +261,6 @@ module.exports = {
     makeManifestFile,
     crossReference,
     recreator,
-    unrooterator
+    unrooterator,
+    constructInputLabel
 };
