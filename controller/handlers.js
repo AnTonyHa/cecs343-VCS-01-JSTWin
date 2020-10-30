@@ -12,6 +12,8 @@ const path = require('path');
 const fs = require('fs-extra');
 const repo = require('./scratch');
 const readline = require('readline');
+const { maroon } = require('color-name');
+const { realpath } = require('fs');
 
 // returns whether the repo can update the repo or not with the given repo path
 const boolUpdate = () => {
@@ -67,7 +69,7 @@ const check_out = () => {
         lineCount++;
     }).on('close', () => { // 'close' signal emitted once 'readAPI' reaches end of file
         repo.recreator(fileMap);
-    })
+    });
 }
 
 const create_repo = (fArray) => {
@@ -102,6 +104,7 @@ const log = () => {
     let logResults = [];
     let absPath = global.userInput[1];
     try {
+        console.log('Absolute path: ' + absPath);
         let repoPath = path.join(absPath, '.JSTWepo');
         // Fail-safe: Check if .JSTWepo existed
         if (fs.existsSync(repoPath)) {
@@ -137,11 +140,54 @@ const log = () => {
             // [dataTime(N), man-N, \n, dateTime(N-1), man-N(-1), \n, ..., dataTime(1), man-1, \n]
             return logResults;
         } else {
-            console.log('Error! No JSTWepo, use create-repo command.');
+            console.log('Error! No JSTWepo, use create command.');
         }
     } catch (err) {
         console.error(err);
     }
+}
+
+/**
+ * Create and write to .labels a new and uniquelabel associates with an existed manifest file.
+ * @param {String} labelsMap Map of labels
+ */
+const createLabel = (labelsMap) => {
+    // user input arguments: 1 = JSTWepo's path, 2 = manifest file name, 3 = label
+    // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
+    // Assume user knows exactly the JSTWepo's folder path
+    let label = userInput[3];
+    let manifest = '';
+    // Check if the second argument is a created label
+    if (labelsMap.has(userInput[2])) {
+        manifest = labelsMap.get(userInput[2]);
+    } else {
+        manifest = userInput[2];
+    }
+    let manifestPath = path.join(userInput[1], '.man', manifest);
+    if (fs.existsSync(manifestPath)) {
+        labelsMap.set(label, manifest);
+        // This do 2 things: 1. If .labels is not exist then make a .labels and write the line
+        // 2. If .labels existed then append new line
+        fs.appendFileSync(path.join(userInput[1], '.labels'), label + ':' + manifest + '\n');
+    } else {
+        console.log('The Manifest file does not exist. No label created!');
+    }
+}
+
+/**
+ * Generate a map contains pairs of value = manifest as key = value
+ * @param {String} usrRepoPath JSTWepo's file path
+ */
+const generateLabelsMap = (usrRepoPath) => {
+    result = new Map();
+    let labelsPath = path.join(usrRepoPath, '.labels');
+    let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
+    // Why does it split an extra empty line?
+    for (i = 0; i < readLabels.length - 1; i++) {
+        let labelManifest = readLabels[i].split(':');
+        result.set(labelManifest[0].trim(), labelManifest[1].trim());
+    }
+    return result;
 }
 
 module.exports = {
@@ -149,5 +195,7 @@ module.exports = {
     log,
     boolUpdate,
     update,
-    check_out
+    check_out,
+    createLabel,
+    generateLabelsMap
 }
