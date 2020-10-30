@@ -244,6 +244,7 @@ const constructInputLabel = (srcIndex) => {
         while (!global.userInput[inputIndex].endsWith('"')) {
             label += ' ' + global.userInput[++inputIndex];
         } 
+        // Split into an array of size 3: ['', label, ''] from a string: "label"
         label = label.split('"');
         strResult = label[1];
     }
