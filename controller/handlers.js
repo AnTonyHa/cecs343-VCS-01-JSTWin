@@ -12,8 +12,6 @@ const path = require('path');
 const fs = require('fs-extra');
 const repo = require('./scratch');
 const readline = require('readline');
-const { maroon } = require('color-name');
-const { realpath } = require('fs');
 
 // returns whether the repo can update the repo or not with the given repo path
 const boolUpdate = () => {
@@ -42,7 +40,7 @@ const update = (fArray) => {
     repo.makeManifestFile(fArray);
 }
 
-const check_out = () => {
+const check_out = (resp) => {
     let pathToMan = path.join(global.userInput[1], '.JSTWepo', '.man', global.userInput[3]);
     // CREATE INTERFACE TO READ FILE LINE BY LINE USING 'readStream' CLASS
     let readAPI = readline.createInterface({
@@ -71,6 +69,8 @@ const check_out = () => {
         repo.recreator(fileMap);
 
         repo.makeManifestFile(fileMap);
+
+        resp.render('responsePage', { dispType: 'co-console', okFiles: fileMap, userCMD: userInput });
     })
 }
 

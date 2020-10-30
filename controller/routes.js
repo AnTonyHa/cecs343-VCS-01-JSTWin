@@ -19,11 +19,6 @@ const handlers = require('./handlers');
 // STORE USER INPUT FROM WEB-BROWSER/'CLI' AS GLOBAL VARIABLE
 global.userInput;
 
-// TESTING DIFFERENCE BETWEEN '.use()' AND '.get()'
-// '.use' IS MORE GENERIC, WILL WORK FOR ALL HTTP METHODS
-// '.get' FOR ONLY GET REQUESTS (SIMPLE URLs)
-// '.post' FOR ONLY POST REQUESTS (SAFER FOR FORMS)
-
 // HANDLER FOR 'execute' BUTTON ON LANDING PAGE
 router.post('/executeCMD', (req, resp) => {
     // 'body-parser' SEARCHES THROUGH PAGE FOR CORRESPONDING ELEMENT NAME
@@ -39,7 +34,7 @@ router.post('/executeCMD', (req, resp) => {
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
         case 'check_out':
-            handlers.check_out();
+            handlers.check_out(resp);
             break;
         case 'list':
             // TODO Modify log function to show associated labels
