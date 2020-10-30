@@ -119,7 +119,7 @@
         </div>
         <div id="label">
             <h2>label</h2>
-            <p>Signature: <strong>label</strong> &lt;label&gt; &lt;repositoryPath&gt; &lt;manifestFileName&gt;</p>
+            <p>Signature: <strong>label</strong> &lt;repositoryPath&gt; &lt;manifestFileName&gt; &lt;label&gt; </p>
             <ul>
                 <li>
                     The label command allows a user to rename a snapshot of a project with another name to allow for easy reference, and ease of use with the check-out command
@@ -136,12 +136,6 @@
             <h4>Arguments</h4>
             <ul>
                 <li>
-                    label
-                </li>
-                <ul>
-                    <li>A keyword alias for a manifest file</li>
-                </ul>
-                <li>
                     repositoryPath
                 </li>
                 <ul>
@@ -151,7 +145,13 @@
                     manifestFileName
                 </li>
                 <ul>
-                    <li>The name of the manifest file</li>
+                    <li>The name of the manifest file (an existing label can be used as an alias)</li>
+                </ul>
+                <li>
+                    label
+                </li>
+                <ul>
+                    <li>A keyword alias for a manifest file</li>
                 </ul>
             </ul>
         </div>
