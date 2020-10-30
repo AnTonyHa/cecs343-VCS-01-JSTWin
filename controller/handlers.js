@@ -157,22 +157,22 @@ const createLabel = (labelsMap) => {
     // Assume user knows exactly the JSTWepo's folder path
     let label = '';
     // TODO Step 1: Check if user's input of index 2 is a manifest or a label
-    for (let i = 3; i < userInput.length; i++) {
-        label += userInput[i] + ' ';
+    for (let i = 3; i < global.userInput.length; i++) {
+        label += global.userInput[i] + ' ';
     }
     let manifest = '';
     // Check if the second argument is a created label
-    if (labelsMap.has(userInput[2])) {
+    if (labelsMap.has(global.userInput[2])) {
         manifest = labelsMap.get(userInput[2]);
     } else {
         manifest = userInput[2];
     }
-    let manifestPath = path.join(userInput[1], '.man', manifest);
+    let manifestPath = path.join(global.userInput[1], '.man', manifest);
     if (fs.existsSync(manifestPath)) {
         labelsMap.set(label, manifest);
         // This do 2 things: 1. If .labels is not exist then make a .labels and write the line
         // 2. If .labels existed then append new line
-        fs.appendFileSync(path.join(userInput[1], '.labels'), label.trim() + ':' + manifest.trim() + '\n');
+        fs.appendFileSync(path.join(global.userInput[1], '.labels'), label.trim() + ':' + manifest.trim() + '\n');
     } else {
         console.log('The Manifest file does not exist. No label created!');
     }
