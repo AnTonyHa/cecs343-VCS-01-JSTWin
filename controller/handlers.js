@@ -167,12 +167,16 @@ const createLabel = (labelsMap) => {
     } else {
         manifest = userInput[2];
     }
-    let manifestPath = path.join(global.userInput[1], '.man', manifest);
+    let manifestPath = path.join(global.userInput[1], '.JSTWepo', '.man', manifest);
     if (fs.existsSync(manifestPath)) {
         labelsMap.set(label, manifest);
         // This do 2 things: 1. If .labels is not exist then make a .labels and write the line
         // 2. If .labels existed then append new line
-        fs.appendFileSync(path.join(global.userInput[1], '.labels'), label.trim() + ':' + manifest.trim() + '\n');
+        try {
+            fs.appendFileSync(path.join(global.userInput[1], '.JSTWepo', '.labels'), label.trim() + ' ' + manifest.trim() + '\n');
+        } catch (err) {
+            console.error(err.message);
+        }
     } else {
         console.log('The Manifest file does not exist. No label created!');
     }
