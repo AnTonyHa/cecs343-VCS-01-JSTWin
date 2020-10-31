@@ -142,7 +142,7 @@ const makeManifestFile = (fileArray) => {
     
     // Appends 'man-x man-x' to the end of the .labels.txt file if it exists, otherwise
     // the file is create and initialized with 'man-x man-x'
-    let labelFilePath = path.join(repoPath, '.JSTWepo', '.labels.txt');
+    let labelFilePath = path.join(repoActual, '.JSTWepo', '.labels.txt');
      fs.appendFile(labelFilePath,`.man-${iteration} .man-${iteration}.rc\n`, (err) => {
          if (err) {
                 throw err;
