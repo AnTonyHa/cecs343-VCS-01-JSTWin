@@ -33,10 +33,10 @@ router.post('/executeCMD', (req, resp) => {
             handlers.create_repo(fArray);
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
-        case 'check_out':
+        case 'rebuild':
             handlers.check_out(resp);
             break;
-        case 'list':
+        case 'log':
             // TODO Modify log function to show associated labels
             let results = handlers.log();
             resp.render('responsePage', {dispType: 'lg-console', log: results});

@@ -139,6 +139,15 @@ const makeManifestFile = (fileArray) => {
 
         fs.appendFileSync(manifestFile, `${artID} @ ${relPath}\n`);
     });
+    
+    // Appends 'man-x man-x' to the end of the .labels.txt file if it exists, otherwise
+    // the file is create and initialized with 'man-x man-x'
+    let labelFilePath = path.join(global.userInput[1], '.JSTWepo', '.labels.txt');
+     fs.appendFile(labelFilePath,`.man-${iteration} .man-${iteration}.rc\n`, (err) => {
+         if (err) {
+                throw err;
+         }
+     })
 
     // A COPY OF NEW MANIFEST FILE IS GENERATED IN SOURCE FOLDER
     // should this be specific to 'create' command only (???)
@@ -231,6 +240,30 @@ const consoleEcho = (userCMD) => {
 
 const rootDir = path.dirname(process.mainModule.filename);
 
+/*
+This helper function extracts a manifest-labelList hashmap
+to help with outputting the logs
+*/
+const getManifestMap = (repoPath) => {
+    let manMap = new Map();
+    let labelsPath = path.join(repoPath, '.JSTWepo', '.labels.txt');
+    let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
+    // Why does it split an extra empty line?
+    for (i = 0; i < readLabels.length - 1; i++) {
+        let labelManifest = readLabels[i].split(' ');
+        if (manMap.has(labelManifest[1]))
+        {
+            let newLabel = manMap.get(labelManifest[1]) + (' ' + labelManifest[0]);
+            manMap.set(labelManifest[1], newLabel);
+        }
+        else
+        {
+            manMap.set(labelManifest[1].trim(), labelManifest[0].trim());
+        }
+    }
+    return manMap;
+}
+
 // BUNDLE ALL MISC FUNCTIONS INTO ARRAY AND EXPORT
 module.exports = {
     fileKeeper,
@@ -242,5 +275,6 @@ module.exports = {
     makeManifestFile,
     crossReference,
     recreator,
-    unrooterator
+    unrooterator,
+    getManifestMap
 };

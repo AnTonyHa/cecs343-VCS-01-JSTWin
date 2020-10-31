@@ -77,7 +77,7 @@ const check_out = (resp) => {
 const create_repo = (fArray) => {
     srcDir = global.userInput[1];
     dstDir = global.userInput[2];
-
+    
     // IF FOLDER FOR MANIFEST COPIES DOESN'T PREVIOUSLY EXIST, CREATE HERE
     fs.ensureDirSync(path.join(srcDir, '.man'));
 
@@ -95,7 +95,7 @@ const create_repo = (fArray) => {
     repo.commitFiles(fArray);
 
     // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
-    repo.makeManifestFile(fArray);
+    repo.makeManifestFile(fArray);   
 }
 
 /**
@@ -105,6 +105,8 @@ const create_repo = (fArray) => {
 const log = () => {
     let logResults = [];
     let absPath = global.userInput[1];
+    // Map of Key:manFileName Value:string of labels
+    let manMap = repo.getManifestMap(absPath);
     try {
         console.log('Absolute path: ' + absPath);
         let repoPath = path.join(absPath, '.JSTWepo');
@@ -133,8 +135,9 @@ const log = () => {
                 let manDateTime = fs.statSync(mPath).birthtime.toDateString() + ", " + 
                     fs.statSync(mPath).birthtime.toTimeString();
                 logResults.push(manDateTime);
-                // push file name
-                logResults.push(path.basename(mPath, ".rc"));
+                // push labels
+                console.log(path.basename(mPath, '.rc'));
+                logResults.push(manMap.get(path.basename(mPath, ".rc") + '.rc'));
                 // push a new line
                 logResults.push("-------------------------------------------------------");
             }
@@ -182,7 +185,7 @@ const createLabel = (labelsMap) => {
  */
 const generateLabelsMap = (usrRepoPath) => {
     result = new Map();
-    let labelsPath = path.join(usrRepoPath, '.labels');
+    let labelsPath = path.join(usrRepoPath, '.JSTWepo', '.labels.txt');
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
     // Why does it split an extra empty line?
     for (i = 0; i < readLabels.length - 1; i++) {

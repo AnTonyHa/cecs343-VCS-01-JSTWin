@@ -67,22 +67,22 @@ Signature: update <projectPath> <repositoryPath>
 		- An absolute path to the location of a repository
 
 label
-Signature:  label <label> <repositoryPath> <manifestFileName> 
+Signature:  label <repositoryPath> <manifestFileName> <label> 
 	- The label command allows a user to rename a snapshot of a project with another name to allow for easy
 	  reference, and ease of use with the check-out command
 		- A label may be up to 20 characters with spaces included
 		- There is no limit to the number of labels that can be mapped to a manifest file
 	Arguments:
-	- label
-		- A keyword alias for a manifest file
 	- repositoryPath
 		- An absolute path to the location of a repository
 	- manifestFileName
-		- The name of the manifest file
+		- The name of the manifest file (an existing label can be used as an alias)
+	- label
+		- A keyword alias for a manifest file
 
-check-out
-Signature: check-out <repositoryPath> <rebuildPath> <label>
-	- The check-out command is used to recreate a snapshot of a project in a specified location 
+rebuild
+Signature: rebuild <repositoryPath> <rebuildPath> <label>
+	- The rebuild command is used to recreate a snapshot of a project in a specified location 
 	  (the specified location is assumed to be an empty directory)
 	Arguments:
 	- repositoryPath
