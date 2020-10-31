@@ -88,12 +88,6 @@ router.post('/executeCMD', (req, resp) => {
             }
             
             jstLabels = handlers.generateLabelsMap(userInput[1]);
-            // Debugging: Check generated map
-            console.log('JSTLabels size: ' + jstLabels.size);
-            for (let [key, value] of jstLabels) {
-                console.log(key + ' : ' + value);
-            }
-            // End of Debugging section
             handlers.createLabel(jstLabels);
             // TODO implement ejs for the web page
             let newRes = handlers.log();

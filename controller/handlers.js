@@ -151,32 +151,47 @@ const log = () => {
 }
 
 /**
- * Create and write to .labels a new and uniquelabel associates with an existed manifest file.
+ * Create and write to .labels a new and unique label associates with an existed manifest file.
  * @param {String} labelsMap Map of labels
  */
 const createLabel = (labelsMap) => {
     // user input arguments: 1 = JSTWepo's path, 2 = manifest file name or "existed label", 3 = "new label"
     // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
     // Assume user knows exactly the JSTWepo's folder path
-    let label = '';
-    // TODO Step 1: Check if user's input of index 2 is a manifest or a label
-    for (let i = 3; i < global.userInput.length; i++) {
-        label += global.userInput[i] + ' ';
-    }
-    let manifest = '';
-    // Check if the second argument is a created label
-    if (labelsMap.has(global.userInput[2])) {
-        manifest = labelsMap.get(userInput[2]);
+    let newLabel = '';
+    let targetManifest = '';
+    let newLabelIndex = 3;
+
+    // Step 1: Check if user's input of index 2 is a manifest or a label
+    if (global.userInput[2].startsWith('"')) {
+        // Grab existed label wrapped in double quotes
+        let existedLabel = repo.constructInputLabel(2);
+        // Check if the label of second argument existed in labelsMap 
+        if (labelsMap.has(existedLabel)) {
+            targetManifest = labelsMap.get(existedLabel);
+        } else {
+            // FAIL case: targetManifest is empty
+            console.log('Label "' + existedLabel + '" does not exist.');
+        }
     } else {
-        manifest = userInput[2];
+        // Default case: user specified manifest file name
+        targetManifest = userInput[2];
     }
-    let manifestPath = path.join(global.userInput[1], '.JSTWepo', '.man', manifest);
+
+    // Step 2: Acquire new label
+    // Iterate to look for new at index 3 or index n < userInput.length
+    while (!userInput[newLabelIndex].startsWith('"')) {newLabelIndex++};
+    newLabel = repo.constructInputLabel(newLabelIndex);
+    
+    // Step 3: Write new label into .labels
+    let manifestPath = path.join(global.userInput[1], '.JSTWepo', '.man', targetManifest);
+    // Ensure user specified manifest is an existed manifest
     if (fs.existsSync(manifestPath)) {
-        labelsMap.set(label, manifest);
+        // labelsMap.set(newLabel, targetManifest);
         // This do 2 things: 1. If .labels is not exist then make a .labels and write the line
         // 2. If .labels existed then append new line
         try {
-            fs.appendFileSync(path.join(global.userInput[1], '.JSTWepo', '.labels'), label.trim() + ' ' + manifest.trim() + '\n');
+            fs.appendFileSync(path.join(global.userInput[1], '.JSTWepo', '.labels.txt'), newLabel.trim() + ' ' + targetManifest.trim() + '\n');
         } catch (err) {
             console.error(err.message);
         }
@@ -194,11 +209,25 @@ const generateLabelsMap = (usrRepoPath) => {
     
     let labelsPath = path.join(usrRepoPath, '.JSTWepo', '.labels.txt');
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
-    // Why does it split an extra empty line?
+    console.log('readLabel size: ' + readLabels.length);
     for (i = 0; i < readLabels.length - 1; i++) {
         let labelManifest = readLabels[i].split(' ');
-        result.set(labelManifest[0].trim(), labelManifest[1].trim());
+        console.log('labelManifest: ' + labelManifest);
+        let label = '';
+        // label is from index 0 to labelManifest.length - 2, the last index contains manifest
+        for (let j = 0; j < labelManifest.length - 1; j++) {
+            console.log('labelManifest: ' + labelManifest);
+            label += labelManifest[j] + ' ';
+        }
+        result.set(label.trim(), labelManifest[labelManifest.length - 1].trim());
     }
+    // Debugging: see if map is generated properly
+    console.log('labelsMap:');
+    for (let [key, value] of result) {
+        console.log(key + ' = ' + value);
+    }
+    console.log();
+    // End Debugging
     return result;
 }
 
