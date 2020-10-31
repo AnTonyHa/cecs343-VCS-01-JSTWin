@@ -103,6 +103,8 @@ const create_repo = (fArray) => {
 const log = () => {
     let logResults = [];
     let absPath = global.userInput[1];
+    // Map of Key:manFileName Value:string of labels
+    let manMap = repo.getManifestMap(absPath);
     try {
         console.log('Absolute path: ' + absPath);
         let repoPath = path.join(absPath, '.JSTWepo');
@@ -131,8 +133,9 @@ const log = () => {
                 let manDateTime = fs.statSync(mPath).birthtime.toDateString() + ", " + 
                     fs.statSync(mPath).birthtime.toTimeString();
                 logResults.push(manDateTime);
-                // push file name
-                logResults.push(path.basename(mPath, ".rc"));
+                // push labels
+                console.log(path.basename(mPath, '.rc'));
+                logResults.push(manMap.get(path.basename(mPath, ".rc") + '.rc'));
                 // push a new line
                 logResults.push("-------------------------------------------------------");
             }
