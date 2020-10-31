@@ -190,7 +190,7 @@ const createLabel = (labelsMap) => {
         // This do 2 things: 1. If .labels is not exist then make a .labels and write the line
         // 2. If .labels existed then append new line
         try {
-            fs.appendFileSync(path.join(global.userInput[1], '.JSTWepo', '.labels'), newLabel.trim() + ' ' + targetManifest.trim() + '\n');
+            fs.appendFileSync(path.join(global.userInput[1], '.JSTWepo', '.labels.txt'), newLabel.trim() + ' ' + targetManifest.trim() + '\n');
         } catch (err) {
             console.error(err.message);
         }

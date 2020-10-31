@@ -62,13 +62,6 @@ router.post('/executeCMD', (req, resp) => {
             // User scenario: After several tedious typing of the manifest path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.
             jstLabels = handlers.generateLabelsMap(userInput[1]);
-            // Debugging: Check generated map
-            console.log('JSTLabels size: ' + jstLabels.size);
-            for (let [key, value] of jstLabels) {
-                console.log(key + ' : ' + value);
-            }
-            console.log();
-            // End of Debugging section
             handlers.createLabel(jstLabels);
             // TODO implement ejs for the web page
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
