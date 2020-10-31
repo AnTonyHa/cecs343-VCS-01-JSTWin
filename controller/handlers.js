@@ -85,6 +85,9 @@ const create_repo = (fArray) => {
     // CREATE BOTH
     fs.ensureDirSync(path.join(dstDir, '.JSTWepo', '.man'));
 
+    // Create a .labels.txt for handling labels
+    fs.ensureFileSync(path.join(dstDir, '.JSTWepo', '.labels.txt'));
+
     // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
     // arg 1: 'srcDir': path to root of project tree to be archived
     // arg 2: 'fArray': hash-map with key = artifactID and value = abs. path to saved file
@@ -95,6 +98,7 @@ const create_repo = (fArray) => {
     repo.commitFiles(fArray);
 
     // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
+    // Should we append the first manifest so we can have a default label?
     repo.makeManifestFile(fArray);   
 }
 
