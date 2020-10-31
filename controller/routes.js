@@ -85,7 +85,6 @@ router.post('/executeCMD', (req, resp) => {
                 console.log(...labelArray);
             }
             
-            
             jstLabels = handlers.generateLabelsMap(userInput[1]);
             // Debugging: Check generated map
             console.log('JSTLabels size: ' + jstLabels.size);

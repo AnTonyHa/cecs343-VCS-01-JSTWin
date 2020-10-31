@@ -324,6 +324,7 @@ const extractLabels = (input) =>
     }
     // Returns a list of labels (quotations removed)
     return ans;
+}
 /**
  * Concatenate splitted user input for string start & end with double quote.
  * @param {int} srcIndex
