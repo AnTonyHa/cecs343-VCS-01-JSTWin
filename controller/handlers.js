@@ -106,7 +106,6 @@ const log = () => {
     // Map of Key:manFileName Value:string of labels
     let manMap = repo.getManifestMap(absPath);
     try {
-        console.log('Absolute path: ' + absPath);
         let repoPath = path.join(absPath, '.JSTWepo');
         // Fail-safe: Check if .JSTWepo existed
         if (fs.existsSync(repoPath)) {
@@ -182,6 +181,7 @@ const createLabel = (labelsMap) => {
  */
 const generateLabelsMap = (usrRepoPath) => {
     result = new Map();
+    
     let labelsPath = path.join(usrRepoPath, '.JSTWepo', '.labels.txt');
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
     // Why does it split an extra empty line?

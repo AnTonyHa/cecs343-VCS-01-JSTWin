@@ -239,9 +239,10 @@ const getManifestMap = (repoPath) =>
 {
     let manMap = new Map();
     let labelsPath = path.join(repoPath, '.JSTWepo', '.labels.txt');
+    
+    // Array of lines
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
     
-    // Why does it split an extra empty line?
     for (i = 0; i < readLabels.length - 1; i++) 
     {
         let labelManifest = readLabels[i].split(' ');
@@ -267,6 +268,55 @@ const getManifestMap = (repoPath) =>
     return manMap;
 }
 
+/*
+Helper function for extracting labels from input.
+input will have multiple space separated fields, if these fields begin with a quotation mark,
+they signify the beginning of a label. If they end with a quote, they signify the end of a label.
+
+This function will return ONLY the values that are bracketed by double quotes 
+(if a manifest file is passed, it will not extract it as a label)
+*/
+
+const extractLabels = (input) => 
+{
+    let begin = 0;
+    let label = '';
+    let ans = []
+    
+    for (i = 0; i < input.length; i++)
+    {
+        if (input[i][0] == '\"')
+        {
+            // Removes quote at the beginning
+            if (input[i][input[i].length - 1] == '\"')
+            {
+                // The case where the label is a single word, "label"
+                label += (input[i].substring(1, input[i].length - 1));
+            }
+            else
+            {
+                // Case where the label is muti-word and begins with input[i]
+                label += ((input[i].substring(1)) + ' ');
+            }
+        }
+        else if (input[i][input[i].length - 1] == '\"')
+        {
+            // Removes quote at the end
+            label += input[i].substring(0, input[i].length - 1);
+            // Once 2nd quotation mark has been found, return full label
+            ans.push(label);
+            label = '';
+        }
+        else
+        {
+            // append the label string with everything in between quotes
+            label += (input[i] + ' ');
+        }
+    }
+    // Returns a list of labels (quotations removed)
+    return ans;
+}
+
 // BUNDLE ALL MISC FUNCTIONS INTO ARRAY AND EXPORT
 module.exports = {
     fileKeeper,
@@ -279,5 +329,6 @@ module.exports = {
     crossReference,
     recreator,
     unrooterator,
-    getManifestMap
+    getManifestMap,
+    extractLabels
 };

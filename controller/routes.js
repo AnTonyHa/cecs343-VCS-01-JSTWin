@@ -28,6 +28,7 @@ global.userInput;
 router.post('/executeCMD', (req, resp) => {
     // 'body-parser' SEARCHES THROUGH PAGE FOR CORRESPONDING ELEMENT NAME
     userInput = req.body.input_field_cmd.split(' ');
+    
     let fArray = new Map();
     // JstLabels is the labels tracker, commands that could utilize labels could use the built-in JS Map functions
     // let jstLabels = new Map();
@@ -48,6 +49,15 @@ router.post('/executeCMD', (req, resp) => {
             break;
         case 'update':
             let update = handlers.boolUpdate();
+            // update <src> <repo> <label>
+            
+            // userInput is a label, not a manifest file
+            if (userInput[3][0] == '\"')
+            {
+                // This extracts the label from the last element (sliced just in case it is multi-word)
+                UserInput[3] = repo.extractLabels(userInput.slice(3));
+            }
+
             if(update){
                 handlers.update(fArray);
                 resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
@@ -61,13 +71,32 @@ router.post('/executeCMD', (req, resp) => {
         case 'label':
             // User scenario: After several tedious typing of the manifest path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.
+            let manifestFileName = '';
+            let labelName = '';
+            // First label is manifest ID
+            if (userInput[2][0] != '\"')
+            {
+                // If the 2nd space-separated field doesn't begin with a \", it is a manifestFileName (not a label)
+                // extract labels from all fields AFTER the manifestFileName
+                labelArray = repo.extractLabels(userInput.slice(3));
+                userInput[3] = labelArray[0];
+            }
+            else
+            {
+                // extract labels from all fields beginning from the 2nd field (the first manifest file name block)
+                labelArray = repo.extractLabels(userInput.slice(1));
+                userInput[2] = labelArray[0];
+                userInput[3] = labelArray[1];
+                console.log(...labelArray);
+            }
+            
+            
             jstLabels = handlers.generateLabelsMap(userInput[1]);
             // Debugging: Check generated map
             console.log('JSTLabels size: ' + jstLabels.size);
             for (let [key, value] of jstLabels) {
                 console.log(key + ' : ' + value);
             }
-            console.log();
             // End of Debugging section
             handlers.createLabel(jstLabels);
             // TODO implement ejs for the web page
