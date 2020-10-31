@@ -98,6 +98,7 @@ const create_repo = (fArray) => {
     repo.commitFiles(fArray);
 
     // 'makeManifestFile()' GENERATES MANIFEST FILE AND NECESSARY ARTIFACT IDs
+    // Should we append the first manifest so we can have a default label?
     repo.makeManifestFile(fArray);   
 }
 
