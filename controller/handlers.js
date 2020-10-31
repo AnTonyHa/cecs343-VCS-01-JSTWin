@@ -86,7 +86,7 @@ const create_repo = (fArray) => {
     fs.ensureDirSync(path.join(dstDir, '.JSTWepo', '.man'));
 
     // Create a .labels.txt for handling labels
-    fs.ensureDirSync(path.join(dstDir, '.JSTWepo', '.labels.txt'));
+    fs.ensureFileSync(path.join(dstDir, '.JSTWepo', '.labels.txt'));
 
     // 'fileKeeper()' PARSES '{source path}' FOR ARCHIVABLE CONTENT
     // arg 1: 'srcDir': path to root of project tree to be archived
