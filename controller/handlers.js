@@ -160,6 +160,7 @@ const createLabel = (labelsMap) => {
     let newLabel = '';
     let targetManifest = '';
     let newLabelIndex = 3;
+
     // Step 1: Check if user's input of index 2 is a manifest or a label
     if (global.userInput[2].startsWith('"')) {
         // Grab existed label wrapped in double quotes
@@ -208,7 +209,12 @@ const generateLabelsMap = (usrRepoPath) => {
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
     for (i = 0; i < readLabels.length - 1; i++) {
         let labelManifest = readLabels[i].split(' ');
-        result.set(labelManifest[0].trim(), labelManifest[1].trim());
+        let label = '';
+        // label is from index 0 to labelManifest.length - 2, the last index contains manifest
+        for (let j = 0; j < label.length - 1; j++) {
+            label += labelManifest[j];
+        }
+        result.set(label.trim(), labelManifest[labelManifest.length - 1].trim());
     }
     return result;
 }
