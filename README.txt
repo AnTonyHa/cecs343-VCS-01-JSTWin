@@ -80,9 +80,9 @@ Signature:  label <repositoryPath> <manifestFileName> <label>
 	- label
 		- A keyword alias for a manifest file
 
-check-out
-Signature: check-out <repositoryPath> <rebuildPath> <label>
-	- The check-out command is used to recreate a snapshot of a project in a specified location 
+rebuild
+Signature: rebuild <repositoryPath> <rebuildPath> <label>
+	- The rebuild command is used to recreate a snapshot of a project in a specified location 
 	  (the specified location is assumed to be an empty directory)
 	Arguments:
 	- repositoryPath

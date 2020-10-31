@@ -232,6 +232,42 @@ const consoleEcho = (userCMD) => {
 const rootDir = path.dirname(process.mainModule.filename);
 
 /**
+ * This helper function extracts a manifest-labelList hashmap
+ * to help with outputting the logs
+ */
+const getManifestMap = (repoPath) => 
+{
+    let manMap = new Map();
+    let labelsPath = path.join(repoPath, '.JSTWepo', '.labels.txt');
+    let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
+    
+    // Why does it split an extra empty line?
+    for (i = 0; i < readLabels.length - 1; i++) 
+    {
+        let labelManifest = readLabels[i].split(' ');
+        let manifestFileName = labelManifest[labelManifest.length - 1];
+        let labelName = "";
+        
+        for (j = 0; j < labelManifest.length - 1; j++)
+        {
+            labelName += (labelManifest[j] + ' ');
+        }
+        
+        
+        if (manMap.has(manifestFileName))
+        {
+            let newLabel = manMap.get(manifestFileName) + (' | ' + labelName);
+            manMap.set(manifestFileName, newLabel);
+        }
+        else
+        {
+            manMap.set(labelManifest[1].trim(), labelManifest[0].trim());
+        }
+    }
+    return manMap;
+}
+
+/**
  * Concatenate splitted user input for string start & end with double quote.
  * @param {int} srcIndex
  * @returns constructed string or empty if string doesn't start with double quote
@@ -263,5 +299,6 @@ module.exports = {
     crossReference,
     recreator,
     unrooterator,
+    getManifestMap,
     constructInputLabel
 };

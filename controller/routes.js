@@ -38,7 +38,7 @@ router.post('/executeCMD', (req, resp) => {
             handlers.create_repo(fArray);
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
-        case 'check-out':
+        case 'rebuild':
             handlers.check_out();
             break;
         case 'log':
