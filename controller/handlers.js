@@ -207,15 +207,25 @@ const generateLabelsMap = (usrRepoPath) => {
     result = new Map();
     let labelsPath = path.join(usrRepoPath, '.JSTWepo', '.labels.txt');
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
+    console.log('readLabel size: ' + readLabels.length);
     for (i = 0; i < readLabels.length - 1; i++) {
         let labelManifest = readLabels[i].split(' ');
+        console.log('labelManifest: ' + labelManifest);
         let label = '';
         // label is from index 0 to labelManifest.length - 2, the last index contains manifest
-        for (let j = 0; j < label.length - 1; j++) {
-            label += labelManifest[j];
+        for (let j = 0; j < labelManifest.length - 1; j++) {
+            console.log('labelManifest: ' + labelManifest);
+            label += labelManifest[j] + ' ';
         }
         result.set(label.trim(), labelManifest[labelManifest.length - 1].trim());
     }
+    // Debugging: see if map is generated properly
+    console.log('labelsMap:');
+    for (let [key, value] of result) {
+        console.log(key + ' = ' + value);
+    }
+    console.log();
+    // End Debugging
     return result;
 }
 
