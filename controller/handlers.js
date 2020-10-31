@@ -192,7 +192,7 @@ const generateLabelsMap = (usrRepoPath) => {
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
     // Why does it split an extra empty line?
     for (i = 0; i < readLabels.length - 1; i++) {
-        let labelManifest = readLabels[i].split(':');
+        let labelManifest = readLabels[i].split(' ');
         result.set(labelManifest[0].trim(), labelManifest[1].trim());
     }
     return result;
