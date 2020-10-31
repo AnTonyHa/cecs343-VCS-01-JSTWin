@@ -35,6 +35,15 @@ router.post('/executeCMD', (req, resp) => {
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
         case 'rebuild':
+            // rebuild <src> <repo> <label>
+            
+            // userInput is a label, not a manifest file
+            if (userInput[3][0] == '\"')
+            {
+                // This extracts the label from the last element (sliced just in case it is multi-word)
+                UserInput[3] = repo.extractLabels(userInput.slice(3));
+            }
+            
             handlers.check_out(resp);
             break;
         case 'log':
@@ -44,14 +53,6 @@ router.post('/executeCMD', (req, resp) => {
             break;
         case 'update':
             let update = handlers.boolUpdate();
-            // update <src> <repo> <label>
-            
-            // userInput is a label, not a manifest file
-            if (userInput[3][0] == '\"')
-            {
-                // This extracts the label from the last element (sliced just in case it is multi-word)
-                UserInput[3] = repo.extractLabels(userInput.slice(3));
-            }
 
             if(update){
                 handlers.update(fArray);
@@ -66,32 +67,11 @@ router.post('/executeCMD', (req, resp) => {
         case 'label':
             // User scenario: After several tedious typing of the manifest path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.
-
-            // Jacob's implementation
-            // let manifestFileName = '';
-            // let labelName = '';
-            // // First label is manifest ID
-            // if (userInput[2][0] != '\"')
-            // {
-            //     // If the 2nd space-separated field doesn't begin with a \", it is a manifestFileName (not a label)
-            //     // extract labels from all fields AFTER the manifestFileName
-            //     labelArray = repo.extractLabels(userInput.slice(3));
-            //     userInput[3] = labelArray[0];
-            // }
-            // else
-            // {
-            //     // extract labels from all fields beginning from the 2nd field (the first manifest file name block)
-            //     labelArray = repo.extractLabels(userInput.slice(1));
-            //     userInput[2] = labelArray[0];
-            //     userInput[3] = labelArray[1];
-            //     console.log(...labelArray);
-            // }
-            // End of Jacobs' implementation
-            
             jstLabels = handlers.generateLabelsMap(userInput[1]);
             handlers.createLabel(jstLabels);
             // TODO implement ejs for the web page
-            resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });
+            let newRes = handlers.log();
+            resp.render('responsePage', {dispType: 'lg-console', log: newRes});
             break;
         default:
             resp.render('responsePage', { dispType: 'syn-error', userCMD: userInput });

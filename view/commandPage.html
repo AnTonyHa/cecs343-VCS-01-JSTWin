@@ -103,7 +103,7 @@
                 </li>
                 <ul>
                     <li>
-                        Output is displayed in browser
+                        All labels corresponding to each commit are listed
                     </li>
                 </ul>
             </ul>
@@ -146,17 +146,18 @@
                 </li>
                 <ul>
                     <li>The name of the manifest file (an existing label can be used as an alias)</li>
+                    <li>Label of form: man-#.rc, "man-#", "label"</li>
                 </ul>
                 <li>
                     label
                 </li>
                 <ul>
-                    <li>A keyword alias for a manifest file</li>
+                    <li>A double quoted string ("this label") or an exact manifest file ID (man-#.rc)</li>
                 </ul>
             </ul>
         </div>
-        <div id="rebuild">
-            <h2>check-out</h2>
+        <div id="rebuild"> 
+            <h2>rebuild</h2>
             <p>Signature: <strong>rebuild</strong> &lt;repositoryPath&gt; &lt;rebuildPath&gt; &lt;label&gt;</p>
             <ul>
                 <li>
@@ -181,7 +182,7 @@
                     label
                 </li>
                 <ul>
-                    <li>A keyword alias for a manifest file (explict manifest file names also accepted)</li>
+                    <li>A double quoted string ("this label") or an exact manifest file ID (man-#.rc)</li>
                 </ul>
             </ul>
         </div>

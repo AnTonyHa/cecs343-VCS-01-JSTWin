@@ -49,7 +49,7 @@ log
 Signature: log <repositoryPath>
 	- The log command is used to visualize previous commits (including the create command) and the
 	  date/time when they were committed (in preparation for project roll-back capabilities).
-		- Output is displayed in browser
+		- All labels corresponding to each commit are listed
 	Arguments:
 	- projectPath
 		- An absolute path to the project root directory that you wish to create a repository from
@@ -77,8 +77,9 @@ Signature:  label <repositoryPath> <manifestFileName> <label>
 		- An absolute path to the location of a repository
 	- manifestFileName
 		- The name of the manifest file (an existing label can be used as an alias)
+        - Label of form: man-#.rc, "man-#", "label"
 	- label
-		- A keyword alias for a manifest file
+		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
 
 rebuild
 Signature: rebuild <repositoryPath> <rebuildPath> <label>
@@ -90,7 +91,7 @@ Signature: rebuild <repositoryPath> <rebuildPath> <label>
 	- rebuildPath
 		- An absolute path to the location where the project snapshot is to be rebuilt
 	- label
-		- A keyword alias for a manifest file (explict manifest file name's also accepted)
+		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
 
 ### Caveats ###
 - JSTWepo is in its beta-release, it is not yet a finished product and as result it has minimal function
