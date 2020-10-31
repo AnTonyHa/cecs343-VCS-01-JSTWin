@@ -12,8 +12,6 @@ const path = require('path');
 const fs = require('fs-extra');
 const repo = require('./scratch');
 const readline = require('readline');
-const { maroon } = require('color-name');
-const { realpath } = require('fs');
 
 // returns whether the repo can update the repo or not with the given repo path
 const boolUpdate = () => {
@@ -42,7 +40,7 @@ const update = (fArray) => {
     repo.makeManifestFile(fArray);
 }
 
-const check_out = () => {
+const check_out = (resp) => {
     let pathToMan = path.join(global.userInput[1], '.JSTWepo', '.man', global.userInput[3]);
     // CREATE INTERFACE TO READ FILE LINE BY LINE USING 'readStream' CLASS
     let readAPI = readline.createInterface({
@@ -69,7 +67,11 @@ const check_out = () => {
         lineCount++;
     }).on('close', () => { // 'close' signal emitted once 'readAPI' reaches end of file
         repo.recreator(fileMap);
-    });
+
+        repo.makeManifestFile(fileMap);
+
+        resp.render('responsePage', { dispType: 'co-console', okFiles: fileMap, userCMD: userInput });
+    })
 }
 
 const create_repo = (fArray) => {
@@ -106,7 +108,6 @@ const log = () => {
     // Map of Key:manFileName Value:string of labels
     let manMap = repo.getManifestMap(absPath);
     try {
-        console.log('Absolute path: ' + absPath);
         let repoPath = path.join(absPath, '.JSTWepo');
         // Fail-safe: Check if .JSTWepo existed
         if (fs.existsSync(repoPath)) {
@@ -205,6 +206,7 @@ const createLabel = (labelsMap) => {
  */
 const generateLabelsMap = (usrRepoPath) => {
     result = new Map();
+    
     let labelsPath = path.join(usrRepoPath, '.JSTWepo', '.labels.txt');
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
     console.log('readLabel size: ' + readLabels.length);
