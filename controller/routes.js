@@ -19,11 +19,6 @@ const handlers = require('./handlers');
 // STORE USER INPUT FROM WEB-BROWSER/'CLI' AS GLOBAL VARIABLE
 global.userInput;
 
-// TESTING DIFFERENCE BETWEEN '.use()' AND '.get()'
-// '.use' IS MORE GENERIC, WILL WORK FOR ALL HTTP METHODS
-// '.get' FOR ONLY GET REQUESTS (SIMPLE URLs)
-// '.post' FOR ONLY POST REQUESTS (SAFER FOR FORMS)
-
 // HANDLER FOR 'execute' BUTTON ON LANDING PAGE
 router.post('/executeCMD', (req, resp) => {
     // 'body-parser' SEARCHES THROUGH PAGE FOR CORRESPONDING ELEMENT NAME
@@ -40,7 +35,7 @@ router.post('/executeCMD', (req, resp) => {
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
         case 'rebuild':
-            handlers.check_out();
+            handlers.check_out(resp);
             break;
         case 'log':
             // TODO Modify log function to show associated labels
@@ -67,7 +62,7 @@ router.post('/executeCMD', (req, resp) => {
                 resp.render('responsePage', {dispType: 'path-error'});
                 break;
             }
-        // user input arguments: 1 = JSTWepo's path, 2 = manifest file name, 3 = label
+        // user input arguments: 1 = JSTWepo's path, 2 = manifest file name or "existed label", 3 = "new label"
         case 'label':
             // User scenario: After several tedious typing of the manifest path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.

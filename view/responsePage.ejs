@@ -59,6 +59,15 @@
             <% }); %>
         </ul>
         <% }
+                    else if (dispType === 'co-console') { %>
+        <h4> '<%= userCMD[0] %>' successfully EXECUTED! </h4>
+        <p> Files cloned to new project tree: </p>
+        <ul class="okFiles-list">
+            <% okFiles.forEach ( (relPath, artID) => { %>
+            <li> <%= relPath %> </li>
+            <% }); %>
+        </ul>
+        <% }
                     else if (dispType === 'lg-console') { %>
         <h4> LOG FILES FOR REPO </h4>
 
