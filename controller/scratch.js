@@ -231,10 +231,10 @@ const consoleEcho = (userCMD) => {
 
 const rootDir = path.dirname(process.mainModule.filename);
 
-/*
-This helper function extracts a manifest-labelList hashmap
-to help with outputting the logs
-*/
+/**
+ * This helper function extracts a manifest-labelList hashmap
+ * to help with outputting the logs
+ */
 const getManifestMap = (repoPath) => 
 {
     let manMap = new Map();
@@ -267,6 +267,26 @@ const getManifestMap = (repoPath) =>
     return manMap;
 }
 
+/**
+ * Concatenate splitted user input for string start & end with double quote.
+ * @param {int} srcIndex
+ * @returns constructed string or empty if string doesn't start with double quote
+ */
+const constructInputLabel = (srcIndex) => {
+    let strResult = '';
+    if (global.userInput[srcIndex].startsWith('"')) {
+        let label = global.userInput[srcIndex];
+        let inputIndex = srcIndex;
+        while (!global.userInput[inputIndex].endsWith('"')) {
+            label += ' ' + global.userInput[++inputIndex];
+        } 
+        // Split into an array of size 3: ['', label, ''] from a string: "label"
+        label = label.split('"');
+        strResult = label[1];
+    }
+    return strResult;
+}
+
 // BUNDLE ALL MISC FUNCTIONS INTO ARRAY AND EXPORT
 module.exports = {
     fileKeeper,
@@ -279,5 +299,6 @@ module.exports = {
     crossReference,
     recreator,
     unrooterator,
-    getManifestMap
+    getManifestMap,
+    constructInputLabel
 };

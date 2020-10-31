@@ -154,23 +154,31 @@ const log = () => {
  * @param {String} labelsMap Map of labels
  */
 const createLabel = (labelsMap) => {
-    // user input arguments: 1 = JSTWepo's path, 2 = manifest file name, 3 = label
+    // user input arguments: 1 = JSTWepo's path, 2 = manifest file name or "existed label", 3 = "new label"
     // Assume user will always create a UNIQUE label that is no longer than 20 characters included space
     // Assume user knows exactly the JSTWepo's folder path
-    let label = userInput[3];
+    let label = '';
+    // TODO Step 1: Check if user's input of index 2 is a manifest or a label
+    for (let i = 3; i < global.userInput.length; i++) {
+        label += global.userInput[i] + ' ';
+    }
     let manifest = '';
     // Check if the second argument is a created label
-    if (labelsMap.has(userInput[2])) {
+    if (labelsMap.has(global.userInput[2])) {
         manifest = labelsMap.get(userInput[2]);
     } else {
         manifest = userInput[2];
     }
-    let manifestPath = path.join(userInput[1], '.man', manifest);
+    let manifestPath = path.join(global.userInput[1], '.JSTWepo', '.man', manifest);
     if (fs.existsSync(manifestPath)) {
         labelsMap.set(label, manifest);
         // This do 2 things: 1. If .labels is not exist then make a .labels and write the line
         // 2. If .labels existed then append new line
-        fs.appendFileSync(path.join(userInput[1], '.labels'), label + ':' + manifest + '\n');
+        try {
+            fs.appendFileSync(path.join(global.userInput[1], '.JSTWepo', '.labels'), label.trim() + ' ' + manifest.trim() + '\n');
+        } catch (err) {
+            console.error(err.message);
+        }
     } else {
         console.log('The Manifest file does not exist. No label created!');
     }
@@ -186,7 +194,7 @@ const generateLabelsMap = (usrRepoPath) => {
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
     // Why does it split an extra empty line?
     for (i = 0; i < readLabels.length - 1; i++) {
-        let labelManifest = readLabels[i].split(':');
+        let labelManifest = readLabels[i].split(' ');
         result.set(labelManifest[0].trim(), labelManifest[1].trim());
     }
     return result;

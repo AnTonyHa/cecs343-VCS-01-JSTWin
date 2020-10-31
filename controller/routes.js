@@ -57,7 +57,7 @@ router.post('/executeCMD', (req, resp) => {
                 resp.render('responsePage', {dispType: 'path-error'});
                 break;
             }
-        // user input arguments: 1 = JSTWepo's path, 2 = manifest file name, 3 = label
+        // user input arguments: 1 = JSTWepo's path, 2 = manifest file name or "existed label", 3 = "new label"
         case 'label':
             // User scenario: After several tedious typing of the manifest path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.
