@@ -235,17 +235,29 @@ const rootDir = path.dirname(process.mainModule.filename);
 This helper function extracts a manifest-labelList hashmap
 to help with outputting the logs
 */
-const getManifestMap = (repoPath) => {
+const getManifestMap = (repoPath) => 
+{
     let manMap = new Map();
     let labelsPath = path.join(repoPath, '.JSTWepo', '.labels.txt');
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
+    
     // Why does it split an extra empty line?
-    for (i = 0; i < readLabels.length - 1; i++) {
+    for (i = 0; i < readLabels.length - 1; i++) 
+    {
         let labelManifest = readLabels[i].split(' ');
-        if (manMap.has(labelManifest[1]))
+        let manifestFileName = labelManifest[labelManifest.length - 1];
+        let labelName = "";
+        
+        for (j = 0; j < labelManifest.length - 1; j++)
         {
-            let newLabel = manMap.get(labelManifest[1]) + (' ' + labelManifest[0]);
-            manMap.set(labelManifest[1], newLabel);
+            labelName += (labelManifest[j] + ' ');
+        }
+        
+        
+        if (manMap.has(manifestFileName))
+        {
+            let newLabel = manMap.get(manifestFileName) + (' | ' + labelName);
+            manMap.set(manifestFileName, newLabel);
         }
         else
         {

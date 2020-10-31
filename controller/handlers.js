@@ -134,7 +134,6 @@ const log = () => {
                     fs.statSync(mPath).birthtime.toTimeString();
                 logResults.push(manDateTime);
                 // push labels
-                console.log(path.basename(mPath, '.rc'));
                 logResults.push(manMap.get(path.basename(mPath, ".rc") + '.rc'));
                 // push a new line
                 logResults.push("-------------------------------------------------------");
