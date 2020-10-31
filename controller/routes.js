@@ -66,24 +66,27 @@ router.post('/executeCMD', (req, resp) => {
         case 'label':
             // User scenario: After several tedious typing of the manifest path to use this VCS program. User decides it is much better if he/she
             // have a shortened reference to any particular snapshot that reside in the repo.
-            let manifestFileName = '';
-            let labelName = '';
-            // First label is manifest ID
-            if (userInput[2][0] != '\"')
-            {
-                // If the 2nd space-separated field doesn't begin with a \", it is a manifestFileName (not a label)
-                // extract labels from all fields AFTER the manifestFileName
-                labelArray = repo.extractLabels(userInput.slice(3));
-                userInput[3] = labelArray[0];
-            }
-            else
-            {
-                // extract labels from all fields beginning from the 2nd field (the first manifest file name block)
-                labelArray = repo.extractLabels(userInput.slice(1));
-                userInput[2] = labelArray[0];
-                userInput[3] = labelArray[1];
-                console.log(...labelArray);
-            }
+
+            // Jacob's implementation
+            // let manifestFileName = '';
+            // let labelName = '';
+            // // First label is manifest ID
+            // if (userInput[2][0] != '\"')
+            // {
+            //     // If the 2nd space-separated field doesn't begin with a \", it is a manifestFileName (not a label)
+            //     // extract labels from all fields AFTER the manifestFileName
+            //     labelArray = repo.extractLabels(userInput.slice(3));
+            //     userInput[3] = labelArray[0];
+            // }
+            // else
+            // {
+            //     // extract labels from all fields beginning from the 2nd field (the first manifest file name block)
+            //     labelArray = repo.extractLabels(userInput.slice(1));
+            //     userInput[2] = labelArray[0];
+            //     userInput[3] = labelArray[1];
+            //     console.log(...labelArray);
+            // }
+            // End of Jacobs' implementation
             
             jstLabels = handlers.generateLabelsMap(userInput[1]);
             handlers.createLabel(jstLabels);
