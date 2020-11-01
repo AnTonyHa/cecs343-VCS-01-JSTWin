@@ -137,7 +137,7 @@ const makeManifestFile = (fileArray) => {
     fileArray.forEach( (pathToFile, artID) => {
         let relPath = absolute2Relative(srcActual, pathToFile);
 
-        fs.appendFileSync(manifestFile, `${artID} @ ${relPath}\n`);
+        fs.appendFileSync(manifestFile, `${artID} <-> ${relPath}\n`);
     });
     
     // Appends 'man-x man-x' to the end of the .labels.txt file if it exists, otherwise

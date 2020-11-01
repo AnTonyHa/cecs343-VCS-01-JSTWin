@@ -60,7 +60,7 @@ const check_out = (resp) => {
     readAPI.on('line', line => {
         // SKIP HEADER INFO OF '.man' FILE
         if (lineCount > 3 && line.length != 0) {
-            let contents = line.split('@');
+            let contents = line.split('<->');
 
             // ADD NEW ENTRY TO 'fileMap' WHERE:
             // 'key'   = artifact-ID (first half of line read)
@@ -71,6 +71,8 @@ const check_out = (resp) => {
         lineCount++;
     }).on('close', () => { // 'close' signal emitted once 'readAPI' reaches end of file
         repo.recreator(fileMap);
+
+        fs.ensureDirSync(path.join(global.userInput[2], '.JSTWepo', '.man'));
 
         repo.makeManifestFile(fileMap);
 
