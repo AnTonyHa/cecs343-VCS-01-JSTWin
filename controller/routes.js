@@ -38,11 +38,13 @@ router.post('/executeCMD', (req, resp) => {
             // rebuild <source repository> <empty directory> <label or manifest>
             
             // userInput is a label, not a manifest file
-            // if (userInput[3][0] == '\"')
-            // {
-            //     // This extracts the label from the last element (sliced just in case it is multi-word)
-            //     UserInput[3] = repo.extractLabels(userInput.slice(3));
-            // }
+            if (userInput[3][0] == '\"')
+            {
+                // This extracts the label from the last element (sliced just in case it is multi-word)
+                let labelArr = repo.extractLabels(userInput.slice(3));
+                userInput[3] = labelArr[0];
+                console.log(userInput[3]);
+            }
             
             handlers.check_out(resp);
             break;
