@@ -43,8 +43,9 @@ const update = (fArray) => {
 const check_out = (resp) => {
     // rebuild <source repository> <empty directory> <label or manifest>
     let labelsMap = generateLabelsMap(global.userInput[1]);
-    let manifestFile = searchForManifest(global.userInput[3], labelsMap);
+    let manifestFile = searchForManifest(3, labelsMap);
     let pathToMan = path.join(global.userInput[1], '.JSTWepo', '.man', manifestFile);
+    console.log('Manifest path: ' + pathToMan);
     // CREATE INTERFACE TO READ FILE LINE BY LINE USING 'readStream' CLASS
     let readAPI = readline.createInterface({
         input: fs.createReadStream(pathToMan)
