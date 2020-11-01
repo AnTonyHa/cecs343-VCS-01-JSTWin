@@ -1,4 +1,4 @@
-JSTWin's Version Control System (JSTWepo) - Project 1
+JSTWin's Version Control System (JSTWepo) - Project 2
 CECS 343, Siska Fall 2020
 
 ### Team Members ###
