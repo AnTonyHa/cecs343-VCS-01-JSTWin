@@ -41,7 +41,11 @@ const update = (fArray) => {
 }
 
 const check_out = (resp) => {
-    let pathToMan = path.join(global.userInput[1], '.JSTWepo', '.man', global.userInput[3]);
+    // rebuild <source repository> <empty directory> <label or manifest>
+    let labelsMap = generateLabelsMap(global.userInput[1]);
+    let manifestFile = searchForManifest(3, labelsMap);
+    let pathToMan = path.join(global.userInput[1], '.JSTWepo', '.man', manifestFile);
+    console.log('Manifest path: ' + pathToMan);
     // CREATE INTERFACE TO READ FILE LINE BY LINE USING 'readStream' CLASS
     let readAPI = readline.createInterface({
         input: fs.createReadStream(pathToMan)
@@ -232,6 +236,30 @@ const generateLabelsMap = (usrRepoPath) => {
     }
     console.log();
     // End Debugging
+    return result;
+}
+
+/**
+ * Command helper: Check if user's input is a label or manifest file name
+ * @param {int} srcIndex index of user's input of manifest file name or a label
+ * @returns manifest file name
+ */
+const searchForManifest = (srcIndex, labelsMap) => {
+    let result = '';
+    if (global.userInput[srcIndex].startsWith('"')) {
+        // Grab existed label wrapped in double quotes
+        let existedLabel = repo.constructInputLabel(srcIndex);
+        // Check if the label of second argument existed in labelsMap 
+        if (labelsMap.has(existedLabel)) {
+            result = labelsMap.get(existedLabel);
+        } else {
+            // FAIL case: targetManifest is empty
+            console.log('Label "' + existedLabel + '" does not exist.');
+        }
+    } else {
+        // Default case: user specified manifest file name
+        result = global.userInput[srcIndex];
+    }
     return result;
 }
 
