@@ -72,8 +72,6 @@ const check_out = (resp) => {
     }).on('close', () => { // 'close' signal emitted once 'readAPI' reaches end of file
         repo.recreator(fileMap);
 
-        fs.ensureDirSync(path.join(global.userInput[2], '.JSTWepo', '.man'));
-
         repo.makeManifestFile(fileMap);
 
         resp.render('responsePage', { dispType: 'co-console', okFiles: fileMap, userCMD: userInput });
