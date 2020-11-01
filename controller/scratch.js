@@ -327,7 +327,7 @@ const extractLabels = (input) =>
 }
 /**
  * Concatenate splitted user input for string start & end with double quote.
- * @param {int} srcIndex
+ * @param {int} srcIndex this is the index of user's input of manifest name or label
  * @returns constructed string or empty if string doesn't start with double quote
  */
 const constructInputLabel = (srcIndex) => {
