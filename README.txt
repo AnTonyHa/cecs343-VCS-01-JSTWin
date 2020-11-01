@@ -47,18 +47,16 @@ Signature: create <projectPath> <repositoryPath>
 
 log 
 Signature: log <repositoryPath>
-	- The log command is used to visualize previous commits (including the create command) and the
+	- The log command is used to visualize previous commits and the
 	  date/time when they were committed (in preparation for project roll-back capabilities).
 		- All labels corresponding to each commit are listed
 	Arguments:
-	- projectPath
-		- An absolute path to the project root directory that you wish to create a repository from
 	- repositoryPath
 		- An absolute path to the location of a repository
 
 update 
 Signature: update <projectPath> <repositoryPath>
-	- The create command is used to update a repository with the current contents of the project
+	- The update command is used to update a repository with the current contents of the project
 	- The repository will not be updated if the repositoryPath does not contain a ".JSTWepo" folder.
 	Arguments:
 	- projectPath
@@ -68,9 +66,8 @@ Signature: update <projectPath> <repositoryPath>
 
 label
 Signature:  label <repositoryPath> <manifestFileName> <label> 
-	- The label command allows a user to rename a snapshot of a project with another name to allow for easy
-	  reference, and ease of use with the check-out command
-		- A label may be up to 20 characters with spaces included
+	- The label command allows a user to rename a snapshot of a project with an alias to allow for easy
+	  reference, and ease of use with the rebuild command
 		- There is no limit to the number of labels that can be mapped to a manifest file
 	Arguments:
 	- repositoryPath
@@ -80,6 +77,7 @@ Signature:  label <repositoryPath> <manifestFileName> <label>
         - Label of form: man-#.rc, "man-#", "label"
 	- label
 		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
+        - Label of form: label"
 
 rebuild
 Signature: rebuild <repositoryPath> <rebuildPath> <label>
@@ -92,6 +90,8 @@ Signature: rebuild <repositoryPath> <rebuildPath> <label>
 		- An absolute path to the location where the project snapshot is to be rebuilt
 	- label
 		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
+        - Label of form: label"
+
 
 ### Caveats ###
 - JSTWepo is in its beta-release, it is not yet a finished product and as result it has minimal function

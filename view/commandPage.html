@@ -39,7 +39,7 @@
             <p>Signature: <strong>create</strong> &lt;projectPath&gt; &lt;repositoryPath&gt;</p>
             <ul>
                 <li>
-                    The create command is used to initialize a repository with the current contents of the project
+                    The create command is used to initialize a repository with the current contents of the project.
                 </li>
                 <ul>
                     <li>'.' files are ignored in repository creation, e.g. ".foo.txt", ".bar.html"</li>
@@ -72,7 +72,7 @@
             <p>Signature: <strong>update</strong> &lt;projectPath&gt; &lt;repositoryPath&gt;</p>
             <ul>
                 <li>
-                    The create command is used to update a repository with the current contents of the project
+                    The update command is used to update a repository with the current contents of the project.
                 </li>
                 <li>
                     The repository will not be updated if the repositoryPath does not contain a ".JSTWepo" folder.
@@ -99,7 +99,7 @@
             <p>Signature: <strong>log</strong> &lt;repositoryPath&gt;</p>
             <ul>
                 <li>
-                    The log command is used to visualize previous commits (including the create command) and the date/time when they were committed (in preparation for project roll-back capabilities).
+                    The log command is used to visualize previous commits and the date/time when they were committed.
                 </li>
                 <ul>
                     <li>
@@ -122,12 +122,9 @@
             <p>Signature: <strong>label</strong> &lt;repositoryPath&gt; &lt;manifestFileName&gt; &lt;label&gt; </p>
             <ul>
                 <li>
-                    The label command allows a user to rename a snapshot of a project with another name to allow for easy reference, and ease of use with the check-out command
+                    The label command allows a user to rename a snapshot of a project with an alias to allow for easy reference, and ease of use with the check-out command
                 </li>
                 <ul>
-                    <li>
-                        A label may be up to 20 characters with spaces included
-                    </li>
                     <li>
                         There is no limit to the number of labels that can be mapped to a manifest file
                     </li>
@@ -153,6 +150,7 @@
                 </li>
                 <ul>
                     <li>A double quoted string ("this label") or an exact manifest file ID (man-#.rc)</li>
+                    <li>Label of form: "label"</li>
                 </ul>
             </ul>
         </div>
@@ -183,6 +181,7 @@
                 </li>
                 <ul>
                     <li>A double quoted string ("this label") or an exact manifest file ID (man-#.rc)</li>
+                    <li>Label of form: "label"</li>
                 </ul>
             </ul>
         </div>
