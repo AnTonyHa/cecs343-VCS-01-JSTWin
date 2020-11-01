@@ -117,8 +117,8 @@ const commitFiles = (fileArray) => {
 
 const makeManifestFile = (fileArray) => {
     let userCMD = global.userInput;
-    let repoActual = (userCMD[0] === 'check_out') ? userCMD[1] : userCMD [2];
-    let srcActual = (userCMD[0] === 'check_out') ? userCMD[2] : userCMD [1];
+    let repoActual = (userCMD[0] === 'rebuild') ? userCMD[1] : userCMD [2];
+    let srcActual = (userCMD[0] === 'rebuild') ? userCMD[2] : userCMD [1];
     // FORMAT FOR MANIFEST FILES: .manifest-{iteration}.rc
     var iteration = 1;
     // NODE SERVER SEARCHES FOR '.git/.man' DIRECTORY AND COLLECTS ALL FILES INTO 'manDir' ARRAY

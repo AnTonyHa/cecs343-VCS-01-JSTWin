@@ -35,17 +35,7 @@ router.post('/executeCMD', (req, resp) => {
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
         case 'rebuild':
-            // rebuild <source repository> <empty directory> <label or manifest>
-            
-            // userInput is a label, not a manifest file
-            if (userInput[3][0] == '\"')
-            {
-                // This extracts the label from the last element (sliced just in case it is multi-word)
-                let labelArr = repo.extractLabels(userInput.slice(3));
-                userInput[3] = labelArr[0];
-                console.log(userInput[3]);
-            }
-            
+            // rebuild <source repository> <empty directory> <label or manifest>            
             handlers.check_out(resp);
             break;
         case 'log':
