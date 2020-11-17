@@ -12,7 +12,8 @@ body {
     padding: 0;
     margin: 0;
     font-family: 'Antic';
-    background: url('purple sunset.gif');
+    background: url('purple-sunset-over-the-ocean.jpg');
+    background-size: cover;
     Overflow-y: scroll;
 }
 
@@ -22,7 +23,7 @@ body {
     padding: 0;
     width: 100%;
     height: 5rem;
-    background-image: linear-gradient(rgba(7, 0, 15, 0.7), rgba(48, 0, 102, 0.7));
+    background-image: linear-gradient(rgba(30, 6, 36, 0.90), rgba(52, 14, 61, 0.6));
     color: rgb(255, 255, 255);
     justify-content: center;
 }
@@ -35,14 +36,14 @@ body {
     height: 3rem;
 
     font-size: 25px;
-    background-image: linear-gradient(rgba(48, 0, 102, 0.7), rgba(48, 0, 102, 0.5), rgba(255, 0, 0, 0));
+    background-image: linear-gradient(rgba(52, 14, 61, 0.6), rgba(52, 14, 61, 0.4), rgba(255, 0, 0, 0));
     color: rgb(255, 255, 255);
     justify-content: space-evenly;
 }
 
 .proxy-console {
     padding: 2rem;
-    border: 5px outset rgb(90, 1, 192);
+    border: 5px outset rgb(0, 0, 0);
     background-color: rgb(50, 61, 65);
     color: white;
 }
