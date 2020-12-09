@@ -40,12 +40,16 @@ const update = (fArray) => {
     repo.makeManifestFile(fArray);
 }
 
+// (1) 'merge_out'   <source repository> <target project tree> <label or manifest>
+// (2) 'rebuild' <source repository> <empty directory> <label or manifest>            
 const check_out = (resp) => {
-    // rebuild <source repository> <empty directory> <label or manifest>
+    // THIS SECTION FOR PARSING 'LABELS'
     let labelsMap = generateLabelsMap(global.userInput[1]);
     let manifestFile = searchForManifest(3, labelsMap);
+
+    // THIS SECTION FOR IDENTIFYING PATH TO FINAL .MANIFEST FILE
     let pathToMan = path.join(global.userInput[1], '.JSTWepo', '.man', manifestFile);
-    console.log('Manifest path: ' + pathToMan);
+
     // CREATE INTERFACE TO READ FILE LINE BY LINE USING 'readStream' CLASS
     let readAPI = readline.createInterface({
         input: fs.createReadStream(pathToMan)
@@ -65,16 +69,25 @@ const check_out = (resp) => {
             // ADD NEW ENTRY TO 'fileMap' WHERE:
             // 'key'   = artifact-ID (first half of line read)
             // 'value' = relative path of file (second half of line read)
-            fileMap.set(contents[0].trim(), contents[1].trim());
+            if (global.userInput[0] === 'merge_out')
+                fileMap.set(contents[1].trim(), contents[0].trim());
+            else
+                fileMap.set(contents[0].trim(), contents[1].trim());
         }
 
         lineCount++;
     }).on('close', () => { // 'close' signal emitted once 'readAPI' reaches end of file
-        repo.recreator(fileMap);
-
-        repo.makeManifestFile(fileMap);
-
-        resp.render('responsePage', { dispType: 'co-console', okFiles: fileMap, userCMD: userInput });
+        if (global.userInput[0] === 'merge_out')
+        {
+            let mergePending = repo.merge_out(fileMap);     
+            resp.render('responsePage', { dispType: 'mo-console', okFiles: mergePending, userCMD: userInput });
+        }
+        else
+        {
+            repo.recreator(fileMap);
+            repo.makeManifestFile(fileMap);
+            resp.render('responsePage', { dispType: 'co-console', okFiles: fileMap, userCMD: userInput });
+        }
     })
 }
 

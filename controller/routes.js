@@ -34,8 +34,10 @@ router.post('/executeCMD', (req, resp) => {
             handlers.create_repo(fArray);
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
+        case 'merge_out':
         case 'rebuild':
-            // rebuild <source repository> <empty directory> <label or manifest>            
+            // (1) 'merge'   <source repository> <target project tree> <label or manifest>
+            // (2) 'rebuild' <source repository> <empty directory> <label or manifest>            
             handlers.check_out(resp);
             break;
         case 'log':
@@ -43,6 +45,7 @@ router.post('/executeCMD', (req, resp) => {
             let results = handlers.log();
             resp.render('responsePage', {dispType: 'lg-console', log: results});
             break;
+        case 'merge_in':
         case 'update':
             let update = handlers.boolUpdate();
 
