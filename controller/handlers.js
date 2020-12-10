@@ -21,6 +21,7 @@ const boolUpdate = () => {
     }
     return true;
 }
+
 // updates the repository with a new snapshot
 const update = (fArray) => {
     srcDir = global.userInput[1];
