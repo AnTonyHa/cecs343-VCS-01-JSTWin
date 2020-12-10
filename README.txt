@@ -77,7 +77,6 @@ Signature:  label <repositoryPath> <manifestFileName> <label>
         - Label of form: man-#.rc, "man-#", "label"
 	- label
 		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
-        - Label of form: label"
 
 rebuild
 Signature: rebuild <repositoryPath> <rebuildPath> <label>
@@ -90,7 +89,31 @@ Signature: rebuild <repositoryPath> <rebuildPath> <label>
 		- An absolute path to the location where the project snapshot is to be rebuilt
 	- label
 		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
-        - Label of form: label"
+
+merge_out
+Signature: merge_out <sourcePath> <targetPath> <label>
+	- The merge_out command compares the latest snapshots of the source branch and the target branch. 
+	  The target is merged into the source (leaving the target unchanged).
+	  To complete the merge process, the merge_in command must follow after the user has manually handled
+	  file conflicts between the two branches.
+	Arguments:
+	- sourceProjectPath
+		- An absolute path to the location of the source project root
+	- targetProjectPath
+		- An absolute path to the location of the target project root
+	- label
+		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
+
+merge_in
+Signature: merge_in <sourcePath> <repositoryPath>
+	- The merge_in command is manually called by the user after a merge_out command has been called 
+	  and conflicts have been manually resolved. Updates the source repository with the newest version
+	  of the application
+	Arguments:
+	- sourceProjectPath
+		- An absolute path to the location of the source project root
+	- repositoryPath
+		- An absolute path to the location of a repository
 
 
 ### Caveats ###
@@ -140,3 +163,5 @@ cecs343-VCS-01-JSTWin\view
 - React application refactor, allowing for easier development and visualization of changes
   in real-time
 - Graphical user interface similar to GitHub to improve accessibility
+- Refactoring interface to allow for easier use of commands 
+  (removing the need to consistently enter repoPath, etc.)
