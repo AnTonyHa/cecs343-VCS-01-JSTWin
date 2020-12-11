@@ -54,12 +54,23 @@ const fileKeeper = (parentDir, fileArray) => {
         // WITH ABSOLUTE PATH AS VALUE BEFORE INSERTING INTO HASHMAP
         if (fs.statSync(value).isFile() && object.toString().charAt(0) != '.')
         {
-            let key = getArtifactID(global.userInput[1], value);
+            let key = (global.userInput[0] === 'merge_out') ? getArtifactID(global.userInput[2], value) : 
+                                                          getArtifactID(global.userInput[1], value);
             fileArray.set(key, value);
         }        
         else if (fs.statSync(value).isDirectory() && object.charAt(0) != '.')
             fileKeeper(value, fileArray)
     });
+}
+
+const reverseMaperator = (fileMap) => {
+    let reversed = new Map ();
+
+    fileMap.forEach ( (value, key) => {
+        reversed.set(value, key);
+    })
+
+    return reversed;
 }
 
 // GENERATES CHECKSUM FROM A GIVEN STRING PER PROJECT REQUIREMENT
@@ -104,7 +115,8 @@ const getArtifactID = (srcDir, srcFile) => {
 
 const commitFiles = (fileArray) => {
     // GET PATH TO SOURCE | DESTINATION FROM BROWSER/'CLI USER INPUT'
-    let dstDir = global.userInput[2]; // destination of the respository to be copied in
+    let dstDir = (global.userInput[0] === 'merge_out') ? global.userInput[1] :
+                                                     global.userInput[2]; // destination of the respository to be copied in
     
     // directory of the new file
     let newDir = '.JSTWepo';
@@ -117,8 +129,8 @@ const commitFiles = (fileArray) => {
 
 const makeManifestFile = (fileArray) => {
     let userCMD = global.userInput;
-    let repoActual = (userCMD[0] === 'rebuild') ? userCMD[1] : userCMD [2];
-    let srcActual = (userCMD[0] === 'rebuild') ? userCMD[2] : userCMD [1];
+    let repoActual = (userCMD[0] === 'rebuild' || userCMD[0] === 'merge_out') ? userCMD[1] : userCMD [2];
+    let srcActual  = (userCMD[0] === 'rebuild' || userCMD[0] === 'merge_out') ? userCMD[2] : userCMD [1];
     // FORMAT FOR MANIFEST FILES: .manifest-{iteration}.rc
     var iteration = 1;
     // NODE SERVER SEARCHES FOR '.git/.man' DIRECTORY AND COLLECTS ALL FILES INTO 'manDir' ARRAY
@@ -175,7 +187,8 @@ const makeManifestFile = (fileArray) => {
  */
 const crossReference = (fileArray) => {
     // PATH TO ALL FILES WITHIN REPO
-    let repoPath = path.join(global.userInput[2], '.JSTWepo');
+    let repoPath = (global.userInput[0] === 'merge_out') ? path.join(global.userInput[1], '.JSTWepo') :
+                                                       path.join(global.userInput[2], '.JSTWepo');
     // READ ALL FILES/FOLDERS INTO 'contents' ARRAY
     // NOTE: all files within repo folder are kept in artifactID form
     let contents = fs.readdirSync(repoPath);
@@ -218,6 +231,86 @@ const recreator = (fileMap) => {
         fileMap.set(artID, destinFile);
     })
 }
+
+const merge_out = (incomingMap) => {
+    let srcDir = path.join(global.userInput[1], '.JSTWepo'); // location of repo
+    let dstDir = global.userInput[2]; // current project tree folder
+    let outgoingMap = new Map();
+
+    // POPULATE 'outgoingMap' AND CHECK IN CURRENT STATE OF PROJECT TREE
+    ////////////////////////////////////////////////////////////////////
+    fileKeeper(dstDir, outgoingMap);
+
+    let keptArray = crossReference(outgoingMap);
+
+    if (keptArray.size != 0)
+        commitFiles(keptArray);
+
+    makeManifestFile(outgoingMap);
+    ////////////////////////////////////////////////////////////////////
+
+    // HASHMAP OF CURRENT FILES IN TARGET DIRECTORY
+    // IMPORTANT (!!): THIS IS REVERSED FROM NORMAL FILE MAP -- SAME ALSO APPLIES TO 'incomingMap'
+    // 'key'   = absolute path of file
+    // 'value' = artifact-ID
+    let reversedOutMap = reverseMaperator(outgoingMap);
+    let mergePending = new Map();
+
+    incomingMap.forEach( (value, key) =>{
+        // 'incomingMap' KEEPS ONLY RELATIVE-FILE PATHS, MUST APPEND TO GET ABSOLUTE PATH
+        let destinFile = path.join(dstDir, unrooterator(key));
+        let sourceFile = path.join(srcDir, value);
+
+        // (**) CHECK ONLY FIRST 2 PARTS OF 'artifact-ID', THIRD PART WILL ALWAYS FAIL
+        let artID1 = value.split('-');
+        let contentSUM1 = artID1[0];
+        let lengthSUM1 = artID1[1];
+
+        // IF INCOMING FILE ALREADY EXISTS IN TARGET FOLDER..
+        if (reversedOutMap.has(destinFile))
+        {
+            // (**) RETRIEVE CHECKSUMS FROM CORRESPONDING FILE ALREADY IN PROJECT TREE
+            let artID2 = reversedOutMap.get(destinFile).split('-');
+            let contentSUM2 = artID2[0];
+            let lengthSUM2 = artID2[1];
+
+            // (**)...AND IF 'artifact-ID's OF BOTH INCOMING/OUTGOING DO _NOT_ MATCH
+            if(contentSUM1 != contentSUM2 || lengthSUM1 != lengthSUM2)
+            {
+                // APPEND FILE IN TARGET FOLDER WITH SUFFIX ('_MT')
+                let appendedNameKey = path.join(path.dirname(destinFile), path.parse(destinFile).name + '_MT' + path.parse(destinFile).ext);
+                fs.renameSync(destinFile, appendedNameKey);                
+
+                // COPY AND APPEND SRC FILE FROM REPO WITH SUFFIX ('_MR')
+                let appendedNameValue = path.join(path.dirname(destinFile), path.parse(destinFile).name + '_MR' + path.parse(destinFile).ext);              
+                fs.copySync(sourceFile, appendedNameValue);
+
+                mergePending.set(appendedNameKey, appendedNameValue);
+            }
+        }
+        else
+            // COPY OVER SRC FILE SINCE IT DOESN'T EXIST IN FOLDER
+            fs.copySync(sourceFile, destinFile);
+    })
+
+    return mergePending;
+}
+
+// const merge_in = () => {
+//     let srcDir = global.userInput[2];
+//     let toDisplayMap = new Map();
+
+//     fileKeeper(srcDir, toDisplayMap);
+
+//     let keptArray = crossReference(toDisplayMap);
+
+//     if (keptArray.size != 0)
+//         commitFiles(keptArray);
+
+//     makeManifestFile(toDisplayMap);
+
+//     return toDisplayMap;
+// }
 
 /**
  * This helper function strips off the root folder from the given parameter. This
@@ -359,5 +452,7 @@ module.exports = {
     unrooterator,
     getManifestMap,
     extractLabels,
-    constructInputLabel
+    constructInputLabel,
+    merge_out,
+    reverseMaperator
 };

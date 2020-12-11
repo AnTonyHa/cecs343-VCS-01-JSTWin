@@ -68,6 +68,20 @@
             <% }); %>
         </ul>
         <% }
+                    else if (dispType === 'mo-console') { %>
+        <h4> '<%= userCMD[0] %>' successfully EXECUTED! </h4>
+        <p> Pending files requiring user intervention: </p>
+        <ul class="okFiles-list">
+            <% if (okFiles.size == 0) { %>
+                <li> No pending merge conflicts! </li> 
+                <% }
+                else { %>
+                    <% okFiles.forEach ( (outgoing, incoming) => { %>
+                    <li> <%= outgoing %> <--> <%= incoming %> </li>
+                    <% }); %> 
+                <% } %>
+        </ul>
+        <% }
                     else if (dispType === 'lg-console') { %>
         <h4> LOG FILES FOR REPO </h4>
 

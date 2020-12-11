@@ -34,8 +34,16 @@ router.post('/executeCMD', (req, resp) => {
             handlers.create_repo(fArray);
             resp.render('responsePage', {dispType: 'cr-console', okFiles: fArray, userCMD: userInput});
             break;
+        case 'merge_out':
+            // (1) 'merge' <source project tree> <target project tree> <label or manifest>
+
+            // userInput[1] originally stored the source project root path for cohesion. It is then updated 
+            // to reflect the source projects repository path so that it can be used with the check_out function.
+            //userInput[1] = findProjectRepo(userInput[1])
+            //handler.check_out(resp);
+            //break;
         case 'rebuild':
-            // rebuild <source repository> <empty directory> <label or manifest>            
+            // (2) 'rebuild' <source repository> <empty directory> <label or manifest>            
             handlers.check_out(resp);
             break;
         case 'log':
@@ -43,6 +51,7 @@ router.post('/executeCMD', (req, resp) => {
             let results = handlers.log();
             resp.render('responsePage', {dispType: 'lg-console', log: results});
             break;
+        case 'merge_in':
         case 'update':
             let update = handlers.boolUpdate();
 
