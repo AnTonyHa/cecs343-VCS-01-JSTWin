@@ -16,15 +16,17 @@ const fs = require('fs-extra');
 // arg 2: absolute path to file of interest
 const absolute2Relative = (srcPath, fileName) => {
     let pathArray = srcPath.split(path.sep);
+    let fileNameArray = fileName.split(path.sep);
     let rootWord = pathArray[pathArray.length - 1];
-
-    // EDGE CASE: IF ANY SUBFOLDERS SHARE THE SAME NAME AS ROOT-FOLDER.
-    // WE ONLY WANT TO SPLIT AT ROOT FOLDER
-    fileName = fileName.replace(rootWord, 'DELIMITER');
-
-    let nameArray = fileName.split('DELIMITER');
-    let relPath = rootWord + nameArray[1].replace(/\\/g, '/');
-
+    
+    let relPath = "";
+    for (let i = pathArray.length - 1; i < fileNameArray.length; i += 1){
+        relPath += fileNameArray[i];
+        if (i + 1 != fileNameArray.length)
+        {
+            relPath += path.sep;
+        }
+    }
     return relPath;
 }
 
@@ -148,7 +150,6 @@ const makeManifestFile = (fileArray) => {
 
     fileArray.forEach( (pathToFile, artID) => {
         let relPath = absolute2Relative(srcActual, pathToFile);
-        console.log(relPath);
 
         fs.appendFileSync(manifestFile, `${artID} <-> ${relPath}\n`);
     });
@@ -224,7 +225,7 @@ const recreator = (fileMap) => {
     fileMap.forEach((relPath, artID) => {
         let sourceFile = path.join(repoPath, artID);
         let destinFile = path.join(destination, unrooterator(relPath));
-
+        
         fs.copySync(sourceFile, destinFile);
 
         // REASSIGN ABSOLUTE PATH RELATIVE TO NEW DESTINATION FOLDER,
@@ -291,27 +292,30 @@ const merge_out = (incomingMap) => {
                 let appendedGMA = path.join(path.dirname(destinFile), path.parse(destinFile).name + '_MG' + path.parse(destinFile).ext);
                 
                 // repositoryPath allows us to access the manifest files within the repo
-                let repositoryPath = userInput[0];
+                let repositoryPath = userInput[1];
                 
                 let labelMap = generateLabelsMap(repositoryPath);
+
                 let manFile = searchForManifest(3, labelMap);
-                let manPath = path.join(userInput[0], '.JSTWepo', '.man', manFile);
+                let manPath = path.join(userInput[1], '.JSTWepo', '.man', manFile);
                 
                 let projectA = findProject(manPath);
                 // projectARoot is the path to the source project root, used to follow the manifest file tree
-                let projectARoot = projectA[0];
+                let projectARoot = projectA;
                 // Will be of form -- .man-#.rc
                 let manA = manFile;
                 
                 // projectBRoot is the path to the target project root, used to follow the manifest file tree
-                let projectBRoot = userInput[1];
+                let projectBRoot = userInput[2];
                 let manDir = fs.readdirSync(path.join(repositoryPath, '.JSTWepo', '.man'));
                 let manLen = manDir.length;
+                manLen -= 1;
                 // manB is set to the last manifest file, work from the bottom up in findGMA
                 let manB = ".man-" + manLen.toString() + ".rc";
                 
                 // This is the file we will be searching for in the GMA manifests
-                let fileName = path.parse(destinFile).name;
+                let fileName = absolute2Relative(userInput[2], destinFile);
+                fileName = unrooterator(fileName);
                 
                 // Location of the grandma file
                 let gmaFile = findGMA(repositoryPath, projectARoot, manA, projectBRoot, manB, fileName);
@@ -319,7 +323,8 @@ const merge_out = (incomingMap) => {
                 // If gmaFile == "", there is no common ancestor (despite the same names and locations)
                 if (gmaFile != "")
                 {
-                    let gmaPath = path.join(repositoryPath, gmaFile);
+                    let gmaPath = path.join(repositoryPath, '.JSTWepo', gmaFile);
+                    console.log('gmaPath: ' + gmaPath);
                     fs.copySync(gmaPath, appendedGMA);
                 }
                 // ============================================================================================
@@ -345,9 +350,16 @@ const merge_out = (incomingMap) => {
  * @returns String: relative path to file ready to be appended to new root directory
  */
 const unrooterator = (relName) => {
+    /*
     let array = relName.split('/'); // split into array
     array.shift(); // strip off first element of array
     return array.join('/'); // re-join and return
+    */
+    
+    let slashPos = relName.indexOf(path.sep);
+    let result = relName.substring(slashPos + 1);
+    return result;
+    
 }
 
 const consoleEcho = (userCMD) => {
@@ -485,7 +497,7 @@ const generateLabelsMap = (usrRepoPath) => {
     // Debugging: see if map is generated properly
     //console.log('labelsMap:');
     for (let [key, value] of result) {
-        console.log(key + ' = ' + value);
+        //console.log(key + ' = ' + value);
     }
     //console.log();
     // End Debugging
@@ -527,12 +539,10 @@ const searchForManifest = (srcIndex, labelsMap) => {
  */
 const findProject = (manPath) => {
     let currMan = manPath;
-    
     let found = false;
     while(found == false)
     {
-        let path = path.join(repo, ".JSTWepo", ".man", currMan);
-        let contents = fs.readFileSync(path, 'utf8');
+        let contents = fs.readFileSync(currMan, 'utf8');
         let lineComponents = manifestCommandParse(contents);
         // Each manifest file has a first line, parse it to find the file name
         // Cases: create, update, rebuild, merge_out, merge_in
@@ -554,7 +564,7 @@ const findProject = (manPath) => {
             let temp = userInput[0];
             userInput[0] = lineComponents[3];
             let manFile = searchForManifest(0, labelMap);
-            currMan = path.join(userInput[0], '.JSTWepo', '.man', manFile);
+            currMan = path.join(userInput[1], '.JSTWepo', '.man', manFile);
             userInput[0] = temp;
         }
         else
@@ -605,6 +615,8 @@ const findGMA = (repo, sourceRoot, sMan, targetRoot, tMan, name) => {
     let B = targetRoot;
     let s = sMan;
     let t = tMan;
+    console.log("sourceRoot: " + sourceRoot + " targetRoot: " + targetRoot);
+    console.log("sMan: " + sMan + " tMan: " + tMan);
     
     // result is the absolute path to the gma file (found in the first common ancestor)
     let result = "";
@@ -616,17 +628,31 @@ const findGMA = (repo, sourceRoot, sMan, targetRoot, tMan, name) => {
         if (t > s)
         {
             // Move up
+            console.log("B, t before: ");
+            console.log(B);
+            console.log(t);
             let array = findNextMan(repo, B, t);
             B = array[0];
             t = array[1];
+            
+            console.log("B, t after: ");
+            console.log(B);
+            console.log(t);
         }
         else if (s > t) 
         {
             // Move up
+            console.log("A, s before: ");
+            console.log(A);
+            console.log(s);
             let array = findNextMan(repo, A, s);
             // If you move up and hit a rebuild
             A = array[0];
             s = array[1]
+            
+            console.log("A, s before: ");
+            console.log(A);
+            console.log(s);
         }
         else 
         {
@@ -649,11 +675,13 @@ const findNextMan = (repo, projectRoot, currMan) => {
     
     let found = false;
     
+    let currRoot = projectRoot;
+    
     while(found == false) 
     {
         let thisMan = ".man-" + manNum.toString() + ".rc";
-        let path = path.join(repo, ".JSTWepo", ".man", thisMan);
-        let contents = fs.readFileSync(path, 'utf8');
+        let pt = path.join(repo, ".JSTWepo", ".man", thisMan);
+        let contents = fs.readFileSync(pt, 'utf8');
         let lineComponents = manifestCommandParse(contents);
         // Each manifest file has a first line, parse it to find the file name
         // Cases: create, update, rebuild, merge_out, merge_in
@@ -666,12 +694,12 @@ const findNextMan = (repo, projectRoot, currMan) => {
             if (lineComponents[1] == projectRoot && thisMan != currMan)
             {
                 found = true;
-                return [projectRoot, thisMan];
+                return [currRoot, thisMan];
             }
             else
             {
                 // Go one up
-                if (manNum > 0)
+                if (manNum > 1)
                 {
                     manNum -= 1;
                 }
@@ -687,26 +715,46 @@ const findNextMan = (repo, projectRoot, currMan) => {
         // This is the first time the project is created from a manifest, immediately jump to the manifest (<label>)
         else if (lineComponents[0] == "rebuild" || lineComponents[0] == "merge_out")
         {
-            // If r/mo command and we are still on the original manifest
-            if (thisMan == currMan)
+            // If you rebuilt to the projectRoot
+            if (lineComponents[2] == currRoot)
             {
-                // Switches to the manifest file that the rebuild came from
-                let labelMap = generateLabelsMap(lineComponents[1]);
-                let temp = userInput[0];
-                userInput[0] = lineComponents[3];
-                let manFile = searchForManifest(0, labelMap);
-                userInput[0] = temp;
+                // If r/mo command and we are still on the original manifest
+                if (thisMan == currMan)
+                {
+                    // Switches to the manifest file that the rebuild came from
+                    let labelMap = generateLabelsMap(lineComponents[1]);
+                    let temp = userInput[0];
+                    userInput[0] = lineComponents[3];
+                    let manFile = searchForManifest(0, labelMap);
+                    userInput[0] = temp;
 
-                // jump manNum to the manifest from the rebuild
-                dotIndex = manFile.lastIndexOf('.');
-                manNum = parseInt(manFile.substring(5, dotIndex));
+                    // jump manNum to the manifest from the rebuild
+                    pt = path.join(repo, ".JSTWepo", ".man", manFile);
+                    contents = fs.readFileSync(pt, 'utf8');
+                    lineComponents = manifestCommandParse(contents);
+                    
+                    return [lineComponents[2], manFile];
+                }
+                // We are seeing the rebuild for the 2nd time
+                else
+                {
+                    found = true;
+                    // Project Name changes to whatever is found after the rebuild command
+                    return [lineComponents[2], thisMan];
+                }
             }
-            // We are seeing the rebuild for the 2nd time
             else
             {
-                found = true;
-                // Project Name changes to whatever is found after the rebuild command
-                return [lineComponents[2], thisMan];
+                 // Go one up
+                if (manNum > 1)
+                {
+                    manNum -= 1;
+                }
+                else
+                {
+                    // End of manifest files
+                    return ["", ""];
+                }
             }
         }
         else
@@ -718,18 +766,21 @@ const findNextMan = (repo, projectRoot, currMan) => {
 }
 
 const findFileInMan = (name, manName) => {
-    let path = path.join(repo, ".JSTWepo", ".man", manName);
-    let contents = fs.readFileSync(path, 'utf8');
+    console.log("name: " + name);
+    let repo = userInput[1];
+    let pt = path.join(repo, ".JSTWepo", ".man", manName);
+    let contents = fs.readFileSync(pt, 'utf8');
     let lines = contents.split('\n');
     
-    for (let i = 0; i < lines.length; i += 1)
+    for (let i = 3; i < lines.length - 1; i += 1)
     {
+        console.log(lines[i]);
         let line = lines[i].split(' ');
         // Rebuild/Amy.txt
-        let pathArray = line[2].split('/');
+        let relPath = unrooterator(line[2]);
         // Last element in the path array should be the file name
-        let currFileName = pathArray[pathArray.length - 1];
-        if( currFileName == name)
+        console.log(relPath);
+        if(relPath == name)
         {
             // Artifact ID
             return line[0];
