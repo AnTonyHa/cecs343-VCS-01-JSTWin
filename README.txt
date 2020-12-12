@@ -77,7 +77,7 @@ Signature:  label <repositoryPath> <manifestFileName> <label>
         - Label of form: man-#.rc, "man-#", "label"
 	- label
 		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
-        - Label of form: "label"
+        - Label of form: "label",  manifest name can be passed explicitly instead -- .man-#.rc -- (no quotes)
 
 rebuild
 Signature: rebuild <repositoryPath> <rebuildPath> <label>
@@ -90,7 +90,7 @@ Signature: rebuild <repositoryPath> <rebuildPath> <label>
 		- An absolute path to the location where the project snapshot is to be rebuilt
 	- label
 		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
-        - Label of form: "label"
+        - Label of form: "label",  manifest name can be passed explicitly instead -- .man-#.rc -- (no quotes)
 
 merge_out
 Signature: merge_out <repositoryPath> <targetRoot> <label>
@@ -105,7 +105,7 @@ Signature: merge_out <repositoryPath> <targetRoot> <label>
 		- An absolute path to the location of the target project root
 	- label
 		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
-        - Label of form: "label"
+        - Label of form: "label", manifest name can be passed explicitly instead -- .man-#.rc -- (no quotes)
 
 merge_in
 Signature: merge_in <targetRoot> <repositoryPath>

@@ -150,7 +150,7 @@
                 </li>
                 <ul>
                     <li>A double quoted string ("this label") or an exact manifest file ID (man-#.rc)</li>
-                    <li>Label of form: "label"</li>
+                    <li>Label of form: "label", manifest name can be passed explicitly instead -- .man-#.rc -- (no quotes)</li>
                 </ul>
             </ul>
         </div>
@@ -181,29 +181,29 @@
                 </li>
                 <ul>
                     <li>A double quoted string ("this label") or an exact manifest file ID (man-#.rc)</li>
-                    <li>Label of form: "label"</li>
+                    <li>Label of form: "label", manifest name can be passed explicitly instead -- .man-#.rc -- (no quotes)</li>
                 </ul>
             </ul>
         </div>
         
         <div id="merge_out"> 
             <h2>merge_out</h2>
-            <p>Signature: <strong>merge_out</strong> &lt;sourcePath&gt; &lt;targetPath&gt; &lt;label&gt;</p>
+            <p>Signature: <strong>merge_out</strong> &lt;repositoryPath&gt; &lt;targetRoot&gt; &lt;label&gt;</p>
             <ul>
                 <li>
-                    The merge_out command compares the latest snapshots of the source branch and the target branch. The target is merged into the source (leaving the target unchanged). To complete the merge process, the merge_in command must follow after the user has manually handled file conflicts between the two branches.
+                    The merge_out command compares a snapshot from the source branch and the target branch. The source is merged into the target (leaving the source unchanged). To complete the merge process, the merge_in command must follow after the user has manually handled file conflicts between the two branches.
                 </li>
             </ul>
             <h4>Arguments</h4>
             <ul>
                 <li>
-                    sourcePath
+                    repositoryPath
                 </li>
                 <ul>
-                    <li>An absolute path to the location of the source project root</li>
+                    <li>An absolute path to the location of a repository</li>
                 </ul>
                 <li>
-                    targetPath
+                    targetRoot
                 </li>
                 <ul>
                     <li>An absolute path to the location of the target project root</li>
@@ -213,14 +213,14 @@
                 </li>
                 <ul>
                     <li>A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)</li>
-                    <li>Label of form: "label"</li>
+                    <li>Label of form: "label", manifest name can be passed explicitly instead -- .man-#.rc -- (no quotes)</li>
                 </ul>
             </ul>
         </div>
         
         <div id="merge_in"> 
             <h2>merge_in</h2>
-            <p>Signature: <strong>merge_out</strong> &lt;sourcePath&gt; &lt;targetPath&gt; &lt;label&gt;</p>
+            <p>Signature: <strong>merge_in</strong> &lt;targetRoot&gt; &lt;repositoryPath&gt;</p>
             <ul>
                 <li>
                     The merge_in command is manually called by the user after a merge_out command has been called and conflicts have been manually resolved. Updates the source repository with the newest version of the application.
@@ -229,10 +229,10 @@
             <h4>Arguments</h4>
             <ul>
                 <li>
-                    sourcePath
+                    targetRoot
                 </li>
                 <ul>
-                    <li>An absolute path to the location of the source project root</li>
+                    <li>An absolute path to the location of the target project root</li>
                 </ul>
                 <li>
                     repositoryPath

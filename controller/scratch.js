@@ -324,7 +324,6 @@ const merge_out = (incomingMap) => {
                 if (gmaFile != "")
                 {
                     let gmaPath = path.join(repositoryPath, '.JSTWepo', gmaFile);
-                    console.log('gmaPath: ' + gmaPath);
                     fs.copySync(gmaPath, appendedGMA);
                 }
                 // ============================================================================================
@@ -482,25 +481,15 @@ const generateLabelsMap = (usrRepoPath) => {
     
     let labelsPath = path.join(usrRepoPath, '.JSTWepo', '.labels.txt');
     let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
-    //console.log('readLabel size: ' + readLabels.length);
     for (i = 0; i < readLabels.length - 1; i++) {
         let labelManifest = readLabels[i].split(' ');
-        //console.log('labelManifest: ' + labelManifest);
         let label = '';
         // label is from index 0 to labelManifest.length - 2, the last index contains manifest
         for (let j = 0; j < labelManifest.length - 1; j++) {
-            //console.log('labelManifest: ' + labelManifest);
             label += labelManifest[j] + ' ';
         }
         result.set(label.trim(), labelManifest[labelManifest.length - 1].trim());
     }
-    // Debugging: see if map is generated properly
-    //console.log('labelsMap:');
-    for (let [key, value] of result) {
-        //console.log(key + ' = ' + value);
-    }
-    //console.log();
-    // End Debugging
     return result;
 }
 
@@ -615,8 +604,7 @@ const findGMA = (repo, sourceRoot, sMan, targetRoot, tMan, name) => {
     let B = targetRoot;
     let s = sMan;
     let t = tMan;
-    console.log("sourceRoot: " + sourceRoot + " targetRoot: " + targetRoot);
-    console.log("sMan: " + sMan + " tMan: " + tMan);
+
     
     // result is the absolute path to the gma file (found in the first common ancestor)
     let result = "";
@@ -628,31 +616,17 @@ const findGMA = (repo, sourceRoot, sMan, targetRoot, tMan, name) => {
         if (t > s)
         {
             // Move up
-            console.log("B, t before: ");
-            console.log(B);
-            console.log(t);
             let array = findNextMan(repo, B, t);
             B = array[0];
             t = array[1];
-            
-            console.log("B, t after: ");
-            console.log(B);
-            console.log(t);
         }
         else if (s > t) 
         {
             // Move up
-            console.log("A, s before: ");
-            console.log(A);
-            console.log(s);
             let array = findNextMan(repo, A, s);
             // If you move up and hit a rebuild
             A = array[0];
             s = array[1]
-            
-            console.log("A, s before: ");
-            console.log(A);
-            console.log(s);
         }
         else 
         {
@@ -766,7 +740,6 @@ const findNextMan = (repo, projectRoot, currMan) => {
 }
 
 const findFileInMan = (name, manName) => {
-    console.log("name: " + name);
     let repo = userInput[1];
     let pt = path.join(repo, ".JSTWepo", ".man", manName);
     let contents = fs.readFileSync(pt, 'utf8');
@@ -774,12 +747,10 @@ const findFileInMan = (name, manName) => {
     
     for (let i = 3; i < lines.length - 1; i += 1)
     {
-        console.log(lines[i]);
         let line = lines[i].split(' ');
         // Rebuild/Amy.txt
         let relPath = unrooterator(line[2]);
         // Last element in the path array should be the file name
-        console.log(relPath);
         if(relPath == name)
         {
             // Artifact ID
