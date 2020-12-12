@@ -45,8 +45,8 @@ const update = (fArray) => {
 // (2) 'rebuild' <source repository> <empty directory> <label or manifest>            
 const check_out = (resp) => {
     // THIS SECTION FOR PARSING 'LABELS'
-    let labelsMap = generateLabelsMap(global.userInput[1]);
-    let manifestFile = searchForManifest(3, labelsMap);
+    let labelsMap = repo.generateLabelsMap(global.userInput[1]);
+    let manifestFile = repo.searchForManifest(3, labelsMap);
 
     // THIS SECTION FOR IDENTIFYING PATH TO FINAL .MANIFEST FILE
     let pathToMan = path.join(global.userInput[1], '.JSTWepo', '.man', manifestFile);
@@ -222,61 +222,6 @@ const createLabel = (labelsMap) => {
     }
 }
 
-/**
- * Generate a map contains pairs of value = manifest as key = value
- * @param {String} usrRepoPath JSTWepo's file path
- */
-const generateLabelsMap = (usrRepoPath) => {
-    result = new Map();
-    
-    let labelsPath = path.join(usrRepoPath, '.JSTWepo', '.labels.txt');
-    let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
-    console.log('readLabel size: ' + readLabels.length);
-    for (i = 0; i < readLabels.length - 1; i++) {
-        let labelManifest = readLabels[i].split(' ');
-        console.log('labelManifest: ' + labelManifest);
-        let label = '';
-        // label is from index 0 to labelManifest.length - 2, the last index contains manifest
-        for (let j = 0; j < labelManifest.length - 1; j++) {
-            console.log('labelManifest: ' + labelManifest);
-            label += labelManifest[j] + ' ';
-        }
-        result.set(label.trim(), labelManifest[labelManifest.length - 1].trim());
-    }
-    // Debugging: see if map is generated properly
-    console.log('labelsMap:');
-    for (let [key, value] of result) {
-        console.log(key + ' = ' + value);
-    }
-    console.log();
-    // End Debugging
-    return result;
-}
-
-/**
- * Command helper: Check if user's input is a label or manifest file name
- * @param {int} srcIndex index of user's input of manifest file name or a label
- * @returns manifest file name
- */
-const searchForManifest = (srcIndex, labelsMap) => {
-    let result = '';
-    if (global.userInput[srcIndex].startsWith('"')) {
-        // Grab existed label wrapped in double quotes
-        let existedLabel = repo.constructInputLabel(srcIndex);
-        // Check if the label of second argument existed in labelsMap 
-        if (labelsMap.has(existedLabel)) {
-            result = labelsMap.get(existedLabel);
-        } else {
-            // FAIL case: targetManifest is empty
-            console.log('Label "' + existedLabel + '" does not exist.');
-        }
-    } else {
-        // Default case: user specified manifest file name
-        result = global.userInput[srcIndex];
-    }
-    return result;
-}
-
 module.exports = {
     create_repo,
     log,
@@ -284,5 +229,4 @@ module.exports = {
     update,
     check_out,
     createLabel,
-    generateLabelsMap
 }

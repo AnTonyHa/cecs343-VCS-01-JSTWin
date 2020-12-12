@@ -93,28 +93,28 @@ Signature: rebuild <repositoryPath> <rebuildPath> <label>
         - Label of form: "label"
 
 merge_out
-Signature: merge_out <sourcePath> <targetPath> <label>
-	- The merge_out command compares the latest snapshots of the source branch and the target branch. 
-	  The target is merged into the source (leaving the target unchanged).
+Signature: merge_out <repositoryPath> <targetRoot> <label>
+	- The merge_out command compares a snapshot from the source branch and the target branch. 
+	  The source is merged into the target (leaving the source unchanged).
 	  To complete the merge process, the merge_in command must follow after the user has manually handled
 	  file conflicts between the two branches.
 	Arguments:
-	- sourcePath
-		- An absolute path to the location of the source project root
-	- targetPath
+	- repositoryPath
+		- An absolute path to the location of a repository
+	- targetRoot
 		- An absolute path to the location of the target project root
 	- label
 		- A double quoted string ("this label", "man-#") or an exact manifest file ID (man-#.rc)
         - Label of form: "label"
 
 merge_in
-Signature: merge_in <sourcePath> <repositoryPath>
+Signature: merge_in <targetRoot> <repositoryPath>
 	- The merge_in command is manually called by the user after a merge_out command has been called 
-	  and conflicts have been manually resolved. Updates the source repository with the newest version
-	  of the application
+	  and conflicts have been manually resolved. Updates the repository with the newest version
+	  of the target project
 	Arguments:
-	- sourcePath
-		- An absolute path to the location of the source project root
+	- targetRoot
+		- An absolute path to the location of the target project root
 	- repositoryPath
 		- An absolute path to the location of a repository
 

@@ -148,6 +148,7 @@ const makeManifestFile = (fileArray) => {
 
     fileArray.forEach( (pathToFile, artID) => {
         let relPath = absolute2Relative(srcActual, pathToFile);
+        console.log(relPath);
 
         fs.appendFileSync(manifestFile, `${artID} <-> ${relPath}\n`);
     });
@@ -284,6 +285,44 @@ const merge_out = (incomingMap) => {
                 // COPY AND APPEND SRC FILE FROM REPO WITH SUFFIX ('_MR')
                 let appendedNameValue = path.join(path.dirname(destinFile), path.parse(destinFile).name + '_MR' + path.parse(destinFile).ext);              
                 fs.copySync(sourceFile, appendedNameValue);
+                
+                // COPY AND APPEND GMA FILE FROM REPO WITH SUFFIC ('_MG')
+                // ============================================================================================
+                let appendedGMA = path.join(path.dirname(destinFile), path.parse(destinFile).name + '_MG' + path.parse(destinFile).ext);
+                
+                // repositoryPath allows us to access the manifest files within the repo
+                let repositoryPath = userInput[0];
+                
+                let labelMap = generateLabelsMap(repositoryPath);
+                let manFile = searchForManifest(3, labelMap);
+                let manPath = path.join(userInput[0], '.JSTWepo', '.man', manFile);
+                
+                let projectA = findProject(manPath);
+                // projectARoot is the path to the source project root, used to follow the manifest file tree
+                let projectARoot = projectA[0];
+                // Will be of form -- .man-#.rc
+                let manA = manFile;
+                
+                // projectBRoot is the path to the target project root, used to follow the manifest file tree
+                let projectBRoot = userInput[1];
+                let manDir = fs.readdirSync(path.join(repositoryPath, '.JSTWepo', '.man'));
+                let manLen = manDir.length;
+                // manB is set to the last manifest file, work from the bottom up in findGMA
+                let manB = ".man-" + manLen.toString() + ".rc";
+                
+                // This is the file we will be searching for in the GMA manifests
+                let fileName = path.parse(destinFile).name;
+                
+                // Location of the grandma file
+                let gmaFile = findGMA(repositoryPath, projectARoot, manA, projectBRoot, manB, fileName);
+                
+                // If gmaFile == "", there is no common ancestor (despite the same names and locations)
+                if (gmaFile != "")
+                {
+                    let gmaPath = path.join(repositoryPath, gmaFile);
+                    fs.copySync(gmaPath, appendedGMA);
+                }
+                // ============================================================================================
 
                 mergePending.set(appendedNameKey, appendedNameValue);
             }
@@ -295,22 +334,6 @@ const merge_out = (incomingMap) => {
 
     return mergePending;
 }
-
-// const merge_in = () => {
-//     let srcDir = global.userInput[2];
-//     let toDisplayMap = new Map();
-
-//     fileKeeper(srcDir, toDisplayMap);
-
-//     let keptArray = crossReference(toDisplayMap);
-
-//     if (keptArray.size != 0)
-//         commitFiles(keptArray);
-
-//     makeManifestFile(toDisplayMap);
-
-//     return toDisplayMap;
-// }
 
 /**
  * This helper function strips off the root folder from the given parameter. This
@@ -438,6 +461,283 @@ const constructInputLabel = (srcIndex) => {
     return strResult;
 }
 
+/**
+ * Generate a map contains pairs of value = manifest as key = value
+ * @param {String} usrRepoPath JSTWepo's file path
+ */
+const generateLabelsMap = (usrRepoPath) => {
+    result = new Map();
+    
+    let labelsPath = path.join(usrRepoPath, '.JSTWepo', '.labels.txt');
+    let readLabels = fs.readFileSync(labelsPath, 'utf-8').split('\n');
+    //console.log('readLabel size: ' + readLabels.length);
+    for (i = 0; i < readLabels.length - 1; i++) {
+        let labelManifest = readLabels[i].split(' ');
+        //console.log('labelManifest: ' + labelManifest);
+        let label = '';
+        // label is from index 0 to labelManifest.length - 2, the last index contains manifest
+        for (let j = 0; j < labelManifest.length - 1; j++) {
+            //console.log('labelManifest: ' + labelManifest);
+            label += labelManifest[j] + ' ';
+        }
+        result.set(label.trim(), labelManifest[labelManifest.length - 1].trim());
+    }
+    // Debugging: see if map is generated properly
+    //console.log('labelsMap:');
+    for (let [key, value] of result) {
+        console.log(key + ' = ' + value);
+    }
+    //console.log();
+    // End Debugging
+    return result;
+}
+
+/**
+ * Command helper: Check if user's input is a label or manifest file name
+ * @param {int} srcIndex index of user's input of manifest file name or a label
+ * @returns manifest file name
+ */
+const searchForManifest = (srcIndex, labelsMap) => {
+    let result = '';
+    if (global.userInput[srcIndex].startsWith('"')) {
+        // Grab existed label wrapped in double quotes
+        let existedLabel = constructInputLabel(srcIndex);
+        // Check if the label of second argument existed in labelsMap 
+        if (labelsMap.has(existedLabel)) {
+            result = labelsMap.get(existedLabel);
+        } else {
+            // FAIL case: targetManifest is empty
+            console.log('Label "' + existedLabel + '" does not exist.');
+        }
+    } else {
+        // Default case: user specified manifest file name
+        result = global.userInput[srcIndex];
+    }
+    return result;
+}
+
+/*
+ * Helper Function to find the project that 
+ * Accepts the absolute path to a manifest file as an argument
+ * Returns projectPath of the current manifest file
+ *
+ *
+ *
+ *
+ */
+const findProject = (manPath) => {
+    let currMan = manPath;
+    
+    let found = false;
+    while(found == false)
+    {
+        let path = path.join(repo, ".JSTWepo", ".man", currMan);
+        let contents = fs.readFileSync(path, 'utf8');
+        let lineComponents = manifestCommandParse(contents);
+        // Each manifest file has a first line, parse it to find the file name
+        // Cases: create, update, rebuild, merge_out, merge_in
+        // (1) create, update, and merge_in : treated the same
+        // create <projectPath> <repositoryPath>
+        if (lineComponents[0] == "create" || lineComponents[0] == "update" || lineComponents[0] == "merge_in")
+        {
+            found = true;
+            return lineComponents[1];
+        }
+        // (2) rebuild, and merge_out treated the same
+        // rebuild <repositoryPath> <rebuildPath> <label>
+        // This is the first time the project is created from a manifest, immediately jump to the manifest (<label>)
+        else if (lineComponents[0] == "rebuild" || lineComponents[0] == "merge_out")
+        {
+            // Switches to the manifest file that the rebuild came from until we hit the first
+            // create/update/merge_out
+            let labelMap = generateLabelsMap(lineComponents[1]);
+            let temp = userInput[0];
+            userInput[0] = lineComponents[3];
+            let manFile = searchForManifest(0, labelMap);
+            currMan = path.join(userInput[0], '.JSTWepo', '.man', manFile);
+            userInput[0] = temp;
+        }
+        else
+        {
+            found = true;
+            console.log("Error, manifest has an odd command");
+        }
+    }
+    return "";
+}
+
+/*
+ * Helper Function to parse first line of the manifest file (passed as a string)
+ * Accepts
+ */
+const manifestCommandParse = (str) => {
+    // First line format
+    // "command,param1,param2,..."
+    // Label commands can have quotes in them, must determine line by '\n' character
+    
+    // This is the first line in the manifest file
+    let firstLine = str.split('\n')[0];
+    
+    // Will return -- command,param1,param2... without surrounding quotes
+    // chops off the first quote
+    let line = firstLine.substring(1);
+    // last quote is at line.length - 1, so we cut it off
+    line = line.substring(0, line.length - 1);
+    
+    // The line is then split into an array 
+    let result = line.split(',');
+    
+    return result;
+}
+
+
+/*
+ * Helper Function to find the last common ancestor of two files within two project folders
+ * repo is the common repository location
+ * sourceRoot is the absolute source project root path
+ * sMan is the manifest file corresponding to the current version of source root
+ * targetRoot is the absolute target project root path
+ * tMan is the manifest file corresponding tot he current version of source root
+ * name is the file name that is present at the same location for both snapshots.
+ */
+const findGMA = (repo, sourceRoot, sMan, targetRoot, tMan, name) => {
+    let A = sourceRoot;
+    let B = targetRoot;
+    let s = sMan;
+    let t = tMan;
+    
+    // result is the absolute path to the gma file (found in the first common ancestor)
+    let result = "";
+    
+    // While the manifests are different
+    while (s != t) 
+    {
+        // ex: man-5.rc > man-3.rc
+        if (t > s)
+        {
+            // Move up
+            let array = findNextMan(repo, B, t);
+            B = array[0];
+            t = array[1];
+        }
+        else if (s > t) 
+        {
+            // Move up
+            let array = findNextMan(repo, A, s);
+            // If you move up and hit a rebuild
+            A = array[0];
+            s = array[1]
+        }
+        else 
+        {
+            console.log("There is an error in findGMA");
+        }
+    }
+    
+    // Parses manifest file looking for the file
+    result = findFileInMan(name, s);
+    // When the manifests are equal, we have gotten to the same branch and the first common ancestor
+    // result is the artifact ID
+    return result;
+}
+
+const findNextMan = (repo, projectRoot, currMan) => {
+    // .man-######.rc
+    let dotIndex = currMan.lastIndexOf('.');
+    // chops off .man- and .rc
+    let manNum = parseInt(currMan.substring(5, dotIndex));
+    
+    let found = false;
+    
+    while(found == false) 
+    {
+        let thisMan = ".man-" + manNum.toString() + ".rc";
+        let path = path.join(repo, ".JSTWepo", ".man", thisMan);
+        let contents = fs.readFileSync(path, 'utf8');
+        let lineComponents = manifestCommandParse(contents);
+        // Each manifest file has a first line, parse it to find the file name
+        // Cases: create, update, rebuild, merge_out, merge_in
+        // (1) create, update, and merge_in : treated the same
+        // create <projectPath> <repositoryPath>
+        if (lineComponents[0] == "create" || lineComponents[0] == "update" || lineComponents[0] == "merge_in")
+        {
+            // If we have a c/u/mi command, and the project is the same we are looking for
+            // return the manifest name unless it is the same manifest name
+            if (lineComponents[1] == projectRoot && thisMan != currMan)
+            {
+                found = true;
+                return [projectRoot, thisMan];
+            }
+            else
+            {
+                // Go one up
+                if (manNum > 0)
+                {
+                    manNum -= 1;
+                }
+                else
+                {
+                    // End of manifest files
+                    return ["", ""];
+                }
+            }
+        }
+        // (2) rebuild, and merge_out treated the same
+        // rebuild <repositoryPath> <rebuildPath> <label>
+        // This is the first time the project is created from a manifest, immediately jump to the manifest (<label>)
+        else if (lineComponents[0] == "rebuild" || lineComponents[0] == "merge_out")
+        {
+            // If r/mo command and we are still on the original manifest
+            if (thisMan == currMan)
+            {
+                // Switches to the manifest file that the rebuild came from
+                let labelMap = generateLabelsMap(lineComponents[1]);
+                let temp = userInput[0];
+                userInput[0] = lineComponents[3];
+                let manFile = searchForManifest(0, labelMap);
+                userInput[0] = temp;
+
+                // jump manNum to the manifest from the rebuild
+                dotIndex = manFile.lastIndexOf('.');
+                manNum = parseInt(manFile.substring(5, dotIndex));
+            }
+            // We are seeing the rebuild for the 2nd time
+            else
+            {
+                found = true;
+                // Project Name changes to whatever is found after the rebuild command
+                return [lineComponents[2], thisMan];
+            }
+        }
+        else
+        {
+            found = true;
+            console.log("Error, manifest has an odd command");
+        }
+    }
+}
+
+const findFileInMan = (name, manName) => {
+    let path = path.join(repo, ".JSTWepo", ".man", manName);
+    let contents = fs.readFileSync(path, 'utf8');
+    let lines = contents.split('\n');
+    
+    for (let i = 0; i < lines.length; i += 1)
+    {
+        let line = lines[i].split(' ');
+        // Rebuild/Amy.txt
+        let pathArray = line[2].split('/');
+        // Last element in the path array should be the file name
+        let currFileName = pathArray[pathArray.length - 1];
+        if( currFileName == name)
+        {
+            // Artifact ID
+            return line[0];
+        }
+    }
+    return "";
+}
+
 // BUNDLE ALL MISC FUNCTIONS INTO ARRAY AND EXPORT
 module.exports = {
     fileKeeper,
@@ -454,5 +754,7 @@ module.exports = {
     extractLabels,
     constructInputLabel,
     merge_out,
-    reverseMaperator
+    reverseMaperator,
+    generateLabelsMap,
+    searchForManifest
 };
